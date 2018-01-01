@@ -125,8 +125,8 @@ bbdml <- function(formula, phi.formula, data,
 
   structure(
     list(
-      call = call, family = fam, link = link, dat = dat,
-      formula = mu.f, phi.formula = phi.f, phi.scale = phi.scale,
+      call = call, link = link, dat = dat,
+      formula = mu.f, phi.formula = phi.f, phi.link = phi.link,
       X.mu = X.b, X.phi = X.bstar,
       resp = resp,
       param = theta, b = b, phi = b_star,

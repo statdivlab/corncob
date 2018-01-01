@@ -83,7 +83,7 @@ bbdml <- function(formula, phi.formula, data,
 
   if (method == "L-BFGS-B") {
     lower <- c(rep(logit(.0001), np), rep(fishZ(0), npstar))
-    upper <- c(rep(logit(.99), np), rep(fishZ(100), npstar))
+    upper <- c(rep(logit(.99), np), rep(fishZ(100/(max(M) - 1)), npstar))
     starttime <- proc.time()[1]
     mlout <- optimr::optimr(par = theta.init,
                             fn = dbetabin,

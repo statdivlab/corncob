@@ -2,6 +2,8 @@
 
 export(coth)
 export(fishZ)
+export(gr_beta)
+export(gr_beta_i)
 export(invfishZ)
 export(invlogit)
 export(logit)

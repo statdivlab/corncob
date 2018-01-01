@@ -70,6 +70,11 @@ bbdml <- function(formula, phi.formula, data,
     phi.init <- switch(phi.link, "fishZ" = invfishZ(z))
   }
 
+  # Counts
+  W <- resp[, 1]
+  # Sample Size
+  M <- rowSums(resp)
+
   # Get full initializations
   phi.init <- rep(phi.init, npstar)
   theta.init <- c(stats::coef(mu.init.mod), phi.init)

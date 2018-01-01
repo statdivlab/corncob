@@ -1,7 +1,7 @@
 # CORNCOB
 COmpositional RegressioN COvariates with the Beta-binomial
 
-[![Build Status](https://travis-ci.org/bryandmartin/CORNCOB.svg?branch=master)](https://travis-ci.org/bryandmartin/CORNCOB)
+[![Build Status](https://travis-ci.com/bryandmartin/CORNCOB.svg?branch=master)](https://travis-ci.com/bryandmartin/CORNCOB)
 
 ## Installation
 

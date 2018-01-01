@@ -2,11 +2,11 @@
 % Please edit documentation in R/gr_beta.R
 \name{gr_beta_i}
 \alias{gr_beta_i}
-\title{Beta Gradient for a single sample}
+\title{Mean Gradient for a single sample}
 \usage{
 gr_beta_i(k, k_star, W, M, coth_st)
 }
 \description{
-Beta Gradient for a single sample
+Mean Gradient for a single sample
 }
 \keyword{internal}

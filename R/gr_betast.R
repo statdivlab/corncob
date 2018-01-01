@@ -1,18 +1,21 @@
-#' Mean Gradient for a single sample
+#' Overdispersion Gradient for a single sample
 #'
 #'
 #' @keywords internal
 #'
 #' @export
-gr_beta_i <- function(k, k_star, W, M, coth_st) {
-  dg1 <- -digamma(M - W + coth_st/(k))
-  dg2 <- digamma((W + (k - 1)*(W + coth_st))/(k))
-  dg3 <- digamma((coth_st)/(k))
-  dg4 <- -digamma(((k - 1)*coth_st)/(k))
-  return( (1/(k^2)) * (k - 1) * coth_st * (dg1 + dg2 + dg3 + dg4))
+gr_betast_i <- function(k, k_star, W, M, coth_st) {
+  dg1 <- -digamma(M - W + (coth_st)/(k))
+  dg2 <- -digamma((W + (k - 1)*(W + coth_st))/(k))
+  dg3 <- digamma(((k - 1)*coth_st)/(k))
+  dg4 <- digamma(M + coth_st)
+  dg5 <- digamma(coth_st)
+  dg6 <- digamma((coth_st)/(k))
+  # dg7 <- digamma(M + coth_st) # This is dg4 again
+  return( (4/(k*k_star*k_star)) * (k_star + 1) * (dg1 + (k - 1)*(dg2 + dg3 + dg4) - k*dg5 + dg6 + dg4))
 }
 
-#' Mean Parameter Gradient Vector
+#' Overdispersion Parameter Gradient Vector
 #'
 #' @param theta parameters
 #' @param W absolute abundance
@@ -23,7 +26,7 @@ gr_beta_i <- function(k, k_star, W, M, coth_st) {
 #' @param npstar number of overdisperion parameters
 #' @param logpar Indicator of log-likelihood, defaults to TRUE
 #'
-#' @return Gradient of likelihood with respect to mean parameters
+#' @return Gradient of likelihood with respect to overdispersion parameters
 #'
 #' @examples
 #' \dontrun{
@@ -31,7 +34,7 @@ gr_beta_i <- function(k, k_star, W, M, coth_st) {
 #' }
 #'
 #' @export
-gr_beta <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
+gr_betast <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   # extract matrix of betas (np x 1), first np entries
   b      <- utils::head(theta, np)
   # extract matrix of beta stars (npstar x 1), last npstar entries
@@ -43,14 +46,12 @@ gr_beta <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   if (!logpar) {
     stop("Use log.")
   }
-  outNoX <- mapply(gr_beta_i,
+  outNoX <- mapply(gr_betast_i,
                    k = k, k_star = k_star, W = W, M = M,
                    coth_st = coth_st,
                    SIMPLIFY = TRUE)
-  # Will be n-vector, want out np vector
-  # Should be np gradients, one for each beta
-  # X is n by np, need colsums after multiplying by row. Cross product
-  return(-c(crossprod(outNoX, X)))
+
+  return(-c(crossprod(outNoX, X_star)))
 }
 
 

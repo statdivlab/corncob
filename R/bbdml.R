@@ -67,7 +67,7 @@ bbdml <- function(formula, phi.formula, data,
   if (is.null(phi.init)) {
     z <- 0.1
     # Takes scale, applies inverse to z
-    phi.init <- switch(phi.scale, "fishZ" = invfishZ(z))
+    phi.init <- switch(phi.link, "fishZ" = invfishZ(z))
   }
 
   # Get full initializations

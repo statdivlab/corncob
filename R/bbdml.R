@@ -99,8 +99,10 @@ bbdml <- function(formula, phi.formula, data,
                             np = np,
                             npstar = npstar,
                             logpar = TRUE))
+    theta.orig <- theta.init
     attempts <- 1
-    while (mlout$convergence != 0 && attempts < 10) {
+    while (mlout$convergence != 0 && attempts < 20) {
+      # try going smaller
       theta.init <- theta.init * .95
       mlout <- try(optimr::optimr(par = theta.init,
                                   fn = dbetabin,
@@ -118,8 +120,31 @@ bbdml <- function(formula, phi.formula, data,
                                   logpar = TRUE))
       attempts <- attempts + 1
     }
-    if (attempts == 10) {
-      stop("Too many initializations!")
+    if (attempts == 20) {
+      # reset try going bigger
+      attempts <- 1
+      theta.init <- theta.orig
+      while (mlout$convergence != 0 && attempts < 20) {
+        theta.init <- theta.init * 1.05
+        mlout <- try(optimr::optimr(par = theta.init,
+                                    fn = dbetabin,
+                                    gr = gr_full,
+                                    lower = lower,
+                                    upper = upper,
+                                    method = method,
+                                    control = control,
+                                    W = W,
+                                    M = M,
+                                    X = X.b,
+                                    X_star = X.bstar,
+                                    np = np,
+                                    npstar = npstar,
+                                    logpar = TRUE))
+        attempts <- attempts + 1
+      }
+      if (attempts == 20) {
+        stop("Too many initializations!")
+      }
     }
     time <- proc.time()[1] - starttime
   }

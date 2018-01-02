@@ -79,11 +79,6 @@ bbdml <- function(formula, phi.formula, data,
   phi.init <- rep(phi.init, npstar)
   theta.init <- c(stats::coef(mu.init.mod), phi.init)
 
-  # Counts
-  W <- resp[, 1]
-  # Sample Size
-  M <- rowSums(resp)
-
 
 
   if (method == "L-BFGS-B") {
@@ -105,7 +100,7 @@ bbdml <- function(formula, phi.formula, data,
                             npstar = npstar,
                             logpar = TRUE))
     attempts <- 1
-    while (class(mlout) == "try-error" && attempts < 10) {
+    while (mlout$convergence != 0 && attempts < 10) {
       theta.init <- theta.init * .95
       mlout <- try(optimr::optimr(par = theta.init,
                                   fn = dbetabin,

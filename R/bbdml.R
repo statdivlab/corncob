@@ -136,8 +136,8 @@ bbdml <- function(formula, phi.formula, data,
   b      <- utils::head(theta, np)
   b_star <- utils::tail(theta, npstar)
 
-  b.resp <- switch(phi.link, "fishZ" = invfishZ(b))
-  b_star.resp <- switch(link, "logit" = invlogit(b_star))
+  b.resp <- switch(phi.link, "logit" = invlogit(b))
+  b_star.resp <- switch(link, "fishZ" = invfishZ(b_star))
   theta.resp <- c(b.resp,b_star.resp)
   names(theta.resp) <- names(theta)
 

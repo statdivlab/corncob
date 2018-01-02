@@ -141,6 +141,11 @@ bbdml <- function(formula, phi.formula, data,
   b      <- utils::head(theta, np)
   b_star <- utils::tail(theta, npstar)
 
+  b.resp <- switch(phi.link, "fishZ" = invfishZ(b))
+  b_star.resp <- switch(link, "logit" = invlogit(b_star))
+  theta.resp <- c(b.resp,b_star.resp)
+  names(theta.resp) <- names(theta)
+
   # other results
   # if fixpar is not null, df.model is lower than nbpar
   df.model <- length(theta)
@@ -156,7 +161,7 @@ bbdml <- function(formula, phi.formula, data,
       formula = mu.f, phi.formula = phi.f, phi.link = phi.link,
       X.mu = X.b, X.phi = X.bstar,
       resp = resp,
-      param = theta, b = b, phi = b_star,
+      param = theta, param.response = theta.resp,
       np = nppar, df.model = df.model, df.residual = df.residual,
       logL = logL,
       iterations = iterations, code = code, msg = msg, time = time),

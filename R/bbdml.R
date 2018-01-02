@@ -90,7 +90,7 @@ bbdml <- function(formula, phi.formula, data,
     lower <- c(rep(logit(.0001), np), rep(fishZ(0), npstar))
     upper <- c(rep(logit(.99), np), rep(fishZ(100/(max(M) - 1)), npstar))
     starttime <- proc.time()[1]
-    mlout <- optimr::optimr(par = theta.init,
+    mlout <- try(optimr::optimr(par = theta.init,
                             fn = dbetabin,
                             gr = gr_full,
                             lower = lower,
@@ -103,7 +103,29 @@ bbdml <- function(formula, phi.formula, data,
                             X_star = X.bstar,
                             np = np,
                             npstar = npstar,
-                            logpar = TRUE)
+                            logpar = TRUE))
+    attempts <- 1
+    while (class(mlout) == "try-error" && attempts < 10) {
+      theta.init <- theta.init * .95
+      mlout <- try(optimr::optimr(par = theta.init,
+                                  fn = dbetabin,
+                                  gr = gr_full,
+                                  lower = lower,
+                                  upper = upper,
+                                  method = method,
+                                  control = control,
+                                  W = W,
+                                  M = M,
+                                  X = X.b,
+                                  X_star = X.bstar,
+                                  np = np,
+                                  npstar = npstar,
+                                  logpar = TRUE))
+      attempts <- attempts + 1
+    }
+    if (attempts == 10) {
+      stop("Too many initializations!")
+    }
     time <- proc.time()[1] - starttime
   }
 

@@ -48,6 +48,8 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
                     MoreArgs = list(logpar = logpar)))
   # Help for optim
   if (abs(val) == Inf) {
+    print(val)
+    stop(val)
     val <- -1e10
   }
 

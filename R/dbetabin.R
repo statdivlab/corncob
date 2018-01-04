@@ -48,9 +48,10 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   }
   a1     <- a2 * (k - 1)
 
-  val <- sum(mapply(dbetabin_i,
-                    a1 = a1, a2 = a2, W = W, M = M,
-                    MoreArgs = list(logpar = logpar)))
+  # val <- sum(mapply(dbetabin_i,
+  #                   a1 = a1, a2 = a2, W = W, M = M,
+  #                   MoreArgs = list(logpar = logpar)))
+  val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
 
   return(-val)
 }

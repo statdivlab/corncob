@@ -19,7 +19,7 @@ bbdml <- function(formula, phi.formula, data,
                   phi.link = "fishZ",
                   phi.init = NULL,
                   method = "BFGS",
-                  control = list(maxit = 1000, reltol = 1e-14, factr = 1e3),
+                  control = list(maxit = 1000, reltol = 1e-14),
                   numerical = FALSE,
                   ...) {
   if (numerical) {

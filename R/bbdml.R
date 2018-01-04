@@ -85,7 +85,7 @@ bbdml <- function(formula, phi.formula, data,
     #lower <- c(rep(logit(.0001), np), rep(fishZ(0), npstar))
     #upper <- c(rep(logit(.99), np), rep(fishZ(100/(max(M) - 1)), npstar))
     starttime <- proc.time()[1]
-    mlout <- try(optimr::optimr(par = theta.init,
+    mlout <- optimr::optimr(par = theta.init,
                             fn = dbetabin,
                             gr = gr_full,
                             method = method,
@@ -96,13 +96,13 @@ bbdml <- function(formula, phi.formula, data,
                             X_star = X.bstar,
                             np = np,
                             npstar = npstar,
-                            logpar = TRUE))
+                            logpar = TRUE)
     theta.orig <- theta.init
     attempts <- 1
     while (mlout$convergence != 0 && attempts < 20) {
       # try going smaller
       theta.init <- theta.init * .95
-      mlout <- try(optimr::optimr(par = theta.init,
+      mlout <- optimr::optimr(par = theta.init,
                                   fn = dbetabin,
                                   gr = gr_full,
                                   method = method,
@@ -113,7 +113,7 @@ bbdml <- function(formula, phi.formula, data,
                                   X_star = X.bstar,
                                   np = np,
                                   npstar = npstar,
-                                  logpar = TRUE))
+                                  logpar = TRUE)
       attempts <- attempts + 1
     }
     if (attempts == 20) {
@@ -122,7 +122,7 @@ bbdml <- function(formula, phi.formula, data,
       theta.init <- theta.orig
       while (mlout$convergence != 0 && attempts < 20) {
         theta.init <- theta.init * 1.05
-        mlout <- try(optimr::optimr(par = theta.init,
+        mlout <- optimr::optimr(par = theta.init,
                                     fn = dbetabin,
                                     gr = gr_full,
                                     method = method,
@@ -133,7 +133,7 @@ bbdml <- function(formula, phi.formula, data,
                                     X_star = X.bstar,
                                     np = np,
                                     npstar = npstar,
-                                    logpar = TRUE))
+                                    logpar = TRUE)
         attempts <- attempts + 1
       }
       if (attempts == 20) {

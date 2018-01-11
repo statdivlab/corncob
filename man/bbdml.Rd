@@ -5,8 +5,8 @@
 \title{Maximum Likelihood for the Beta-binomial Distribution}
 \usage{
 bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
-  phi.init = NULL, method = "L-BFGS-B", control = list(maxit = 1000,
-  reltol = 1e-14, factr = 1000), numerical = FALSE, ...)
+  phi.init = NULL, method = "BFGS", control = list(maxit = 1000, reltol =
+  1e-14), numerical = FALSE, ...)
 }
 \arguments{
 \item{formula}{Formula for mean}

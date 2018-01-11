@@ -63,8 +63,7 @@ bbdml <- function(formula, phi.formula, data,
   init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
   # Mu initialization
   #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
-  # suppressWarnings because don't care about (rare) perfect separation
-  mu.init.mod <- suppressWarnings(stats::glm.fit(x = X.b, y = resp, family = init.glm))
+  mu.init.mod <- stats::glm.fit(x = X.b, y = resp, family = init.glm)
   if (is.null(phi.init)) {
     z <- 0.1
     # Takes scale, applies inverse to z

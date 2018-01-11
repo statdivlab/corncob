@@ -45,7 +45,7 @@ gr_betast <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   if (sum(a2) == Inf || any(a2 < 0)) {
     # no overdispersion, density below has no b_star
     #val <- sum(dbinom(W, M, (k - 1)/k, log = TRUE))
-    return(0)
+    return(rep(0, npstar))
   }
   coth_st <- coth(X_star %*% b_star) - 1
   if (!logpar) {

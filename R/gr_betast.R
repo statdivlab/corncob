@@ -41,15 +41,28 @@ gr_betast <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   b_star <- utils::tail(theta, npstar)
   k      <- c(exp(X %*% b) + 1)
   k_star <- c(exp(2 * (X_star %*% b_star)) - 1)
-
+  a2     <- 2 / (k * k_star)
+  if (sum(a2) == Inf || any(a2 < 0)) {
+    # no overdispersion, density below has no b_star
+    #val <- sum(dbinom(W, M, (k - 1)/k, log = TRUE))
+    return(0)
+  }
   coth_st <- coth(X_star %*% b_star) - 1
   if (!logpar) {
     stop("Use log.")
   }
-  outNoX <- mapply(gr_betast_i,
-                   k = k, k_star = k_star, W = W, M = M,
-                   coth_st = coth_st,
-                   SIMPLIFY = TRUE)
+  dg1 <- -digamma(M - W + (coth_st)/(k))
+  dg2 <- -digamma((W + (k - 1)*(W + coth_st))/(k))
+  dg3 <- digamma(((k - 1)*coth_st)/(k))
+  dg4 <- digamma(M + coth_st)
+  dg5 <- digamma(coth_st)
+  dg6 <- digamma((coth_st)/(k))
+  # dg7 <- digamma(M + coth_st) # This is dg4 again
+  outNoX <- (4/(k*k_star*k_star)) * (k_star + 1) * (dg1 + (k - 1)*(dg2 + dg3 + dg4) - k*dg5 + dg6 + dg4)
+  # outNoX <- mapply(gr_betast_i,
+  #                  k = k, k_star = k_star, W = W, M = M,
+  #                  coth_st = coth_st,
+  #                  SIMPLIFY = TRUE)
 
   return(-c(crossprod(outNoX, X_star)))
 }

@@ -43,10 +43,15 @@ gr_beta <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   if (!logpar) {
     stop("Use log.")
   }
-  outNoX <- mapply(gr_beta_i,
-                   k = k, k_star = k_star, W = W, M = M,
-                   coth_st = coth_st,
-                   SIMPLIFY = TRUE)
+  # outNoX <- mapply(gr_beta_i,
+  #                  k = k, k_star = k_star, W = W, M = M,
+  #                  coth_st = coth_st,
+  #                  SIMPLIFY = TRUE)
+  dg1 <- -digamma(M - W + coth_st/(k))
+  dg2 <- digamma((W + (k - 1)*(W + coth_st))/(k))
+  dg3 <- digamma((coth_st)/(k))
+  dg4 <- -digamma(((k - 1)*coth_st)/(k))
+  outNoX <- ( (1/(k^2)) * (k - 1) * coth_st * (dg1 + dg2 + dg3 + dg4))
   # Will be n-vector, want out np vector
   # Should be np gradients, one for each beta
   # X is n by np, need colsums after multiplying by row. Cross product

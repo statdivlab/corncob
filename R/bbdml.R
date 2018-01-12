@@ -80,10 +80,12 @@ bbdml <- function(formula, phi.formula, data,
 
   # Get full initializations
   if (np > 1) {
-    mu.init <- c(mu.init, rep(-10, np - 1))
+    #mu.init <- c(mu.init, rep(-10, np - 1))
+    mu.init <- rep(mu.init, np)
   }
   if (npstar > 1) {
-    phi.init <- c(phi.init, rep(0, npstar - 1))
+    #phi.init <- c(phi.init, rep(0, npstar - 1))
+    phi.init <- rep(phi.init, npstar)
   }
   theta.init <- c(mu.init, phi.init)
 

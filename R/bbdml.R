@@ -72,7 +72,7 @@ bbdml <- function(formula, phi.formula, data,
   z <- .1
   mu.init <- switch(link, "logit" = invlogit(z))
   if (is.null(phi.init)) {
-    z <- 1 / (M - 1)
+    z <- .05
     # Takes scale, applies inverse to z
     phi.init <- switch(phi.link, "fishZ" = invfishZ(z))
   }

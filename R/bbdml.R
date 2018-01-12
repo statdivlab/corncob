@@ -65,7 +65,7 @@ bbdml <- function(formula, phi.formula, data,
 
 
   # Get link for mu initialization
-  #init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
+  init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
   # Mu initialization
   #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
   mu.init.mod <- stats::glm.fit(x = X.b, y = resp, family = init.glm)

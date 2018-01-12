@@ -68,9 +68,9 @@ bbdml <- function(formula, phi.formula, data,
   #init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
   # Mu initialization
   #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
-  #mu.init.mod <- stats::glm.fit(x = X.b, y = resp, family = init.glm)
-  z <- .1
-  mu.init <- switch(link, "logit" = invlogit(z))
+  mu.init.mod <- stats::glm.fit(x = X.b, y = resp, family = init.glm)
+  # z <- .1
+  # mu.init <- switch(link, "logit" = invlogit(z))
   if (is.null(phi.init)) {
     z <- .05
     # Takes scale, applies inverse to z
@@ -78,17 +78,17 @@ bbdml <- function(formula, phi.formula, data,
   }
 
 
-  # Get full initializations
-  if (np > 1) {
-    #mu.init <- c(mu.init, rep(-10, np - 1))
-    mu.init <- rep(mu.init, np)
-  }
+  # # Get full initializations
+  # if (np > 1) {
+  #   #mu.init <- c(mu.init, rep(-10, np - 1))
+  #   mu.init <- rep(mu.init, np)
+  # }
   if (npstar > 1) {
     #phi.init <- c(phi.init, rep(0, npstar - 1))
     phi.init <- rep(phi.init, npstar)
   }
-  theta.init <- c(mu.init, phi.init)
-
+  #theta.init <- c(mu.init, phi.init)
+  theta.init <- c(stats::coef(mu.init.mod),phi.init)
 
 
   if (method == "BFGS") {

@@ -58,26 +58,34 @@ bbdml <- function(formula, phi.formula, data,
   npstar <- ncol(X.bstar)
   nppar <- np + npstar
 
-
-  # Get link for mu initialization
-  init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
-  # Mu initialization
-  #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
-  mu.init.mod <- stats::glm.fit(x = X.b, y = resp, family = init.glm)
-  if (is.null(phi.init)) {
-    z <- 0.1
-    # Takes scale, applies inverse to z
-    phi.init <- switch(phi.link, "fishZ" = invfishZ(z))
-  }
-
   # Counts
   W <- resp[, 1]
   # Sample Size
   M <- rowSums(resp)
 
+
+  # Get link for mu initialization
+  #init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
+  # Mu initialization
+  #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
+  #mu.init.mod <- stats::glm.fit(x = X.b, y = resp, family = init.glm)
+  z <- .1
+  mu.init <- switch(link, "logit" = invlogit(z))
+  if (is.null(phi.init)) {
+    z <- 1 / (M - 1)
+    # Takes scale, applies inverse to z
+    phi.init <- switch(phi.link, "fishZ" = invfishZ(z))
+  }
+
+
   # Get full initializations
-  phi.init <- rep(phi.init, npstar)
-  theta.init <- c(stats::coef(mu.init.mod), phi.init)
+  if (np > 1) {
+    mu.init <- c(mu.init, rep(-10, np - 1))
+  }
+  if (npstar > 1) {
+    phi.init <- c(phi.init, rep(0, npstar - 1))
+  }
+  theta.init <- c(mu.init, phi.init)
 
 
 

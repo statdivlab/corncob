@@ -9,7 +9,7 @@
 #'
 #' @importFrom stats simulate
 #' @export
-simulate.bbdml <- function(object, nsim, seed, ...) {
+simulate.bbdml <- function(object, nsim, seed = NULL, ...) {
   if (!is.null(seed)) {set.seed(seed)}
   return(VGAM::rbetabinom(n = nsim, size = object$M, prob = object$mu.resp, rho = object$phi.resp))
 }

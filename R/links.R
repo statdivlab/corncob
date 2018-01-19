@@ -26,7 +26,8 @@ logit <- function(x) {
 #'
 #' @export
 fishZ <- function(x) {
-  return(0.5 * log((1 + x)/(1 - x)))
+  #return(0.5 * log((1 + x)/(1 - x)))
+  return(atanh(x))
 }
 
 #' Inverse logit transformation
@@ -56,7 +57,8 @@ invlogit <- function(x) {
 #'
 #' @export
 invfishZ <- function(x) {
-  return((exp(2 * x) - 1)/(1 + exp(2 * x)))
+  #return((exp(2 * x) - 1)/(1 + exp(2 * x)))
+  return(tanh(x))
 }
 
 #' Hyperbolic cotangent transformation

@@ -165,9 +165,12 @@ bbdml <- function(formula, phi.formula, data,
   b      <- utils::head(theta, np)
   b_star <- utils::tail(theta, npstar)
 
-  b.resp <- switch(link, "logit" = invlogit(b))
-  b_star.resp <- switch(phi.link, "fishZ" = invfishZ(b_star))
-  theta.resp <- c(b.resp,b_star.resp)
+  mu.link <- X.b %*% b
+  phi.link <- X.phi %*% b_star
+  mu.resp <- switch(link, "logit" = invlogit(mu.link))
+  phi.resp <- switch(phi.link, "fishZ" = invfishZ(phi.link))
+
+  theta.resp <- c(mu.resp,phi.resp)
   names(theta.resp) <- names(theta)
 
   # other results
@@ -186,7 +189,7 @@ bbdml <- function(formula, phi.formula, data,
       X.mu = X.b, X.phi = X.bstar,
       resp = resp,
       param = theta, b.mu = b, b.phi = b_star,
-      param.response = theta.resp, b.mu.resp = b.resp, b.phi.resp = b_star.resp,
+      param.response = theta.resp, mu.resp = mu.resp, phi.resp = phi.resp,
       np.total = nppar, np.mu = np, np.phi = npstar,
       df.model = df.model, df.residual = df.residual,
       logL = logL,

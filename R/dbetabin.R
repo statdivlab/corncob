@@ -41,11 +41,17 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   k      <- c(exp(X %*% b) + 1)
   k_star <- c(exp(2 * (X_star %*% b_star)) - 1)
   a2     <- 2 / (k * k_star)
-  if (sum(a2) == Inf || any(a2 < 0)) {
+  #if (sum(a2) == Inf || any(a2 < 0)) {
+  if (sum(a2) == Inf) {
     # no overdispersion
     val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
     return(-val)
   }
+  if (any(a2 < 0)) {
+    # want bad value just for optim, large positive for minimization
+    return(1e9)
+  }
+
   a1     <- a2 * (k - 1)
 
   # val <- sum(mapply(dbetabin_i,

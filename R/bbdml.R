@@ -165,10 +165,10 @@ bbdml <- function(formula, phi.formula, data,
   b      <- utils::head(theta, np)
   b_star <- utils::tail(theta, npstar)
 
-  mu.link <- X.b %*% b
-  phi.link <- X.bstar %*% b_star
-  mu.resp <- switch(link, "logit" = invlogit(mu.link))
-  phi.resp <- switch(phi.link, "fishZ" = invfishZ(phi.link))
+  mu.withlink <- X.b %*% b
+  phi.withlink <- X.bstar %*% b_star
+  mu.resp <- switch(link, "logit" = invlogit(mu.withlink))
+  phi.resp <- switch(phi.link, "fishZ" = invfishZ(phi.withlink))
 
   theta.resp <- c(mu.resp,phi.resp)
   names(theta.resp) <- names(theta)

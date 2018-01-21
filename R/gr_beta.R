@@ -40,6 +40,19 @@ gr_beta <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   k_star <- c(exp(2 * (X_star %*% b_star)) - 1)
 
   coth_st <- coth(X_star %*% b_star) - 1
+
+  if (any(k_star == 0) || any(coth_st == 0)) {
+    # no overdispersion, density below has no b_star
+    #val <- sum(dbinom(W, M, (k - 1)/k, log = TRUE))
+    out <- numDeriv::grad(func = dbetabin, x = theta,
+                          W = W, M = M,
+                          X = X,
+                          X_star = X_star,
+                          np = np,
+                          npstar = npstar,
+                          logpar = logpar)
+    return(utils::head(out, np))
+  }
   if (!logpar) {
     stop("Use log.")
   }
@@ -51,7 +64,7 @@ gr_beta <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   dg2 <- digamma((W + (k - 1)*(W + coth_st))/(k))
   dg3 <- digamma((coth_st)/(k))
   dg4 <- -digamma(((k - 1)*coth_st)/(k))
-  outNoX <- ( (1/(k^2)) * (k - 1) * coth_st * (dg1 + dg2 + dg3 + dg4))
+  outNoX <- ((1/(k^2)) * (k - 1) * coth_st * (dg1 + dg2 + dg3 + dg4))
   # Will be n-vector, want out np vector
   # Should be np gradients, one for each beta
   # X is n by np, need colsums after multiplying by row. Cross product

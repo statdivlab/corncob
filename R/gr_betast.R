@@ -42,12 +42,25 @@ gr_betast <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   k      <- c(exp(X %*% b) + 1)
   k_star <- c(exp(2 * (X_star %*% b_star)) - 1)
   a2     <- 2 / (k * k_star)
-  if (sum(a2) == Inf || any(a2 < 0)) {
+  if (any(k_star == 0) || any(a2 < 0)) {
     # no overdispersion, density below has no b_star
     #val <- sum(dbinom(W, M, (k - 1)/k, log = TRUE))
     return(rep(0, npstar))
   }
   coth_st <- coth(X_star %*% b_star) - 1
+  if (any(coth_st == 0)) {
+    # no overdispersion, density below has no b_star
+    #val <- sum(dbinom(W, M, (k - 1)/k, log = TRUE))
+    out <- numDeriv::grad(func = dbetabin, x = theta,
+                          W = W, M = M,
+                          X = X,
+                          X_star = X_star,
+                          np = np,
+                          npstar = npstar,
+                          logpar = logpar)
+    return(utils::tail(out, npstar))
+  }
+
   if (!logpar) {
     stop("Use log.")
   }

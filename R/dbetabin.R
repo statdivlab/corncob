@@ -43,7 +43,7 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
   a2     <- 2 / (k * k_star)
   #if (sum(a2) == Inf || any(a2 < 0)) {
   #if (sum(a2) == Inf) {
-  if (any(k_star) == 0) {
+  if (any(k_star == 0)) {
     # no overdispersion
     val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
     return(-val)

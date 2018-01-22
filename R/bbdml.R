@@ -77,7 +77,7 @@ bbdml <- function(formula, phi.formula, data,
   mu.init <- stats::coef(init.mod)
   # fix for numerical stability
   if (any(invlogit(mu.init) == 0)) {
-    mu.init[invlogit(mu.init) == 0] <- 1/mean(M)
+    mu.init[invlogit(mu.init) == 0] <- logit(1/mean(M))
   }
   # z <- .1
   # mu.init <- switch(link, "logit" = invlogit(z))

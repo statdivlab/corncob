@@ -65,18 +65,20 @@ bbdml <- function(formula, phi.formula, data,
 
 
   # Get link for mu initialization
-  init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
+  init.glm <- eval(parse(text = paste("quasibinomial(link =", link,")")))
   # Mu initialization
   #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
-  mu.init.mod <- stats::glm.fit(x = X.b, y = resp, family = init.glm)
+  # Add fake counts no just for stable initializations
+  fakeresp <- resp
+  zhold <- which(fakeresp[,1] == 0)
+  fakeresp[zhold, 1] <- 1
+  fakeresp[zhold, 2] <- fakeresp[zhold, 2] - 1
+  init.mod <- stats::glm.fit(x = X.b, y = fakeresp, family = init.glm)
+  mu.init <- stats::coef(init.mod)
   # z <- .1
   # mu.init <- switch(link, "logit" = invlogit(z))
-  if (is.null(phi.init)) {
-    z <- .05
-    # Takes scale, applies inverse to z
-    phi.init <- switch(phi.link, "fishZ" = invfishZ(z))
-  }
-
+  # won't mess with links because should be close to 0
+  phi.init <- 1/(M - 1)
 
   # # Get full initializations
   # if (np > 1) {
@@ -85,10 +87,10 @@ bbdml <- function(formula, phi.formula, data,
   # }
   if (npstar > 1) {
     #phi.init <- c(phi.init, rep(0, npstar - 1))
-    phi.init <- rep(phi.init, npstar)
+    phi.init <- c(phi.init, rep(0, npstar - 1))
   }
   #theta.init <- c(mu.init, phi.init)
-  theta.init <- c(stats::coef(mu.init.mod),phi.init)
+  theta.init <- c(mu.init, phi.init)
 
 
   if (method == "BFGS") {

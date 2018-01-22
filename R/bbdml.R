@@ -65,7 +65,7 @@ bbdml <- function(formula, phi.formula, data,
 
 
   # Get link for mu initialization
-  init.glm <- eval(parse(text = paste("quasibinomial(link =", link,")")))
+  init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
   # Mu initialization
   #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
   # Add fake counts no just for stable initializations
@@ -75,6 +75,10 @@ bbdml <- function(formula, phi.formula, data,
   fakeresp[zhold, 2] <- fakeresp[zhold, 2] - 1
   init.mod <- stats::glm.fit(x = X.b, y = fakeresp, family = init.glm)
   mu.init <- stats::coef(init.mod)
+  # fix for numerical stability
+  if (any(invlogit(mu.init) == 0)) {
+    mu.init[invlogit(mu.init) == 0] <- 1/mean(M)
+  }
   # z <- .1
   # mu.init <- switch(link, "logit" = invlogit(z))
   # won't mess with links because should be close to 0

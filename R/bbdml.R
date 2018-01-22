@@ -79,6 +79,9 @@ bbdml <- function(formula, phi.formula, data,
   if (any(invlogit(mu.init) == 0)) {
     mu.init[invlogit(mu.init) == 0] <- logit(1/mean(M))
   }
+  if (any(invlogit(mu.init) == 1)) {
+    mu.init[invlogit(mu.init) == 1] <- logit(1 - 1/mean(M))
+  }
   # z <- .1
   # mu.init <- switch(link, "logit" = invlogit(z))
   # won't mess with links because should be close to 0

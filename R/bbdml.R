@@ -78,7 +78,7 @@ bbdml <- function(formula, phi.formula, data,
   # z <- .1
   # mu.init <- switch(link, "logit" = invlogit(z))
   # won't mess with links because should be close to 0
-  phi.init <- 1/(M - 1)
+  phi.init <- 1/(mean(M) - 1)
 
   # # Get full initializations
   # if (np > 1) {

@@ -171,7 +171,7 @@ bbdml <- function(formula, phi.formula, data,
   phi.resp <- switch(phi.link, "fishZ" = invfishZ(phi.withlink))
 
   theta.resp <- c(mu.resp,phi.resp)
-  names(theta.resp) <- names(theta)
+  #names(theta.resp) <- names(theta)
 
   # other results
   # if fixpar is not null, df.model is lower than nbpar

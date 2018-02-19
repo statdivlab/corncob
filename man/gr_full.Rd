@@ -2,18 +2,36 @@
 % Please edit documentation in R/gr_full.R
 \name{gr_full}
 \alias{gr_full}
-\title{Full gradient}
+\title{Parameter Gradient Vector}
 \usage{
-gr_full(...)
+gr_full(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar = TRUE)
 }
 \arguments{
-\item{...}{See \code{\link{gr_beta}} or \code{\link{gr_betast}}}
+\item{theta}{parameters}
+
+\item{W}{absolute abundance}
+
+\item{M}{sample size}
+
+\item{X}{mean covariates}
+
+\item{X_star}{overdispersion covariates}
+
+\item{np}{number of mean parameters}
+
+\item{npstar}{number of overdisperion parameters}
+
+\item{link}{Link function for mean, defaults to "logit"}
+
+\item{phi.link}{Link function for overdispersion, defaults to "fishZ"}
+
+\item{logpar}{Indicator of log-likelihood, defaults to TRUE}
 }
 \value{
-Gradient of likelihood with respect to all parameters, as vector
+Gradient of likelihood with respect to parameters
 }
 \description{
-Full gradient
+Parameter Gradient Vector
 }
 \examples{
 \dontrun{

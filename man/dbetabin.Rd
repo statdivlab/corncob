@@ -4,7 +4,7 @@
 \alias{dbetabin}
 \title{Betabinomial density}
 \usage{
-dbetabin(theta, W, M, X, X_star, np, npstar, logpar = TRUE)
+dbetabin(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar = TRUE)
 }
 \arguments{
 \item{theta}{parameters}
@@ -20,6 +20,10 @@ dbetabin(theta, W, M, X, X_star, np, npstar, logpar = TRUE)
 \item{np}{number of mean parameters}
 
 \item{npstar}{number of overdisperion parameters}
+
+\item{link}{Link function for mean, defaults to "logit"}
+
+\item{phi.link}{Link function for overdispersion, defaults to "fishZ"}
 
 \item{logpar}{Indicator of log-likelihood, defaults to TRUE}
 }

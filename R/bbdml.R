@@ -115,6 +115,8 @@ bbdml <- function(formula, phi.formula, data,
                             X_star = X.bstar,
                             np = np,
                             npstar = npstar,
+                            link = link,
+                            phi.link = phi.link,
                             logpar = TRUE)
     theta.orig <- theta.init
     attempts <- 1
@@ -132,6 +134,8 @@ bbdml <- function(formula, phi.formula, data,
                                   X_star = X.bstar,
                                   np = np,
                                   npstar = npstar,
+                                  link = link,
+                                  phi.link = phi.link,
                                   logpar = TRUE)
       attempts <- attempts + 1
     }
@@ -152,6 +156,8 @@ bbdml <- function(formula, phi.formula, data,
                                     X_star = X.bstar,
                                     np = np,
                                     npstar = npstar,
+                                    link = link,
+                                    phi.link = phi.link,
                                     logpar = TRUE)
         attempts <- attempts + 1
       }

@@ -19,6 +19,8 @@ dbetabin_i <- function(a1, a2, W, M, logpar = TRUE) {
 #' @param X_star overdispersion covariates
 #' @param np number of mean parameters
 #' @param npstar number of overdisperion parameters
+#' @param link Link function for mean, defaults to "logit"
+#' @param phi.link Link function for overdispersion, defaults to "fishZ"
 #' @param logpar Indicator of log-likelihood, defaults to TRUE
 #'
 #' @return Beta-binomial log-likelihood
@@ -29,7 +31,7 @@ dbetabin_i <- function(a1, a2, W, M, logpar = TRUE) {
 #' }
 #'
 #' @export
-dbetabin <- function(theta, W, M, X, X_star, np, npstar, logpar = TRUE) {
+dbetabin <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar = TRUE) {
 
   # extract matrix of betas (np x 1), first np entries
   b <- utils::head(theta, np)

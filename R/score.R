@@ -47,7 +47,7 @@ score <- function(mod, numerical = FALSE) {
 
   # Add in covariates
   g_b <- c(crossprod(tmp_b, X))
-  g_bstar <- c(crossprod(tmp_bstar, X_star))
+  g_bstar <- c(crossprod(tmp_bstar, W))
 
   return(c(g_b, g_bstar))
 }

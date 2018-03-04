@@ -4,12 +4,14 @@
 \alias{score}
 \title{Compute score}
 \usage{
-score(mod, numerical = FALSE)
+score(mod, numerical = FALSE, forHess = FALSE)
 }
 \arguments{
 \item{mod}{model fit from bbdml}
 
 \item{numerical}{Boolean numerical score. Not as stable. Defaults to FALSE}
+
+\item{forHess}{Boolean for whether to use to approximate Hessian. Defaults to FALSE.}
 }
 \value{
 Analytic score

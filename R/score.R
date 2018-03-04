@@ -2,6 +2,7 @@
 #'
 #' @param mod model fit from bbdml
 #' @param numerical Boolean numerical score. Not as stable. Defaults to FALSE
+#' @param forHess Boolean for whether to use to approximate Hessian. Defaults to FALSE.
 #'
 #' @return Analytic score
 #'
@@ -11,7 +12,7 @@
 #' }
 #'
 #' @export
-score <- function(mod, numerical = FALSE) {
+score <- function(mod, numerical = FALSE, forHess = FALSE) {
   mu <- mod$mu.resp
   phi <- mod$phi.resp
   gam <- phi/(1 - phi)
@@ -42,8 +43,26 @@ score <- function(mod, numerical = FALSE) {
   dldgam <- (-dg5 + dg6 + (mu - 1) * (dg1 - dg2) + mu * (dg3 - dg4))/(gam^2)
 
   # NOTE: Below depends on link functions! Right now for logit and fishZ
+  # n by p
   tmp_b <- mu * (1 - mu) * dldmu
   tmp_bstar <- (gam + 0.5) * dldgam
+
+  # Keep in terms of subject-specific score, useful for sandwich
+  if (forHess) {
+    V <- matrix(0, nrow = npx + npw, ncol = npx + npw)
+    nu <- rep(0, npx + npw)
+    # sample size
+    n <- length(N)
+    for (i in 1:n) {
+      x <- X[i,]
+      b <- tmp_b[i,]
+      w <- W[i,]
+      bst <- tmp_bstar[i,]
+      nu <- c(x * b, w * bst)
+      V <- V + tcrossprod(nu)
+    }
+    return(V)
+  }
 
   # Add in covariates
   g_b <- c(crossprod(tmp_b, X))

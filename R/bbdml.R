@@ -9,6 +9,8 @@
 #' @param method Method for optimization (see \code{\link{optimr}})
 #' @param control Optimization control parameters (see \code{\link{optimr}})
 #' @param numerical Indicator to use numerical derivative, useful for testing
+#' @param nstart Number of starts for optimization, defaults to 10
+#' @param max.start.time Maximum amount of time to select each start in seconds, defaults to .2
 #' @param ... Additional arguments for \code{\link{optimr}}
 #'
 #' @return BBD Model fit
@@ -21,6 +23,8 @@ bbdml <- function(formula, phi.formula, data,
                   method = "BFGS",
                   control = list(maxit = 1000, reltol = 1e-14),
                   numerical = FALSE,
+                  nstart = 10,
+                  max.start.time = 0.2,
                   ...) {
   if (numerical) {
     control$usenumDeriv <- TRUE
@@ -62,44 +66,54 @@ bbdml <- function(formula, phi.formula, data,
   W <- resp[, 1]
   # Sample Size
   M <- rowSums(resp)
+#### COMMENTED BELOW FOR NEW INIT
+#
+#   # Get link for mu initialization
+#   init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
+#   # Mu initialization
+#   #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
+#   # Add fake counts no just for stable initializations
+#   fakeresp <- resp
+#   zhold <- which(fakeresp[,1] == 0)
+#   fakeresp[zhold, 1] <- 1
+#   fakeresp[zhold, 2] <- fakeresp[zhold, 2] - 1
+#   init.mod <- stats::glm.fit(x = X.b, y = fakeresp, family = init.glm)
+#   mu.init <- stats::coef(init.mod)
+#   # fix for numerical stability
+#   if (any(invlogit(mu.init) == 0)) {
+#     mu.init[invlogit(mu.init) == 0] <- logit(1/mean(M))
+#   }
+#   if (any(invlogit(mu.init) == 1)) {
+#     mu.init[invlogit(mu.init) == 1] <- logit(1 - 1/mean(M))
+#   }
+#   # z <- .1
+#   # mu.init <- switch(link, "logit" = invlogit(z))
+#   # won't mess with links because should be close to 0
+#   phi.init <- 1/(mean(M) - 1)
+#
+#   # # Get full initializations
+#   # if (np > 1) {
+#   #   #mu.init <- c(mu.init, rep(-10, np - 1))
+#   #   mu.init <- rep(mu.init, np)
+#   # }
+#   if (npstar > 1) {
+#     #phi.init <- c(phi.init, rep(0, npstar - 1))
+#     phi.init <- c(phi.init, rep(0, npstar - 1))
+#   }
+#   #theta.init <- c(mu.init, phi.init)
+#   theta.init <- c(mu.init, phi.init)
+  inits <- genInits(nstart = nstart, max.start.time = max.start.time,
+                    W = W,
+                    M = M,
+                    X = X.b,
+                    X_star = X.bstar,
+                    np = np,
+                    npstar = npstar,
+                    link = link,
+                    phi.link = phi.link,
+                    logpar = TRUE)
 
-
-  # Get link for mu initialization
-  init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
-  # Mu initialization
-  #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
-  # Add fake counts no just for stable initializations
-  fakeresp <- resp
-  zhold <- which(fakeresp[,1] == 0)
-  fakeresp[zhold, 1] <- 1
-  fakeresp[zhold, 2] <- fakeresp[zhold, 2] - 1
-  init.mod <- stats::glm.fit(x = X.b, y = fakeresp, family = init.glm)
-  mu.init <- stats::coef(init.mod)
-  # fix for numerical stability
-  if (any(invlogit(mu.init) == 0)) {
-    mu.init[invlogit(mu.init) == 0] <- logit(1/mean(M))
-  }
-  if (any(invlogit(mu.init) == 1)) {
-    mu.init[invlogit(mu.init) == 1] <- logit(1 - 1/mean(M))
-  }
-  # z <- .1
-  # mu.init <- switch(link, "logit" = invlogit(z))
-  # won't mess with links because should be close to 0
-  phi.init <- 1/(mean(M) - 1)
-
-  # # Get full initializations
-  # if (np > 1) {
-  #   #mu.init <- c(mu.init, rep(-10, np - 1))
-  #   mu.init <- rep(mu.init, np)
-  # }
-  if (npstar > 1) {
-    #phi.init <- c(phi.init, rep(0, npstar - 1))
-    phi.init <- c(phi.init, rep(0, npstar - 1))
-  }
-  #theta.init <- c(mu.init, phi.init)
-  theta.init <- c(mu.init, phi.init)
-
-
+  theta.init <- inits[1,]
   if (method == "BFGS") {
     #lower <- c(rep(logit(.0001), np), rep(fishZ(0), npstar))
     #upper <- c(rep(logit(.99), np), rep(fishZ(100/(max(M) - 1)), npstar))
@@ -167,8 +181,90 @@ bbdml <- function(formula, phi.formula, data,
     }
     time <- proc.time()[1] - starttime
   }
+  # Save the best model
+  bestOut <- mlout
+
+  for (i in 2:nstart) {
+    ### BEGIN FOR
+    theta.init <- inits[i,]
+    if (method == "BFGS") {
+      #lower <- c(rep(logit(.0001), np), rep(fishZ(0), npstar))
+      #upper <- c(rep(logit(.99), np), rep(fishZ(100/(max(M) - 1)), npstar))
+      starttime <- proc.time()[1]
+      mlout <- optimr::optimr(par = theta.init,
+                              fn = dbetabin,
+                              gr = gr_full,
+                              method = method,
+                              control = control,
+                              W = W,
+                              M = M,
+                              X = X.b,
+                              X_star = X.bstar,
+                              np = np,
+                              npstar = npstar,
+                              link = link,
+                              phi.link = phi.link,
+                              logpar = TRUE)
+      theta.orig <- theta.init
+      attempts <- 1
+      while (mlout$convergence != 0 && attempts < 20) {
+        # try going smaller
+        theta.init <- theta.init * .95
+        mlout <- optimr::optimr(par = theta.init,
+                                fn = dbetabin,
+                                gr = gr_full,
+                                method = method,
+                                control = control,
+                                W = W,
+                                M = M,
+                                X = X.b,
+                                X_star = X.bstar,
+                                np = np,
+                                npstar = npstar,
+                                link = link,
+                                phi.link = phi.link,
+                                logpar = TRUE)
+        attempts <- attempts + 1
+      }
+      if (attempts == 20) {
+        # reset try going bigger
+        attempts <- 1
+        theta.init <- theta.orig
+        while (mlout$convergence != 0 && attempts < 20) {
+          theta.init <- theta.init * 1.05
+          mlout <- optimr::optimr(par = theta.init,
+                                  fn = dbetabin,
+                                  gr = gr_full,
+                                  method = method,
+                                  control = control,
+                                  W = W,
+                                  M = M,
+                                  X = X.b,
+                                  X_star = X.bstar,
+                                  np = np,
+                                  npstar = npstar,
+                                  link = link,
+                                  phi.link = phi.link,
+                                  logpar = TRUE)
+          attempts <- attempts + 1
+        }
+        if (attempts == 20) {
+          stop("Too many initializations!")
+        }
+      }
+      time <- proc.time()[1] - starttime
+    }
+    # if the model is improved
+    if (mlout$value < bestOut$value) {
+      bestOut <- mlout
+    }
+
+    ### END FOR - inits
+  }
 
 
+  # change back for name
+  mlout <- bestOut
   ## Results
 
 

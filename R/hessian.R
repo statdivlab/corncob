@@ -15,8 +15,8 @@ hessian <- function(mod, numerical = FALSE) {
   mu <- mod$mu.resp
   phi <- mod$phi.resp
   gam <- phi/(1 - phi)
-  N <- mod$dat$Wi
-  M <- mod$dat$Ni
+  N <- mod$W
+  M <- mod$M
   X <- mod$X.mu
   W <- mod$X.phi
 

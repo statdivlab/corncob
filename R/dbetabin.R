@@ -54,7 +54,7 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar 
   #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
   #   return(-val)
   # }
-  if (any(a2 < 0)) {
+  if (any(a2 <= 0)) {
     # want bad value just for optim, large positive for minimization
     return(1e9)
   }
@@ -114,7 +114,6 @@ dbetabin_pos <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, log
   #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
   #   return(-val)
   # }
-  # test
   if (any(a2 <= 0)) {
     # want bad value just for optim, large positive for minimization
     return(1e9)

@@ -45,26 +45,42 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar 
 
   gam <- phi/(1 - phi)
 
-  a1 <- mu/gam
-  a2 <- (1 - mu)/gam
-  #if (sum(a2) == Inf || any(a2 < 0)) {
-  #if (sum(a2) == Inf) {
-  # if (any(k_star == 0)) {
-  #   # no overdispersion
-  #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
-  #   return(-val)
-  # }
-  if (any(a2 <= 0)) {
-    # want bad value just for optim, large positive for minimization
-    return(1e9)
+  bbdgen <- function(m, w, mu, gam) {
+    val1 <- lchoose(m, w)
+    val2 <- val3 <- val4 <- 0
+    for(i in 0:(m - 1)) {
+      if (i <= (w - 1)) {
+        val2 <- val2 + log(mu + gam*i)
+      }
+      if (i <= (m - w - 1)) {
+        val3 <- val3 + log(1 - mu + gam*i)
+      }
+      val4 <- val4 + log(1 + gam*i)
+    }
+    return(val1 + val2 + val3 - val4)
   }
+  val <- sum(mapply(bbdgen, m = M, w = W, mu = mu, gam = gam))
 
-  #a1     <- a2 * (k - 1)
-
-  # val <- sum(mapply(dbetabin_i,
-  #                   a1 = a1, a2 = a2, W = W, M = M,
-  #                   MoreArgs = list(logpar = logpar)))
-  val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
+  # a1 <- mu/gam
+  # a2 <- (1 - mu)/gam
+  # #if (sum(a2) == Inf || any(a2 < 0)) {
+  # #if (sum(a2) == Inf) {
+  # # if (any(k_star == 0)) {
+  # #   # no overdispersion
+  # #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
+  # #   return(-val)
+  # # }
+  # if (any(a2 <= 0)) {
+  #   # want bad value just for optim, large positive for minimization
+  #   return(1e9)
+  # }
+  #
+  # #a1     <- a2 * (k - 1)
+  #
+  # # val <- sum(mapply(dbetabin_i,
+  # #                   a1 = a1, a2 = a2, W = W, M = M,
+  # #                   MoreArgs = list(logpar = logpar)))
+  # val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
 
   return(-val)
 }
@@ -105,26 +121,44 @@ dbetabin_pos <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, log
 
   gam <- phi/(1 - phi)
 
-  a1 <- mu/gam
-  a2 <- (1 - mu)/gam
-  #if (sum(a2) == Inf || any(a2 < 0)) {
-  #if (sum(a2) == Inf) {
-  # if (any(k_star == 0)) {
-  #   # no overdispersion
-  #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
-  #   return(-val)
-  # }
-  if (any(a2 <= 0)) {
-    # want bad value just for optim, large positive for minimization
-    return(1e9)
+
+  bbdgen <- function(m, w, mu, gam) {
+    val1 <- lchoose(m, w)
+    val2 <- val3 <- val4 <- 0
+    for (i in 0:(m - 1)) {
+      if (i <= (w - 1)) {
+        val2 <- val2 + log(mu + gam*i)
+      }
+      if (i <= (m - w - 1)) {
+        val3 <- val3 + log(1 - mu + gam*i)
+      }
+      val4 <- val4 + log(1 + gam*i)
+    }
+    return(val1 + val2 + val3 - val4)
   }
+  val <- sum(mapply(bbdgen, m = M, w = W, mu = mu, gam = gam))
 
-  #a1     <- a2 * (k - 1)
-
-  # val <- sum(mapply(dbetabin_i,
-  #                   a1 = a1, a2 = a2, W = W, M = M,
-  #                   MoreArgs = list(logpar = logpar)))
-  val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
+  #
+  # a1 <- mu/gam
+  # a2 <- (1 - mu)/gam
+  # #if (sum(a2) == Inf || any(a2 < 0)) {
+  # #if (sum(a2) == Inf) {
+  # # if (any(k_star == 0)) {
+  # #   # no overdispersion
+  # #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
+  # #   return(-val)
+  # # }
+  # if (any(a2 <= 0)) {
+  #   # want bad value just for optim, large positive for minimization
+  #   return(1e9)
+  # }
+  #
+  # #a1     <- a2 * (k - 1)
+  #
+  # # val <- sum(mapply(dbetabin_i,
+  # #                   a1 = a1, a2 = a2, W = W, M = M,
+  # #                   MoreArgs = list(logpar = logpar)))
+  # val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
 
   return(val)
 }

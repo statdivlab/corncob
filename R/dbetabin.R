@@ -46,7 +46,7 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar 
   gam <- phi/(1 - phi)
   lims <- pmax(-mu/(M-1),-(1-mu)/(M-1))
   if (any(gam < lims)) {
-    return(Inf)
+    return(1e9)
   }
 
   bbdgen <- function(m, w, mu, gam) {

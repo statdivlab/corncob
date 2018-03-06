@@ -44,6 +44,10 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar 
   phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink))
 
   gam <- phi/(1 - phi)
+  lims <- pmax(-mu/(M-1),-(1-mu)/(M-1))
+  if (any(gam < lims)) {
+    return(Inf)
+  }
 
   bbdgen <- function(m, w, mu, gam) {
     val1 <- lchoose(m, w)
@@ -120,7 +124,10 @@ dbetabin_pos <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, log
   phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink))
 
   gam <- phi/(1 - phi)
-
+  lims <- pmax(-mu/(M-1),-(1-mu)/(M-1))
+  if (any(gam < lims)) {
+    return(-Inf)
+  }
 
   bbdgen <- function(m, w, mu, gam) {
     val1 <- lchoose(m, w)

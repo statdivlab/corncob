@@ -5,7 +5,7 @@
 \title{Maximum Likelihood for the Beta-binomial Distribution}
 \usage{
 bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
-  phi.init = NULL, method = "BFGS", control = list(maxit = 1000, reltol =
+  phi.init = NULL, method = "trust", control = list(maxit = 1000, reltol =
   1e-14), numerical = FALSE, nstart = 10, max.start.time = 0.2, ...)
 }
 \arguments{

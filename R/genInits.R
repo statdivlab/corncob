@@ -28,7 +28,7 @@ genInits <- function(nstart, max.start.time,
                      link, phi.link, logpar,
                      lower = NULL, upper = NULL) {
 
-  ll_init <- function(theta, ...) {
+  ll_init <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
     # extract matrix of betas (np x 1), first np entries
     b      <- utils::head(theta, np)
     # extract matrix of beta stars (npstar x 1), last npstar entries
@@ -63,7 +63,7 @@ genInits <- function(nstart, max.start.time,
   inits <- matrix(NA, nrow = nstart, ncol = np + npstar)
   for (i in 1:nstart) {
     inits[i,] <- GenSA::GenSA(fn = ll_init, lower = lower, upper = upper, W = W, M = M, X = X, X_star = X_star, np = np,
-                         npstar = npstar, link = link, phi.link = phi.link, logpar = logpar, control = list(max.time = max.start.time))$par
+                         npstar = npstar, link = link, phi.link = phi.link, control = list(max.time = max.start.time))$par
   }
 
 

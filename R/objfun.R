@@ -119,7 +119,7 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
     H <- H + term1 + term2 + term3 - term4 - term5
   }
 
-  hessian <- -H
+  hessian <- H
 
   return(list(value = value, gradient = gradient, hessian = hessian))
 

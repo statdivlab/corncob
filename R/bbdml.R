@@ -299,7 +299,7 @@ bbdml <- function(formula, phi.formula, data,
         curtime <- proc.time()[1] - starttime
 
         # if the model is improved
-        if (mlout$argument < bestOut$argument) {
+        if (mlout$value < bestOut$value) {
           bestOut <- mlout
           time <- curtime
         }

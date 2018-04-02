@@ -102,7 +102,7 @@ bbdml <- function(formula, phi.formula, data,
 #   }
 #   #theta.init <- c(mu.init, phi.init)
 #   theta.init <- c(mu.init, phi.init)
-  inits <- genInits(nstart = nstart, max.start.time = max.start.time,
+  inits <- suppressWarnings(genInits(nstart = nstart, max.start.time = max.start.time,
                     W = W,
                     M = M,
                     X = X.b,
@@ -111,7 +111,7 @@ bbdml <- function(formula, phi.formula, data,
                     npstar = npstar,
                     link = link,
                     phi.link = phi.link,
-                    logpar = TRUE)
+                    logpar = TRUE))
 
   theta.init <- inits[1,]
   if (method == "BFGS") {

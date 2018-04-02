@@ -182,6 +182,12 @@ bbdml <- function(formula, phi.formula, data,
     curtime <- proc.time()[1] - starttime
   }
   if (method == "trust") {
+    if (!exists(rinit)) {
+      rinit <- 1
+    }
+    if (!exists(rmax)) {
+      rmax <- 100
+    }
     starttime <- proc.time()[1]
     mlout <- trust::trust(objfun, parinit = theta.init,
                           W = W,
@@ -191,7 +197,9 @@ bbdml <- function(formula, phi.formula, data,
                           np = np,
                           npstar = npstar,
                           link = link,
-                          phi.link = phi.link)
+                          phi.link = phi.link,
+                          rinit = rinit,
+                          rmax = rmax)
     curtime <- proc.time()[1] - starttime
   }
   # Save the best model
@@ -285,7 +293,9 @@ bbdml <- function(formula, phi.formula, data,
                               np = np,
                               npstar = npstar,
                               link = link,
-                              phi.link = phi.link)
+                              phi.link = phi.link,
+                              rinit = rinit,
+                              rmax = rmax)
         curtime <- proc.time()[1] - starttime
 
         # if the model is improved

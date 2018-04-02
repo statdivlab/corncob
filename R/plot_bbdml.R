@@ -19,6 +19,9 @@ plot.bbdml <- function(x, ...) {
   phi_est <- mod$phi.resp
   M <- mod$M
   W <- mod$W
+
+  # Fix for global bindings warnings
+  E_RA <- SE_RA <- index <- NULL
   if (RA) {
     df_RA <- data.frame(RA = W/M,
                         E_RA = mu_est,

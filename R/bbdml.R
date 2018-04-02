@@ -33,11 +33,11 @@ bbdml <- function(formula, phi.formula, data,
   # Record call
   call <- match.call(expand.dots = FALSE)
   # Record mu link
-  link <- match.arg(link)
+  link <- match.arg(link, choices = "logit")
   # Record phi link
-  phi.link <- match.arg(phi.link)
+  phi.link <- match.arg(phi.link, choices = "fishZ")
   # Record Method
-  method <- match.arg(method)
+  method <- match.arg(method, choices = c("BFGS", "trust"))
 
   mu.f <- formula
   phi.f <- phi.formula

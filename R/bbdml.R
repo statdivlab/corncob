@@ -179,37 +179,20 @@ bbdml <- function(formula, phi.formula, data,
         stop("Too many initializations!")
       }
     }
-    time <- proc.time()[1] - starttime
+    curtime <- proc.time()[1] - starttime
   }
   # Save the best model
   bestOut <- mlout
+  time <- curtime
 
-  for (i in 2:nstart) {
-    ### BEGIN FOR
-    theta.init <- inits[i,]
-    if (method == "BFGS") {
-      #lower <- c(rep(logit(.0001), np), rep(fishZ(0), npstar))
-      #upper <- c(rep(logit(.99), np), rep(fishZ(100/(max(M) - 1)), npstar))
-      starttime <- proc.time()[1]
-      mlout <- optimr::optimr(par = theta.init,
-                              fn = dbetabin,
-                              gr = gr_full,
-                              method = method,
-                              control = control,
-                              W = W,
-                              M = M,
-                              X = X.b,
-                              X_star = X.bstar,
-                              np = np,
-                              npstar = npstar,
-                              link = link,
-                              phi.link = phi.link,
-                              logpar = TRUE)
-      theta.orig <- theta.init
-      attempts <- 1
-      while (mlout$convergence != 0 && attempts < 20) {
-        # try going smaller
-        theta.init <- theta.init * .95
+  if (nstart >= 2) {
+    for (i in 2:nstart) {
+      ### BEGIN FOR
+      theta.init <- inits[i,]
+      if (method == "BFGS") {
+        #lower <- c(rep(logit(.0001), np), rep(fishZ(0), npstar))
+        #upper <- c(rep(logit(.99), np), rep(fishZ(100/(max(M) - 1)), npstar))
+        starttime <- proc.time()[1]
         mlout <- optimr::optimr(par = theta.init,
                                 fn = dbetabin,
                                 gr = gr_full,
@@ -224,14 +207,11 @@ bbdml <- function(formula, phi.formula, data,
                                 link = link,
                                 phi.link = phi.link,
                                 logpar = TRUE)
-        attempts <- attempts + 1
-      }
-      if (attempts == 20) {
-        # reset try going bigger
+        theta.orig <- theta.init
         attempts <- 1
-        theta.init <- theta.orig
         while (mlout$convergence != 0 && attempts < 20) {
-          theta.init <- theta.init * 1.05
+          # try going smaller
+          theta.init <- theta.init * .95
           mlout <- optimr::optimr(par = theta.init,
                                   fn = dbetabin,
                                   gr = gr_full,
@@ -249,18 +229,43 @@ bbdml <- function(formula, phi.formula, data,
           attempts <- attempts + 1
         }
         if (attempts == 20) {
-          stop("Too many initializations!")
+          # reset try going bigger
+          attempts <- 1
+          theta.init <- theta.orig
+          while (mlout$convergence != 0 && attempts < 20) {
+            theta.init <- theta.init * 1.05
+            mlout <- optimr::optimr(par = theta.init,
+                                    fn = dbetabin,
+                                    gr = gr_full,
+                                    method = method,
+                                    control = control,
+                                    W = W,
+                                    M = M,
+                                    X = X.b,
+                                    X_star = X.bstar,
+                                    np = np,
+                                    npstar = npstar,
+                                    link = link,
+                                    phi.link = phi.link,
+                                    logpar = TRUE)
+            attempts <- attempts + 1
+          }
+          if (attempts == 20) {
+            stop("Too many initializations!")
+          }
         }
+        curtime <- proc.time()[1] - starttime
       }
-      time <- proc.time()[1] - starttime
-    }
-    # if the model is improved
-    if (mlout$value < bestOut$value) {
-      bestOut <- mlout
-    }
+      # if the model is improved
+      if (mlout$value < bestOut$value) {
+        bestOut <- mlout
+        time <- curtime
+      }
 
-    ### END FOR - inits
+      ### END FOR - inits
+    }
   }
+
 
 
   # change back for name

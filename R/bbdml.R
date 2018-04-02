@@ -20,7 +20,7 @@ bbdml <- function(formula, phi.formula, data,
                   link = "logit",
                   phi.link = "fishZ",
                   phi.init = NULL,
-                  method = "BFGS",
+                  method = "trust",
                   control = list(maxit = 1000, reltol = 1e-14),
                   numerical = FALSE,
                   nstart = 10,
@@ -181,6 +181,19 @@ bbdml <- function(formula, phi.formula, data,
     }
     curtime <- proc.time()[1] - starttime
   }
+  if (method == "trust") {
+    starttime <- proc.time()[1]
+    mlout <- trust::trust(objfun, parinit = theta.init,
+                          W = W,
+                          M = M,
+                          X = X.b,
+                          X_star = X.bstar,
+                          np = np,
+                          npstar = npstar,
+                          link = link,
+                          phi.link = phi.link)
+    curtime <- proc.time()[1] - starttime
+  }
   # Save the best model
   bestOut <- mlout
   time <- curtime
@@ -255,12 +268,33 @@ bbdml <- function(formula, phi.formula, data,
           }
         }
         curtime <- proc.time()[1] - starttime
+
+        # if the model is improved
+        if (mlout$value < bestOut$value) {
+          bestOut <- mlout
+          time <- curtime
+        }
       }
-      # if the model is improved
-      if (mlout$value < bestOut$value) {
-        bestOut <- mlout
-        time <- curtime
+      if (method == "trust") {
+        starttime <- proc.time()[1]
+        mlout <- trust::trust(objfun, parinit = theta.init,
+                              W = W,
+                              M = M,
+                              X = X.b,
+                              X_star = X.bstar,
+                              np = np,
+                              npstar = npstar,
+                              link = link,
+                              phi.link = phi.link)
+        curtime <- proc.time()[1] - starttime
+
+        # if the model is improved
+        if (mlout$argument < bestOut$argument) {
+          bestOut <- mlout
+          time <- curtime
+        }
       }
+
 
       ### END FOR - inits
     }
@@ -270,10 +304,23 @@ bbdml <- function(formula, phi.formula, data,
 
   # change back for name
   mlout <- bestOut
+
+  if (method == "BFGS") {
+    theta <- mlout$par
+    logL <- -mlout$value
+    iterations <- mlout$counts
+    code <- mlout$convergence
+  }
+  if (method == "trust") {
+    theta <- mlout$argument
+    logL <- -mlout$value
+    iterations <- mlout$iterations
+    code <- mlout$converged
+  }
   ## Results
 
 
-  theta <- mlout$par
+
   namb <- colnames(X.b)
   namphi <- paste("phi", colnames(X.bstar), sep = ".")
   names(theta) <- c(namb, namphi)
@@ -292,10 +339,9 @@ bbdml <- function(formula, phi.formula, data,
   # other results
   # if fixpar is not null, df.model is lower than nbpar
   df.model <- length(theta)
-  logL <- -mlout$value
+
   df.residual <- length(M) - df.model
-  iterations <- mlout$counts
-  code <- mlout$convergence
+
   msg <- if (!is.null(mlout$message)) mlout$message else character(0)
 
   structure(

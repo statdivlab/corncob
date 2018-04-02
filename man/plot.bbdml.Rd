@@ -4,12 +4,12 @@
 \alias{plot.bbdml}
 \title{Plotting function (in beta)}
 \usage{
-\method{plot}{bbdml}(mod, RA = FALSE)
+\method{plot}{bbdml}(x, ...)
 }
 \arguments{
-\item{mod}{Output from \code{\link{bbdml}}}
+\item{x}{Output from \code{\link{bbdml}}}
 
-\item{RA}{Boolean indicator for whether to plot on relative abundance scale. Defaults to FALSE.}
+\item{...}{Optional boolean indicator called RA for whether to plot on relative abundance scale. Defaults to FALSE.}
 }
 \value{
 Model plot

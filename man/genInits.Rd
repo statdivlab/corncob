@@ -4,9 +4,8 @@
 \alias{genInits}
 \title{Generate initialization for optimization}
 \usage{
-genInits(nstart, max.start.time, W = W, M = M, X = X.b,
-  X_star = X.bstar, np = np, npstar = npstar, link = link,
-  phi.link = phi.link, logpar, lower = NULL, upper = NULL)
+genInits(nstart, max.start.time, W, M, X, X_star, np, npstar, link, phi.link,
+  logpar, lower = NULL, upper = NULL)
 }
 \arguments{
 \item{nstart}{Number of starts for optimization}

@@ -37,8 +37,8 @@ genInits <- function(nstart, max.start.time,
 
   inits <- matrix(NA, nrow = nstart, ncol = np + npstar)
   for (i in 1:nstart) {
-    inits[i,] <- invisible(GenSA::GenSA(fn = dbetabin, lower = lower, upper = upper, W = W, M = M, X = X, X_star = X_star, np = np,
-                         npstar = npstar, link = link, phi.link = phi.link, control = list(max.time = max.start.time)))$par
+    inits[i,] <- try(GenSA::GenSA(fn = dbetabin, lower = lower, upper = upper, W = W, M = M, X = X, X_star = X_star, np = np,
+                         npstar = npstar, link = link, phi.link = phi.link, control = list(max.time = max.start.time)), silent = TRUE)$par
   }
 
 

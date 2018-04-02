@@ -182,10 +182,10 @@ bbdml <- function(formula, phi.formula, data,
     curtime <- proc.time()[1] - starttime
   }
   if (method == "trust") {
-    if (!exists(rinit)) {
+    if (!exists("rinit")) {
       rinit <- 1
     }
-    if (!exists(rmax)) {
+    if (!exists("rmax")) {
       rmax <- 100
     }
     starttime <- proc.time()[1]

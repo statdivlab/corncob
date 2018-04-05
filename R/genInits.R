@@ -1,7 +1,8 @@
 #' Generate initialization for optimization
 #'
 #' @param nstart Number of starts for optimization
-#' @param max.start.time Maximum amount of time to select each start in seconds
+#' @param max.call TODO
+#' @param temperature TODO
 #' @param W absolute abundance
 #' @param M sample size
 #' @param X mean covariates
@@ -21,7 +22,7 @@
 #' TODO
 #' }
 #' @export
-genInits <- function(nstart, max.start.time,
+genInits <- function(nstart, max.call, temperature,
                      W, M,
                      X, X_star,
                      np, npstar,
@@ -38,7 +39,8 @@ genInits <- function(nstart, max.start.time,
   inits <- matrix(NA, nrow = nstart, ncol = np + npstar)
   for (i in 1:nstart) {
     inits[i,] <- try(GenSA::GenSA(fn = dbetabin, lower = lower, upper = upper, W = W, M = M, X = X, X_star = X_star, np = np,
-                         npstar = npstar, link = link, phi.link = phi.link, control = list(max.time = max.start.time)), silent = TRUE)$par
+                         npstar = npstar, link = link, phi.link = phi.link,
+                         control = list(max.call = max.call, temperature = temperature, smooth = FALSE)), silent = TRUE)$par
   }
 
 

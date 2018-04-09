@@ -4,13 +4,15 @@
 \alias{genInits}
 \title{Generate initialization for optimization}
 \usage{
-genInits(nstart, max.start.time, W, M, X, X_star, np, npstar, link, phi.link,
-  logpar, lower = NULL, upper = NULL)
+genInits(nstart, max.call = NULL, temperature = NULL, W, M, X, X_star, np,
+  npstar, link, phi.link, logpar, lower = NULL, upper = NULL)
 }
 \arguments{
 \item{nstart}{Number of starts for optimization}
 
-\item{max.start.time}{Maximum amount of time to select each start in seconds}
+\item{max.call}{TODO}
+
+\item{temperature}{TODO}
 
 \item{W}{absolute abundance}
 

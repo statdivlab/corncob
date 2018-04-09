@@ -6,7 +6,7 @@
 \usage{
 bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
   phi.init = NULL, method = "trust", control = list(maxit = 1000, reltol =
-  1e-14), numerical = FALSE, nstart = 10, max.start.time = 0.2, ...)
+  1e-14), numerical = FALSE, nstart = 10, ...)
 }
 \arguments{
 \item{formula}{Formula for mean}
@@ -28,8 +28,6 @@ bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
 \item{numerical}{Indicator to use numerical derivative, useful for testing}
 
 \item{nstart}{Number of starts for optimization, defaults to 10}
-
-\item{max.start.time}{Maximum amount of time to select each start in seconds, defaults to .2}
 
 \item{...}{Additional arguments for \code{\link{optimr}}}
 }

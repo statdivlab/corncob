@@ -1,7 +1,8 @@
 #' Generate initialization for optimization
 #'
 #' @param nstart Number of starts for optimization
-#' @param max.start.time Maximum amount of time to select each start in seconds
+#' @param max.call TODO
+#' @param temperature TODO
 #' @param W absolute abundance
 #' @param M sample size
 #' @param X mean covariates
@@ -21,7 +22,7 @@
 #' TODO
 #' }
 #' @export
-genInits <- function(nstart, max.call, temperature,
+genInits <- function(nstart, max.call = NULL, temperature = NULL,
                      W, M,
                      X, X_star,
                      np, npstar,
@@ -33,6 +34,12 @@ genInits <- function(nstart, max.call, temperature,
   }
   if (is.null(upper)) {
     upper <- rep(20, np + npstar)
+  }
+  if (is.null(max.call)) {
+    max.call <- 1000
+  }
+  if (is.null(temperature)) {
+    temperature <- 50000
   }
 
   inits <- matrix(NA, nrow = nstart, ncol = np + npstar)

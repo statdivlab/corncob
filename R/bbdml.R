@@ -10,7 +10,6 @@
 #' @param control Optimization control parameters (see \code{\link{optimr}})
 #' @param numerical Indicator to use numerical derivative, useful for testing
 #' @param nstart Number of starts for optimization, defaults to 10
-#' @param max.start.time Maximum amount of time to select each start in seconds, defaults to .2
 #' @param ... Additional arguments for \code{\link{optimr}}
 #'
 #' @return BBD Model fit
@@ -24,7 +23,6 @@ bbdml <- function(formula, phi.formula, data,
                   control = list(maxit = 1000, reltol = 1e-14),
                   numerical = FALSE,
                   nstart = 10,
-                  max.start.time = 0.2,
                   ...) {
   if (numerical) {
     control$usenumDeriv <- TRUE
@@ -102,7 +100,7 @@ bbdml <- function(formula, phi.formula, data,
 #   }
 #   #theta.init <- c(mu.init, phi.init)
 #   theta.init <- c(mu.init, phi.init)
-  inits <- suppressWarnings(genInits(nstart = nstart, max.start.time = max.start.time,
+  inits <- suppressWarnings(genInits(nstart = nstart,
                     W = W,
                     M = M,
                     X = X.b,

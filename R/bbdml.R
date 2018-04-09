@@ -339,7 +339,7 @@ bbdml <- function(formula, phi.formula, data,
   mu.withlink <- X.b %*% b
   phi.withlink <- X.bstar %*% b_star
   mu.resp <- switch(link, "logit" = invlogit(mu.withlink))
-  phi.resp <- switch(phi.link, "fishZ" = invfishZ(phi.withlink))
+  phi.resp <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
 
   theta.resp <- c(mu.resp,phi.resp)
   #names(theta.resp) <- names(theta)

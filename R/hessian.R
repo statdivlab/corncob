@@ -78,8 +78,8 @@ hessian <- function(mod, numerical = FALSE) {
 
 
 
-    dpdb <- c(dpdb, rep(0, npstar))
-    dgdb <- c(rep(0, np), dgdb)
+    dpdb <- c(dpdb, rep(0, npw))
+    dgdb <- c(rep(0, npx), dgdb)
     # Not generalizable double
     if (link == "logit") {
       dpdb2 <- tcrossprod(x) * m * (1 - m) * (1 - 2 * m)

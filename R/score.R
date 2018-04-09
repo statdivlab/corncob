@@ -44,8 +44,15 @@ score <- function(mod, numerical = FALSE, forHess = FALSE) {
 
   # NOTE: Below depends on link functions! Right now for logit and fishZ
   # n by p
-  tmp_b <- mu * (1 - mu) * dldmu
-  tmp_bstar <- (gam + 0.5) * dldgam
+  if (link == "logit") {
+    tmp_b <- mu * (1 - mu) * dldmu
+  }
+  if (phi.link == "fishZ") {
+    tmp_bstar <- (gam + 0.5) * dldgam
+  } else if (phi.link == "logit") {
+    tmp_bstar <- gam * dldgam
+  }
+
 
   # Keep in terms of subject-specific score, useful for sandwich
   if (forHess) {

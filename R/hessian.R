@@ -19,6 +19,8 @@ hessian <- function(mod, numerical = FALSE) {
   M <- mod$M
   X <- mod$X.mu
   W <- mod$X.phi
+  link <- mod$link
+  phi.link <- mod$phi.link
 
 
   npx <- ncol(X)

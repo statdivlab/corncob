@@ -23,7 +23,7 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
   mu.withlink <- X %*% b
   phi.withlink <- X_star %*% b_star
   mu <- switch(link, "logit" = invlogit(mu.withlink))
-  phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink))
+  phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
 
   if (any(mu < 0) || any(mu > 1)) {
     return(list(value = Inf))
@@ -52,8 +52,16 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
   dldgam <- (-dg5 + dg6 + (mu - 1) * (dg1 - dg2) + mu * (dg3 - dg4))/(gam^2)
 
   # NOTE: Below depends on link functions! Right now for logit and fishZ
-  tmp_b <- mu * (1 - mu) * dldmu
-  tmp_bstar <- (gam + 0.5) * dldgam
+  if (link == "logit") {
+    tmp_b <- mu * (1 - mu) * dldmu
+  }
+  if (phi.link == "fishZ") {
+    tmp_bstar <- (gam + 0.5) * dldgam
+  } else if (phi.link == "logit") {
+    tmp_bstar <- gam * dldgam
+  }
+
+
 
   # Add in covariates
   g_b <- c(crossprod(tmp_b, X))
@@ -99,14 +107,30 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
     dldmdg <- (g*(dg3 - dg4 + dg5 - dg6) + (m - 1)*(tg2 - tg1) + m*(tg3 - tg4))/g^3
 
     # Not generalizeable single dm and dg
-    dpdb <- x * m * (1 - m)
-    dgdb <- w * (g + 0.5)
+    if (link == "logit") {
+      dpdb <- x * m * (1 - m)
+    }
+    if (phi.link == "fishZ") {
+      dgdb <- w * (g + 0.5)
+    } else if (phi.link == "logit") {
+      dgdb <- w * g
+    }
+
+
 
     dpdb <- c(dpdb, rep(0, npstar))
     dgdb <- c(rep(0, np), dgdb)
     # Not generalizable double
-    dpdb2 <- tcrossprod(x) * m * (1 - m) * (1 - 2 * m)
-    dgdb2 <- tcrossprod(w) * (g + 0.5)
+    if (link == "logit") {
+      dpdb2 <- tcrossprod(x) * m * (1 - m) * (1 - 2 * m)
+    }
+    if (phi.link == "fishZ") {
+      dgdb2 <- tcrossprod(w) * (g + 0.5)
+    } else if (phi.link == "logit") {
+      dgdb2 <- tcrossprod(w) * g
+    }
+
+
 
     dpdb2 <- as.matrix(Matrix::bdiag(dpdb2, matrix(0, nrow = npstar, ncol = npstar)))
     dgdb2 <- as.matrix(Matrix::bdiag(matrix(0, nrow = np, ncol = np), dgdb2))

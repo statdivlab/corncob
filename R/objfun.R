@@ -27,7 +27,7 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
 
   if (any(mu < 0) || any(mu > 1)) {
     return(list(value = Inf))
-  } else if (any(phi <= 0) || any(phi == 1)) {
+  } else if (any(phi <= .Machine$double.eps) || any(phi == 1)) {
     return(list(value = Inf))
   } else {
     gam <- phi/(1 - phi)

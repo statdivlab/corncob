@@ -65,14 +65,28 @@ hessian <- function(mod, numerical = FALSE) {
     dldmdg <- (g*(dg3 - dg4 + dg5 - dg6) + (m - 1)*(tg2 - tg1) + m*(tg3 - tg4))/g^3
 
     # Not generalizeable single dm and dg
-    dpdb <- x * m * (1 - m)
-    dgdb <- w * (g + 0.5)
+    if (link == "logit") {
+      dpdb <- x * m * (1 - m)
+    }
+    if (phi.link == "fishZ") {
+      dgdb <- w * (g + 0.5)
+    } else if (phi.link == "logit") {
+      dgdb <- w * g
+    }
 
-    dpdb <- c(dpdb, rep(0, npw))
-    dgdb <- c(rep(0, npx), dgdb)
+
+
+    dpdb <- c(dpdb, rep(0, npstar))
+    dgdb <- c(rep(0, np), dgdb)
     # Not generalizable double
-    dpdb2 <- tcrossprod(x) * m * (1 - m) * (1 - 2 * m)
-    dgdb2 <- tcrossprod(w) * (g + 0.5)
+    if (link == "logit") {
+      dpdb2 <- tcrossprod(x) * m * (1 - m) * (1 - 2 * m)
+    }
+    if (phi.link == "fishZ") {
+      dgdb2 <- tcrossprod(w) * (g + 0.5)
+    } else if (phi.link == "logit") {
+      dgdb2 <- tcrossprod(w) * g
+    }
 
     dpdb2 <- as.matrix(Matrix::bdiag(dpdb2, matrix(0, nrow = npw, ncol = npw)))
     dgdb2 <- as.matrix(Matrix::bdiag(matrix(0, nrow = npx, ncol = npx), dgdb2))

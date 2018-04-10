@@ -54,14 +54,16 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
   dldgam <- (-dg5 + dg6 + (mu - 1) * (dg1 - dg2) + mu * (dg3 - dg4))/(gam^2)
 
   # NOTE: Below depends on link functions! Right now for logit and fishZ
-  if (link == "logit") {
-    tmp_b <- mu * (1 - mu) * dldmu
-  }
-  if (phi.link == "fishZ") {
-    tmp_bstar <- (gam + 0.5) * dldgam
-  } else if (phi.link == "logit") {
-    tmp_bstar <- gam * dldgam
-  }
+  tmp_b <- switch(link, "logit" = mu * (1 - mu) * dldmu)
+  tmp_bstar <- switch(phi.link, "fishZ" = (gam + 0.5) * dldgam, "logit" = gam * dldgam)
+  # if (link == "logit") {
+  #   tmp_b <- mu * (1 - mu) * dldmu
+  # }
+  # if (phi.link == "fishZ") {
+  #   tmp_bstar <- (gam + 0.5) * dldgam
+  # } else if (phi.link == "logit") {
+  #   tmp_bstar <- gam * dldgam
+  # }
 
 
 
@@ -109,28 +111,35 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
     dldmdg <- (g*(dg3 - dg4 + dg5 - dg6) + (m - 1)*(tg2 - tg1) + m*(tg3 - tg4))/g^3
 
     # Not generalizeable single dm and dg
-    if (link == "logit") {
-      dpdb <- x * m * (1 - m)
-    }
-    if (phi.link == "fishZ") {
-      dgdb <- w * (g + 0.5)
-    } else if (phi.link == "logit") {
-      dgdb <- w * g
-    }
+    dpdb <- switch(link, "logit" = c(x, rep(0, npstar)) * m * (1 - m))
+    dgdb <- switch(phi.link, "fishZ" = c(rep(0, np), w) * (g + 0.5),
+                   "logit" = c(rep(0, np), w) * g)
+
+    # if (link == "logit") {
+    #   dpdb <- x * m * (1 - m)
+    # }
+    # if (phi.link == "fishZ") {
+    #   dgdb <- w * (g + 0.5)
+    # } else if (phi.link == "logit") {
+    #   dgdb <- w * g
+    # }
+    # dpdb <- c(dpdb, rep(0, npstar))
+    # dgdb <- c(rep(0, np), dgdb)
 
 
+    dpdb2 <- switch(link, "logit" = tcrossprod(c(x, rep(0, npstar))) * m * (1 - m) * (1 - 2 * m))
+    dgdb2 <- switch(phi.link, "fishZ" = tcrossprod(c(rep(0, np),w)) * (g + 0.5),
+                   "logit" = tcrossprod(c(rep(0, np),w)) * g)
 
-    dpdb <- c(dpdb, rep(0, npstar))
-    dgdb <- c(rep(0, np), dgdb)
     # Not generalizable double
-    if (link == "logit") {
-      dpdb2 <- tcrossprod(c(x, rep(0, npstar))) * m * (1 - m) * (1 - 2 * m)
-    }
-    if (phi.link == "fishZ") {
-      dgdb2 <- tcrossprod(c(rep(0, np),w)) * (g + 0.5)
-    } else if (phi.link == "logit") {
-      dgdb2 <- tcrossprod(c(rep(0, np),w)) * g
-    }
+    # if (link == "logit") {
+    #   dpdb2 <- tcrossprod(c(x, rep(0, npstar))) * m * (1 - m) * (1 - 2 * m)
+    # }
+    # if (phi.link == "fishZ") {
+    #   dgdb2 <- tcrossprod(c(rep(0, np),w)) * (g + 0.5)
+    # } else if (phi.link == "logit") {
+    #   dgdb2 <- tcrossprod(c(rep(0, np),w)) * g
+    # }
 
 
 

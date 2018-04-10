@@ -122,18 +122,18 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
     dgdb <- c(rep(0, np), dgdb)
     # Not generalizable double
     if (link == "logit") {
-      dpdb2 <- tcrossprod(x) * m * (1 - m) * (1 - 2 * m)
+      dpdb2 <- tcrossprod(c(x, rep(0, npstar))) * m * (1 - m) * (1 - 2 * m)
     }
     if (phi.link == "fishZ") {
-      dgdb2 <- tcrossprod(w) * (g + 0.5)
+      dgdb2 <- tcrossprod(c(rep(0, np),w)) * (g + 0.5)
     } else if (phi.link == "logit") {
-      dgdb2 <- tcrossprod(w) * g
+      dgdb2 <- tcrossprod(c(rep(0, np),w)) * g
     }
 
 
 
-    dpdb2 <- as.matrix(Matrix::bdiag(dpdb2, matrix(0, nrow = npstar, ncol = npstar)))
-    dgdb2 <- as.matrix(Matrix::bdiag(matrix(0, nrow = np, ncol = np), dgdb2))
+    # dpdb2 <- as.matrix(Matrix::bdiag(dpdb2, matrix(0, nrow = npstar, ncol = npstar)))
+    # dgdb2 <- as.matrix(Matrix::bdiag(matrix(0, nrow = np, ncol = np), dgdb2))
 
     term1 <- (-dldmu2) * tcrossprod(dpdb)
     term2 <- (-dldmdg) * (tcrossprod(dpdb, dgdb) + tcrossprod(dgdb, dpdb))

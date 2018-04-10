@@ -11,6 +11,8 @@
 #' @param phi.link Link function for overdispersion, defaults to "fishZ"
 #'
 #' @return List of negative log-likelihood, gradient, and hessian
+#'
+#' @export
 objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
 
   ### STEP 1 - Negative Log-likelihood

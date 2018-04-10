@@ -10,6 +10,7 @@
 #' @param control Optimization control parameters (see \code{\link{optimr}})
 #' @param numerical Indicator to use numerical derivative, useful for testing
 #' @param nstart Number of starts for optimization, defaults to 10
+#' @param inits Optional argument to specify initializations, defaults to NULL
 #' @param ... Additional arguments for \code{\link{optimr}}
 #'
 #' @return BBD Model fit
@@ -23,6 +24,7 @@ bbdml <- function(formula, phi.formula, data,
                   control = list(maxit = 1000, reltol = 1e-14),
                   numerical = FALSE,
                   nstart = 10,
+                  inits  = NULL,
                   ...) {
   if (numerical) {
     control$usenumDeriv <- TRUE
@@ -100,16 +102,19 @@ bbdml <- function(formula, phi.formula, data,
 #   }
 #   #theta.init <- c(mu.init, phi.init)
 #   theta.init <- c(mu.init, phi.init)
-  inits <- suppressWarnings(genInits(nstart = nstart,
-                    W = W,
-                    M = M,
-                    X = X.b,
-                    X_star = X.bstar,
-                    np = np,
-                    npstar = npstar,
-                    link = link,
-                    phi.link = phi.link,
-                    logpar = TRUE))
+  if (is.null(inits)) {
+    inits <- suppressWarnings(genInits(nstart = nstart,
+                                       W = W,
+                                       M = M,
+                                       X = X.b,
+                                       X_star = X.bstar,
+                                       np = np,
+                                       npstar = npstar,
+                                       link = link,
+                                       phi.link = phi.link,
+                                       logpar = TRUE))
+  }
+
 
   theta.init <- inits[1,]
   if (method == "BFGS") {
@@ -362,7 +367,7 @@ bbdml <- function(formula, phi.formula, data,
       param.response = theta.resp, mu.resp = mu.resp, phi.resp = phi.resp,
       np.total = nppar, np.mu = np, np.phi = npstar,
       df.model = df.model, df.residual = df.residual,
-      logL = logL,
+      logL = logL, inits = inits,
       iterations = iterations, code = code, msg = msg, time = time),
     class = "bbdml")
 }

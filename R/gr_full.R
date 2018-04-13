@@ -28,7 +28,7 @@ gr_full <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar =
   mu.withlink <- X %*% b
   phi.withlink <- X_star %*% b_star
   mu <- switch(link, "logit" = invlogit(mu.withlink))
-  phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink))
+  phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
 
   gam <- phi/(1 - phi)
 

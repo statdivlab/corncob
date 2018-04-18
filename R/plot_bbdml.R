@@ -11,8 +11,9 @@
 #' }
 #' @export
 plot.bbdml <- function(x, ...) {
-  mod <- x
-  if (!exists("RA")) {
+  input <- match.call(expand.dots = TRUE)
+  mod <- input$x
+  if (!exists(input$RA)) {
     RA <- FALSE
   }
   mu_est <- mod$mu.resp

@@ -12,7 +12,7 @@
 #' @export
 plot.bbdml <- function(x, ...) {
   input <- match.call(expand.dots = TRUE)
-  mod <- input$x
+  mod <- x
   if (is.null(input$RA)) {
     input$RA <- FALSE
   }

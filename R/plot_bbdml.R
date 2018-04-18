@@ -13,9 +13,10 @@
 plot.bbdml <- function(x, ...) {
   input <- match.call(expand.dots = TRUE)
   mod <- input$x
-  if (!exists(input$RA)) {
-    RA <- FALSE
+  if (is.null(input$RA)) {
+    input$RA <- FALSE
   }
+  RA <- input$RA
   mu_est <- mod$mu.resp
   phi_est <- mod$phi.resp
   M <- mod$M

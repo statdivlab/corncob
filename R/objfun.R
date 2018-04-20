@@ -30,6 +30,8 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
   val <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu, rho = phi, log = TRUE)))
   if (is.nan(val)) {
     return(list(value = Inf))
+  } else if (any(phi <= sqrt(.Machine$double.eps)) || any(phi >= 1 - sqrt(.Machine$double.eps))) {
+    return(list(value = Inf))
   }
   value <- -val
 

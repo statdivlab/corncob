@@ -1,15 +1,3 @@
-#' Betabinomial density for a single sample
-#'
-#'
-#' @keywords internal
-#'
-#' @export
-dbetabin_i <- function(a1, a2, W, M, logpar = TRUE) {
-  if (logpar) {
-    return(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
-  }
-}
-
 #' Betabinomial density
 #'
 #' @param theta parameters
@@ -43,28 +31,32 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar 
   mu <- switch(link, "logit" = invlogit(mu.withlink))
   phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
 
-  gam <- phi/(1 - phi)
+  # gam <- phi/(1 - phi)
+  #
+  # a1 <- mu/gam
+  # a2 <- (1 - mu)/gam
+  # #if (sum(a2) == Inf || any(a2 < 0)) {
+  # #if (sum(a2) == Inf) {
+  # # if (any(k_star == 0)) {
+  # #   # no overdispersion
+  # #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
+  # #   return(-val)
+  # # }
+  # # if (any(a2 <= 0)) {
+  # #   # want bad value just for optim, large positive for minimization
+  # #   return(1e9)
+  # # }
+  #
+  # #a1     <- a2 * (k - 1)
+  #
+  # # val <- sum(mapply(dbetabin_i,
+  # #                   a1 = a1, a2 = a2, W = W, M = M,
+  # #                   MoreArgs = list(logpar = logpar)))
+  # val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
 
-  a1 <- mu/gam
-  a2 <- (1 - mu)/gam
-  #if (sum(a2) == Inf || any(a2 < 0)) {
-  #if (sum(a2) == Inf) {
-  # if (any(k_star == 0)) {
-  #   # no overdispersion
-  #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
-  #   return(-val)
-  # }
-  # if (any(a2 <= 0)) {
-  #   # want bad value just for optim, large positive for minimization
-  #   return(1e9)
-  # }
 
-  #a1     <- a2 * (k - 1)
-
-  # val <- sum(mapply(dbetabin_i,
-  #                   a1 = a1, a2 = a2, W = W, M = M,
-  #                   MoreArgs = list(logpar = logpar)))
-  val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
+  # Use full set of checks already implemented in VGAM
+  val <- sum(VGAM::dbetabinom(W, M, prob = mu, rho = phi, log = TRUE))
 
   return(-val)
 }
@@ -103,28 +95,32 @@ dbetabin_pos <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, log
   mu <- switch(link, "logit" = invlogit(mu.withlink))
   phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
 
-  gam <- phi/(1 - phi)
+  # gam <- phi/(1 - phi)
+  #
+  # a1 <- mu/gam
+  # a2 <- (1 - mu)/gam
+  # #if (sum(a2) == Inf || any(a2 < 0)) {
+  # #if (sum(a2) == Inf) {
+  # # if (any(k_star == 0)) {
+  # #   # no overdispersion
+  # #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
+  # #   return(-val)
+  # # }
+  # # if (any(a2 <= 0)) {
+  # #   # want bad value just for optim, large positive for minimization
+  # #   return(1e9)
+  # # }
+  #
+  # #a1     <- a2 * (k - 1)
+  #
+  # # val <- sum(mapply(dbetabin_i,
+  # #                   a1 = a1, a2 = a2, W = W, M = M,
+  # #                   MoreArgs = list(logpar = logpar)))
+  # val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
 
-  a1 <- mu/gam
-  a2 <- (1 - mu)/gam
-  #if (sum(a2) == Inf || any(a2 < 0)) {
-  #if (sum(a2) == Inf) {
-  # if (any(k_star == 0)) {
-  #   # no overdispersion
-  #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
-  #   return(-val)
-  # }
-  # if (any(a2 <= 0)) {
-  #   # want bad value just for optim, large positive for minimization
-  #   return(1e9)
-  # }
 
-  #a1     <- a2 * (k - 1)
-
-  # val <- sum(mapply(dbetabin_i,
-  #                   a1 = a1, a2 = a2, W = W, M = M,
-  #                   MoreArgs = list(logpar = logpar)))
-  val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
+  # Use full set of checks already implemented in VGAM
+  val <- sum(VGAM::dbetabinom(W, M, prob = mu, rho = phi, log = TRUE))
 
   return(val)
 }

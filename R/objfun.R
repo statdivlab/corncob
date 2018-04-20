@@ -27,15 +27,9 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
   mu <- switch(link, "logit" = invlogit(mu.withlink))
   phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
 
-  if (any(mu < 0) || any(mu > 1)) {
+  val <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu, rho = phi, log = TRUE)))
+  if (is.nan(val)) {
     return(list(value = Inf))
-  } else if (any(phi <= sqrt(.Machine$double.eps)) || any(phi >= 1 - sqrt(.Machine$double.eps))) {
-    return(list(value = Inf))
-  } else {
-    gam <- phi/(1 - phi)
-    a1 <- mu/gam
-    a2 <- (1 - mu)/gam
-    val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
   }
   value <- -val
 

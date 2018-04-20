@@ -35,6 +35,9 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
 
   ### STEP 2 - Gradient
 
+  # define gam
+  gam <- phi/(1 - phi)
+
   # Hold digammas
   dg1 <- digamma(M - (mu + W * gam - 1)/gam)
   dg2 <- digamma((1 - mu)/gam)

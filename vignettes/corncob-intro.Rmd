@@ -8,6 +8,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+## Introduction
+
+When studying dysbiosis, the focus is often on identifying differentially abundant taxa. However, microbial imbalance can also affect the stability of taxa. Here, we introduce CORNCOB, an individual taxon regression model that uses abundance tables and sample data. CORNCOB is able to identify differentially abundant taxa and differentially variable taxa. In addition, it is able to compare microbiomes using continuous covariates (not just group assignment covariates). CORNCOB is appropriate for both rare and common taxa, excessive zeros, overdispersion, and inconsistent sequencing depths.
+
 ```{r}
 print(2 + 2)
 ```

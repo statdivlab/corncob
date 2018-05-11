@@ -1,0 +1,16 @@
+---
+title: "Introduction to CORNCOB"
+author: "Bryan D Martin"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to CORNCOB}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+print(2 + 2)
+```
+
+
+Testing vignette.

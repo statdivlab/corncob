@@ -45,8 +45,8 @@ gr_full <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar =
   dldgam <- (-dg5 + dg6 + (mu - 1) * (dg1 - dg2) + mu * (dg3 - dg4))/(gam^2)
 
   # NOTE: Below depends on link functions! Right now for logit and fishZ
-  tmp_b <- mu * (1 - mu) * dldmu
-  tmp_bstar <- (gam + 0.5) * dldgam
+  tmp_b <- switch(link, "logit" = mu * (1 - mu) * dldmu)
+  tmp_bstar <- switch(phi.link, "fishZ" = (gam + 0.5) * dldgam, "logit" = gam * dldgam)
 
   # Add in covariates
   g_b <- c(crossprod(tmp_b, X))

@@ -47,8 +47,43 @@ genInits <- function(nstart, max.call = NULL, temperature = NULL,
     inits[i,] <- try(GenSA::GenSA(fn = dbetabin, lower = lower, upper = upper, W = W, M = M, X = X, X_star = X_star, np = np,
                          npstar = npstar, link = link, phi.link = phi.link,
                          control = list(max.call = max.call, temperature = temperature, smooth = FALSE)), silent = TRUE)$par
-  }
 
+    # Add check, same as in objfun and hessian
+    # extract matrix of betas (np x 1), first np entries
+    b_init      <- utils::head(inits[i,], np)
+    # extract matrix of beta stars (npstar x 1), last npstar entries
+    b_star_init <- utils::tail(inits[i,], npstar)
+
+    mu.withlink_init <- X %*% b_init
+    phi.withlink_init <- X_star %*% b_star_init
+    mu_init <- switch(link, "logit" = invlogit(mu.withlink_init))
+    phi_init <- switch(phi.link, "fishZ" = invfishZ(phi.withlink_init), "logit" = invlogit(phi.withlink_init))
+
+    val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
+    if (is.nan(val_init)) {
+      inits[i,] <- suppressWarnings(genInits(nstart = 1,
+                                             W = W,
+                                             M = M,
+                                             X = X,
+                                             X_star = X_star,
+                                             np = np,
+                                             npstar = npstar,
+                                             link = link,
+                                             phi.link = phi.link,
+                                             logpar = TRUE))
+    } else if (any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
+      inits[i,] <- suppressWarnings(genInits(nstart = 1,
+                                             W = W,
+                                             M = M,
+                                             X = X,
+                                             X_star = X_star,
+                                             np = np,
+                                             npstar = npstar,
+                                             link = link,
+                                             phi.link = phi.link,
+                                             logpar = TRUE))
+  }
+}
 
   return(inits)
 }

@@ -5,7 +5,6 @@
 #' @param data Data frame
 #' @param link Link function for mean, defaults to "logit"
 #' @param phi.link Link function for overdispersion, defaults to "fishZ"
-#' @param phi.init Optional starting value for overdispersion
 #' @param method Method for optimization (see \code{\link{optimr}})
 #' @param control Optimization control parameters (see \code{\link{optimr}})
 #' @param numerical Indicator to use numerical derivative, useful for testing
@@ -19,7 +18,6 @@
 bbdml <- function(formula, phi.formula, data,
                   link = "logit",
                   phi.link = "fishZ",
-                  phi.init = NULL,
                   method = "trust",
                   control = list(maxit = 1000, reltol = 1e-14),
                   numerical = FALSE,
@@ -42,11 +40,6 @@ bbdml <- function(formula, phi.formula, data,
   mu.f <- formula
   phi.f <- phi.formula
 
-  # If want to model overdispersion, remove intercept for treatment contrast
-  # if (phi.f != ~ 1) {
-  #   phi.f <- stats::update.formula(phi.f, ~ . - 1)
-  # }
-
   # Get data frame from formula
   dat <- data
   # response
@@ -66,42 +59,8 @@ bbdml <- function(formula, phi.formula, data,
   W <- resp[, 1]
   # Sample Size
   M <- rowSums(resp)
-#### COMMENTED BELOW FOR NEW INIT
-#
-#   # Get link for mu initialization
-#   init.glm <- eval(parse(text = paste("binomial(link =", link,")")))
-#   # Mu initialization
-#   #mu.init.mod <- stats::glm(formula = mu.f, family = init.glm, data = dat)
-#   # Add fake counts no just for stable initializations
-#   fakeresp <- resp
-#   zhold <- which(fakeresp[,1] == 0)
-#   fakeresp[zhold, 1] <- 1
-#   fakeresp[zhold, 2] <- fakeresp[zhold, 2] - 1
-#   init.mod <- stats::glm.fit(x = X.b, y = fakeresp, family = init.glm)
-#   mu.init <- stats::coef(init.mod)
-#   # fix for numerical stability
-#   if (any(invlogit(mu.init) == 0)) {
-#     mu.init[invlogit(mu.init) == 0] <- logit(1/mean(M))
-#   }
-#   if (any(invlogit(mu.init) == 1)) {
-#     mu.init[invlogit(mu.init) == 1] <- logit(1 - 1/mean(M))
-#   }
-#   # z <- .1
-#   # mu.init <- switch(link, "logit" = invlogit(z))
-#   # won't mess with links because should be close to 0
-#   phi.init <- 1/(mean(M) - 1)
-#
-#   # # Get full initializations
-#   # if (np > 1) {
-#   #   #mu.init <- c(mu.init, rep(-10, np - 1))
-#   #   mu.init <- rep(mu.init, np)
-#   # }
-#   if (npstar > 1) {
-#     #phi.init <- c(phi.init, rep(0, npstar - 1))
-#     phi.init <- c(phi.init, rep(0, npstar - 1))
-#   }
-#   #theta.init <- c(mu.init, phi.init)
-#   theta.init <- c(mu.init, phi.init)
+
+  # Generate inits
   if (is.null(inits)) {
     inits <- suppressWarnings(genInits(nstart = nstart,
                                        W = W,
@@ -113,13 +72,51 @@ bbdml <- function(formula, phi.formula, data,
                                        link = link,
                                        phi.link = phi.link,
                                        logpar = TRUE))
+  } else {
+    # Or test feasibility of given inits. Same check as in objfun
+    for (i in nrow(inits)) {
+      # extract matrix of betas (np x 1), first np entries
+      b_init      <- utils::head(inits[i,], np)
+      # extract matrix of beta stars (npstar x 1), last npstar entries
+      b_star_init <- utils::tail(inits[i,], npstar)
+
+      mu.withlink_init <- X.b %*% b_init
+      phi.withlink_init <- X.bstar %*% b_star_init
+      mu_init <- switch(link, "logit" = invlogit(mu.withlink_init))
+      phi_init <- switch(phi.link, "fishZ" = invfishZ(phi.withlink_init), "logit" = invlogit(phi.withlink_init))
+
+      val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
+      if (is.nan(val_init)) {
+        cat("Initialization",i,"invalid. Automatically generating new initialization. \n")
+        inits[i,] <- suppressWarnings(genInits(nstart = 1,
+                                           W = W,
+                                           M = M,
+                                           X = X.b,
+                                           X_star = X.bstar,
+                                           np = np,
+                                           npstar = npstar,
+                                           link = link,
+                                           phi.link = phi.link,
+                                           logpar = TRUE))
+      } else if (any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
+        cat("Initialization",i,"invalid. Automatically generating new initialization. \n")
+        inits[i,] <- suppressWarnings(genInits(nstart = 1,
+                                               W = W,
+                                               M = M,
+                                               X = X.b,
+                                               X_star = X.bstar,
+                                               np = np,
+                                               npstar = npstar,
+                                               link = link,
+                                               phi.link = phi.link,
+                                               logpar = TRUE))
+      }
+    }
   }
 
 
   theta.init <- inits[1,]
   if (method == "BFGS") {
-    #lower <- c(rep(logit(.0001), np), rep(fishZ(0), npstar))
-    #upper <- c(rep(logit(.99), np), rep(fishZ(100/(max(M) - 1)), npstar))
     starttime <- proc.time()[1]
     mlout <- optimr::optimr(par = theta.init,
                             fn = dbetabin,

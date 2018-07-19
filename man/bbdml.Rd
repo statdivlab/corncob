@@ -5,8 +5,8 @@
 \title{Maximum Likelihood for the Beta-binomial Distribution}
 \usage{
 bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
-  phi.init = NULL, method = "trust", control = list(maxit = 1000, reltol =
-  1e-14), numerical = FALSE, nstart = 10, inits = NULL, ...)
+  method = "trust", control = list(maxit = 1000, reltol = 1e-14),
+  numerical = FALSE, nstart = 10, inits = NULL, ...)
 }
 \arguments{
 \item{formula}{Formula for mean}
@@ -18,8 +18,6 @@ bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
 \item{link}{Link function for mean, defaults to "logit"}
 
 \item{phi.link}{Link function for overdispersion, defaults to "fishZ"}
-
-\item{phi.init}{Optional starting value for overdispersion}
 
 \item{method}{Method for optimization (see \code{\link{optimr}})}
 

@@ -60,9 +60,9 @@ genInits <- function(nstart, max.call = NULL, temperature = NULL,
 
     val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
     if (is.nan(val_init)) {
-      stop("Cannot generate initializations! Consider providing them or switching link function.")
+      stop("Cannot generate initializations! \n\n You are likely overparameterizing phi.formula \n without enough signal in the data. \n\n Consider setting phi.link = \"logit\",\n removing covariates in phi.formula,\n or setting your own initializations.")
     } else if (any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
-      stop("Cannot generate initializations! Consider providing them or switching link function.")
+      stop("Cannot generate initializations! \n\n You are likely overparameterizing phi.formula \n without enough signal in the data. \n\n Consider setting phi.link = \"logit\",\n removing covariates in phi.formula,\n or setting your own initializations.")
   }
 }
 

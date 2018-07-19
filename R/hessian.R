@@ -28,7 +28,7 @@ hessian <- function(mod, numerical = FALSE) {
   H <- matrix(0, nrow = npx + npw, ncol = npx + npw)
 
   if (numerical) {
-    return(numDeriv::hessian(func = dbetabin_pos, x = mod$param, W = N, M = M,
+    return(numDeriv::hessian(func = dbetabin, x = mod$param, W = N, M = M,
                              X = X, X_star = W, np = npx, npstar = npw,
                              link = mod$link, phi.link = mod$phi.link))
   }

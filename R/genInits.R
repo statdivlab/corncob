@@ -28,7 +28,6 @@ genInits <- function(nstart, max.call = NULL, temperature = NULL,
                      np, npstar,
                      link, phi.link, logpar,
                      lower = NULL, upper = NULL) {
-
   if (is.null(lower)) {
     lower <- rep(-20, np + npstar)
   }
@@ -61,27 +60,9 @@ genInits <- function(nstart, max.call = NULL, temperature = NULL,
 
     val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
     if (is.nan(val_init)) {
-      inits[i,] <- suppressWarnings(genInits(nstart = 1,
-                                             W = W,
-                                             M = M,
-                                             X = X,
-                                             X_star = X_star,
-                                             np = np,
-                                             npstar = npstar,
-                                             link = link,
-                                             phi.link = phi.link,
-                                             logpar = TRUE))
+      stop("Cannot generate initializations! Consider providing them or switching link function.")
     } else if (any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
-      inits[i,] <- suppressWarnings(genInits(nstart = 1,
-                                             W = W,
-                                             M = M,
-                                             X = X,
-                                             X_star = X_star,
-                                             np = np,
-                                             npstar = npstar,
-                                             link = link,
-                                             phi.link = phi.link,
-                                             logpar = TRUE))
+      stop("Cannot generate initializations! Consider providing them or switching link function.")
   }
 }
 

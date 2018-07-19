@@ -1,8 +1,8 @@
-Package: CORNCOB
-Title: Compositional Regression Covariates with the Beta-Binomial
+Package: corncob
+Title: Count Regression for Correlated Data with the Beta-Binomial
 Version: 0.1.0
-Authors@R: person("Bryan", "Martin", email = "bmartin6@uw.edu", role = c("aut", "cre"))
-Description: This packages models count data using the beta-binomial distribution. It allows for both mean and overdispersion covariates.
+Authors@R: person("Bryan D", "Martin", email = "bmartin6@uw.edu", role = c("aut", "cre"))
+Description: This packages models correlated count data using the beta-binomial distribution. It allows for both mean and overdispersion covariates.
 Depends: R (>= 3.2)
 License: GPL (>= 2)
 Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, GenSA, ggplot2, trust
@@ -10,5 +10,6 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

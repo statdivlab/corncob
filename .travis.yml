@@ -1,14 +1,9 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-
 language: r
 warnings_are_errors: true
 sudo: false
 cache: packages
-
-
-before_install:
-  - Rscript -e 'install.packages("INLA", repos = c("http://www.math.ntnu.no/inla/R/stable", "http://cran.rstudio.com"))'
 
 env:
   - R_KEEP_PKG_SOURCE=yes

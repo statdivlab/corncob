@@ -18,6 +18,24 @@ out_bfgs_inits_num <- bbdml(formula = cbind(W, M - W) ~ X1,
              numerical = TRUE,
              inits = rbind(c(1,1,1,1), c(2,2,2,2)))
 
+out_trust <- bbdml(formula = cbind(W, M - W) ~ X1,
+                   phi.formula = ~ X1,
+                   data = test_data,
+                   link = "logit",
+                   phi.link = "logit",
+                   method = "trust",
+                   inits = rbind(c(1,1,1,1), c(2,2,2,2)))
+
+out_bad_init <- bbdml(formula = cbind(W, M - W) ~ X1,
+                   phi.formula = ~ X1,
+                   data = test_data,
+                   link = "logit",
+                   phi.link = "logit",
+                   method = "trust",
+                   inits = cbind(1,-1000,1,1000))
+
 test_that("bbdml with BFGS, inits, and numerical works", {
   expect_is(out_bfgs_inits_num, "bbdml")
+  expect_is(out_trust, "bbdml")
+  expect_is(out_bad_init, "bbdml")
 })

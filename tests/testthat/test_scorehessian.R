@@ -16,8 +16,16 @@ out <- bbdml(formula = cbind(W, M - W) ~ X1,
              phi.link = "logit",
              nstart = 1)
 
+out_fish <- bbdml(formula = cbind(W, M - W) ~ X1,
+                  phi.formula = ~ X1,
+                  data = test_data,
+                  link = "logit",
+                  phi.link = "fishZ",
+                  nstart = 1)
+
 test_that("Analytic hessian works", {
   expect_is(hessian(out), "matrix")
+  expect_is(hessian(out_fish), "matrix")
 })
 
 test_that("Numerical hessian works", {
@@ -26,6 +34,7 @@ test_that("Numerical hessian works", {
 
 test_that("Analytic gradient works", {
   expect_is(score(out), "numeric")
+  expect_is(score(out_fish), "numeric")
 })
 
 test_that("Numeric gradient works", {

@@ -16,10 +16,19 @@ out <- bbdml(formula = cbind(W, M - W) ~ X1,
         phi.link = "logit",
         nstart = 1)
 
+out_fish <- bbdml(formula = cbind(W, M - W) ~ X1,
+             phi.formula = ~ X1,
+             data = test_data,
+             link = "logit",
+             phi.link = "fishZ",
+             nstart = 1)
+
 test_that("bbdml is S3", {
   expect_is(out, "bbdml")
+  expect_is(out_fish, "bbdml")
 })
 
 test_that("bbdml S3 plotting works", {
   expect_is(plot(out), "ggplot")
+  expect_is(plot(out_fish), "ggplot")
 })

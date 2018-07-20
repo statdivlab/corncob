@@ -17,5 +17,5 @@ out <- bbdml(formula = cbind(W, M - W) ~ X1,
              nstart = 1)
 
 test_that("Simulation works", {
-  expect_is(simulate(out, nsim = 10), "numeric")
+  expect_is(simulate(out, nsim = 10, seed = 1), "numeric")
 })

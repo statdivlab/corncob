@@ -60,7 +60,7 @@ genInits <- function(nstart, max.call = NULL, temperature = NULL,
 
     val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
     if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
-      stop("Cannot generate initializations! \n\n You are likely overparameterizing phi.formula \n without enough signal in the data. \n\n Consider setting phi.link = \"logit\",\n removing covariates in phi.formula,\n or setting your own initializations.")
+      stop("Cannot generate initializations! \n\n You are likely overparameterizing phi.formula \n without enough signal in the data. \n\n Consider setting phi.link = \"logit\",\n removing covariates in phi.formula,\n or setting your own initializations. \n\n If none of the above works, you probably \n have underdispersion in your data. \n This cannot be modeled with a beta-binomial. \n Consider using a binomial GLM, or use \n a quasibinomial GLM to explicitly \n model underdispersion.")
     }
 }
 

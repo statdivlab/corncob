@@ -1,4 +1,4 @@
-# corncob <img src="docs/logo.png" align="right" width="200px"/>
+# corncob <img src="docs/logo.png" align="right" width="165px"/>
 Count Regression for Correlated Observations with the Beta-binomial
 
 [![Build Status](https://travis-ci.com/bryandmartin/CORNCOB.svg?token=hagzSKvGC96CuJ1a2KZ4&branch=master)](https://travis-ci.com/bryandmartin/CORNCOB)

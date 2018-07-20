@@ -88,7 +88,7 @@ bbdml <- function(formula, phi.formula, data,
 
       val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
       if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
-        cat("Initialization",i,"invalid. Automatically generating new initialization. \n")
+        warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
         inits[i,] <- suppressWarnings(genInits(nstart = 1,
                                            W = W,
                                            M = M,

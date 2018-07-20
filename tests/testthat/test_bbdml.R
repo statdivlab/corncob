@@ -24,7 +24,7 @@ out_trust <- bbdml(formula = cbind(W, M - W) ~ X1,
                    link = "logit",
                    phi.link = "logit",
                    method = "trust",
-                   inits = rbind(c(1,1,1,1), c(2,2,2,2)))
+                   inits = rbind(c(2,2,2,2), c(1,1,1,1)))
 
 out_bad_init <- bbdml(formula = cbind(W, M - W) ~ X1,
                    phi.formula = ~ X1,

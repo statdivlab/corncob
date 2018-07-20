@@ -22,7 +22,7 @@ should_break_val <- objfun(theta = c(1,1,1,1000), W = my_counts, M = seq_depth,
                        phi.link = "logit")
 
 
-test_that("objfun checks phi_hat", {
+test_that("objfun breaks properly", {
   expect_equal(should_break$value, Inf)
   expect_equal(should_break_val$value, Inf)
 })

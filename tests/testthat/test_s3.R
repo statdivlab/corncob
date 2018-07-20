@@ -30,5 +30,5 @@ test_that("bbdml is S3", {
 
 test_that("bbdml S3 plotting works", {
   expect_is(plot(out), "ggplot")
-  expect_is(plot(out_fish), "ggplot")
+  expect_is(plot(out, RA = TRUE), "ggplot")
 })

@@ -87,7 +87,7 @@ bbdml <- function(formula, phi.formula, data,
       phi_init <- switch(phi.link, "fishZ" = invfishZ(phi.withlink_init), "logit" = invlogit(phi.withlink_init))
 
       val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
-      if (is.nan(val_init)) {
+      if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
         cat("Initialization",i,"invalid. Automatically generating new initialization. \n")
         inits[i,] <- suppressWarnings(genInits(nstart = 1,
                                            W = W,
@@ -99,20 +99,8 @@ bbdml <- function(formula, phi.formula, data,
                                            link = link,
                                            phi.link = phi.link,
                                            logpar = TRUE))
-      } else if (any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
-        cat("Initialization",i,"invalid. Automatically generating new initialization. \n")
-        inits[i,] <- suppressWarnings(genInits(nstart = 1,
-                                               W = W,
-                                               M = M,
-                                               X = X.b,
-                                               X_star = X.bstar,
-                                               np = np,
-                                               npstar = npstar,
-                                               link = link,
-                                               phi.link = phi.link,
-                                               logpar = TRUE))
       }
-    }
+    } ### END FOR: checking inits
   }
 
 
@@ -134,52 +122,6 @@ bbdml <- function(formula, phi.formula, data,
                             phi.link = phi.link,
                             logpar = TRUE)
     theta.orig <- theta.init
-    attempts <- 1
-    while (mlout$convergence != 0 && attempts < 20) {
-      # try going smaller
-      theta.init <- theta.init * .95
-      mlout <- optimr::optimr(par = theta.init,
-                                  fn = dbetabin,
-                                  gr = gr_full,
-                                  method = method,
-                                  control = control,
-                                  W = W,
-                                  M = M,
-                                  X = X.b,
-                                  X_star = X.bstar,
-                                  np = np,
-                                  npstar = npstar,
-                                  link = link,
-                                  phi.link = phi.link,
-                                  logpar = TRUE)
-      attempts <- attempts + 1
-    }
-    if (attempts == 20) {
-      # reset try going bigger
-      attempts <- 1
-      theta.init <- theta.orig
-      while (mlout$convergence != 0 && attempts < 20) {
-        theta.init <- theta.init * 1.05
-        mlout <- optimr::optimr(par = theta.init,
-                                    fn = dbetabin,
-                                    gr = gr_full,
-                                    method = method,
-                                    control = control,
-                                    W = W,
-                                    M = M,
-                                    X = X.b,
-                                    X_star = X.bstar,
-                                    np = np,
-                                    npstar = npstar,
-                                    link = link,
-                                    phi.link = phi.link,
-                                    logpar = TRUE)
-        attempts <- attempts + 1
-      }
-      if (attempts == 20) {
-        stop("Too many initializations!")
-      }
-    }
     curtime <- proc.time()[1] - starttime
   }
   if (method == "trust") {
@@ -212,8 +154,6 @@ bbdml <- function(formula, phi.formula, data,
       ### BEGIN FOR
       theta.init <- inits[i,]
       if (method == "BFGS") {
-        #lower <- c(rep(logit(.0001), np), rep(fishZ(0), npstar))
-        #upper <- c(rep(logit(.99), np), rep(fishZ(100/(max(M) - 1)), npstar))
         starttime <- proc.time()[1]
         mlout <- optimr::optimr(par = theta.init,
                                 fn = dbetabin,
@@ -230,52 +170,6 @@ bbdml <- function(formula, phi.formula, data,
                                 phi.link = phi.link,
                                 logpar = TRUE)
         theta.orig <- theta.init
-        attempts <- 1
-        while (mlout$convergence != 0 && attempts < 20) {
-          # try going smaller
-          theta.init <- theta.init * .95
-          mlout <- optimr::optimr(par = theta.init,
-                                  fn = dbetabin,
-                                  gr = gr_full,
-                                  method = method,
-                                  control = control,
-                                  W = W,
-                                  M = M,
-                                  X = X.b,
-                                  X_star = X.bstar,
-                                  np = np,
-                                  npstar = npstar,
-                                  link = link,
-                                  phi.link = phi.link,
-                                  logpar = TRUE)
-          attempts <- attempts + 1
-        }
-        if (attempts == 20) {
-          # reset try going bigger
-          attempts <- 1
-          theta.init <- theta.orig
-          while (mlout$convergence != 0 && attempts < 20) {
-            theta.init <- theta.init * 1.05
-            mlout <- optimr::optimr(par = theta.init,
-                                    fn = dbetabin,
-                                    gr = gr_full,
-                                    method = method,
-                                    control = control,
-                                    W = W,
-                                    M = M,
-                                    X = X.b,
-                                    X_star = X.bstar,
-                                    np = np,
-                                    npstar = npstar,
-                                    link = link,
-                                    phi.link = phi.link,
-                                    logpar = TRUE)
-            attempts <- attempts + 1
-          }
-          if (attempts == 20) {
-            stop("Too many initializations!")
-          }
-        }
         curtime <- proc.time()[1] - starttime
 
         # if the model is improved
@@ -283,7 +177,7 @@ bbdml <- function(formula, phi.formula, data,
           bestOut <- mlout
           time <- curtime
         }
-      }
+      } ### END IF bfgs
       if (method == "trust") {
         starttime <- proc.time()[1]
         mlout <- trust::trust(objfun, parinit = theta.init,
@@ -304,12 +198,9 @@ bbdml <- function(formula, phi.formula, data,
           bestOut <- mlout
           time <- curtime
         }
-      }
-
-
-      ### END FOR - inits
-    }
-  }
+      } ### END IF trust
+    } ### END FOR - inits
+  } ### END IF - nstarts
 
 
 
@@ -345,7 +236,6 @@ bbdml <- function(formula, phi.formula, data,
   phi.resp <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
 
   theta.resp <- c(mu.resp,phi.resp)
-  #names(theta.resp) <- names(theta)
 
   # other results
   # if fixpar is not null, df.model is lower than nbpar

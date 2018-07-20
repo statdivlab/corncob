@@ -8,7 +8,7 @@
 #' @param method Method for optimization (see \code{\link{optimr}})
 #' @param control Optimization control parameters (see \code{\link{optimr}})
 #' @param numerical Indicator to use numerical derivative, useful for testing
-#' @param nstart Number of starts for optimization, defaults to 10
+#' @param nstart Number of starts for optimization, defaults to 1
 #' @param inits Optional argument to specify initializations, defaults to NULL
 #' @param ... Additional arguments for \code{\link{optimr}}
 #'
@@ -21,7 +21,7 @@ bbdml <- function(formula, phi.formula, data,
                   method = "trust",
                   control = list(maxit = 1000, reltol = 1e-14),
                   numerical = FALSE,
-                  nstart = 10,
+                  nstart = 1,
                   inits  = NULL,
                   ...) {
   if (numerical) {
@@ -73,6 +73,7 @@ bbdml <- function(formula, phi.formula, data,
                                        phi.link = phi.link,
                                        logpar = TRUE))
   } else {
+    nstart <- nrow(inits)
     # Or test feasibility of given inits. Same check as in objfun
     for (i in nrow(inits)) {
       # extract matrix of betas (np x 1), first np entries

@@ -6,7 +6,7 @@
 \usage{
 bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
   method = "trust", control = list(maxit = 1000, reltol = 1e-14),
-  numerical = FALSE, nstart = 10, inits = NULL, ...)
+  numerical = FALSE, nstart = 1, inits = NULL, ...)
 }
 \arguments{
 \item{formula}{Formula for mean}
@@ -25,7 +25,7 @@ bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
 
 \item{numerical}{Indicator to use numerical derivative, useful for testing}
 
-\item{nstart}{Number of starts for optimization, defaults to 10}
+\item{nstart}{Number of starts for optimization, defaults to 1}
 
 \item{inits}{Optional argument to specify initializations, defaults to NULL}
 

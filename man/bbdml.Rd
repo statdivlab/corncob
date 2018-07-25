@@ -4,7 +4,7 @@
 \alias{bbdml}
 \title{Maximum Likelihood for the Beta-binomial Distribution}
 \usage{
-bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
+bbdml(formula, phi.formula, data, link = "logit", phi.link = "logit",
   method = "trust", control = list(maxit = 1000, reltol = 1e-14),
   numerical = FALSE, nstart = 1, inits = NULL, ...)
 }
@@ -13,11 +13,11 @@ bbdml(formula, phi.formula, data, link = "logit", phi.link = "fishZ",
 
 \item{phi.formula}{Formula for overdispersion}
 
-\item{data}{Data frame}
+\item{data}{Data frame or \code{phyloseq} object}
 
 \item{link}{Link function for mean, defaults to "logit"}
 
-\item{phi.link}{Link function for overdispersion, defaults to "fishZ"}
+\item{phi.link}{Link function for overdispersion, defaults to "logit"}
 
 \item{method}{Method for optimization (see \code{\link{optimr}})}
 

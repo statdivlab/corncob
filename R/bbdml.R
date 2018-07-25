@@ -2,9 +2,9 @@
 #'
 #' @param formula Formula for mean
 #' @param phi.formula Formula for overdispersion
-#' @param data Data frame
+#' @param data Data frame or \code{phyloseq} object
 #' @param link Link function for mean, defaults to "logit"
-#' @param phi.link Link function for overdispersion, defaults to "fishZ"
+#' @param phi.link Link function for overdispersion, defaults to "logit"
 #' @param method Method for optimization (see \code{\link{optimr}})
 #' @param control Optimization control parameters (see \code{\link{optimr}})
 #' @param numerical Indicator to use numerical derivative, useful for testing
@@ -17,7 +17,7 @@
 #' @export
 bbdml <- function(formula, phi.formula, data,
                   link = "logit",
-                  phi.link = "fishZ",
+                  phi.link = "logit",
                   method = "trust",
                   control = list(maxit = 1000, reltol = 1e-14),
                   numerical = FALSE,
@@ -26,6 +26,14 @@ bbdml <- function(formula, phi.formula, data,
                   ...) {
   if (numerical) {
     control$usenumDeriv <- TRUE
+  }
+
+  # Convert phyloseq objects
+  if ("phyloseq" %in% class(data)) {
+    select <- all.vars(formula)[1]
+    data <- convert_phylo(data, select = select)
+    # Update formula to match convert_phylo specification
+    formula <- stats::update(formula, cbind(W, M) ~ .)
   }
 
   # Record call

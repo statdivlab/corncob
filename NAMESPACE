@@ -3,6 +3,7 @@
 S3method(plot,bbdml)
 S3method(simulate,bbdml)
 export(bbdml)
+export(convert_phylo)
 export(coth)
 export(dbetabin)
 export(dbetabin_pos)

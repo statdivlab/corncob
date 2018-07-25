@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-## Introduction
+# Introduction
 
 This tutorial is intended for STAMPS 2019.
 
@@ -33,3 +33,24 @@ Let's examine a small subset of our data in more detail.
 otu_table(soil_phylo)[1:5, 1:5]
 sample_data(soil_phylo)[1:5, ]
 ```
+
+We now see that we have an OTU abundance table with 7770 OTUs and 119 samples, which we can extract using \texttt{otu_table()}. We also have 5 covariates associated with each sample, which we can extract using \texttt{sample_data()}. 
+
+# Defining a Model
+
+Now, let's set up our model. We will demonstrate with OTU149.
+
+First, let's subset our data to only include samples with the \texttt{DayAmdmt} covariate equal to 11 or 21.
+
+```{r}
+soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
+```
+
+```{r}
+mod <- bbdml(formula = OTU149 ~ DayAmdmt,
+             phi.formula = ~ DayAmdmt,
+             data = soil)
+
+plot(mod, group = "DayAmdmt")
+```
+

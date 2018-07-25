@@ -9,13 +9,16 @@
 \arguments{
 \item{x}{Output from \code{\link{bbdml}}}
 
-\item{...}{Optional boolean indicator called RA for whether to plot on relative abundance scale. Defaults to FALSE.}
+\item{...}{See details}
 }
 \value{
 Model plot
 }
 \description{
 Plotting function (in beta)
+}
+\details{
+... can include boolean indicator called RA for whether to plot on relative abundance scale, which defaults to FALSE. It can also include "group", a string of a covariate in the model data, if you want the plot to be colored by group.
 }
 \examples{
 \dontrun{

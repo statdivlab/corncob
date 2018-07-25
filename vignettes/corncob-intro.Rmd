@@ -1,7 +1,7 @@
 ---
-title: "Introduction to corncob
+title: "Introduction to corncob"
 author: "Bryan D Martin"
-output: rmarkdown::html_vignette
+output: pdf_document
 vignette: >
   %\VignetteIndexEntry{Introduction to corncob}
   %\VignetteEngine{knitr::rmarkdown}
@@ -10,14 +10,26 @@ vignette: >
 
 ## Introduction
 
-When studying dysbiosis, the focus is often on identifying differentially abundant taxa. However, microbial imbalance can also affect the stability of taxa. Here, we introduce \texttt{corncob}, an individual taxon regression model that uses abundance tables and sample data. \texttt{corncob} is able to identify differentially abundant taxa and differentially variable taxa. In addition, it is able to compare microbiomes using continuous covariates (not just group assignment covariates). \texttt{corncob} is appropriate for both rare and common taxa, excessive zeros, overdispersion, and inconsistent sequencing depths.
+This tutorial is intended for STAMPS 2019.
 
+When studying dysbiosis, the focus is often on identifying differentially abundant taxa. However, microbial imbalance can also affect the stability of taxa. Here, we introduce \texttt{corncob}, an individual taxon regression model that uses abundance tables and sample data. \texttt{corncob} is able to model differential abundance and differential variability. \texttt{corncob} is appropriate for both rare and common taxa, excessive zeros, overdispersion, and inconsistent sequencing depths.
 
+To begin, we load an example data set as a \texttt{phyloseq} object.
 
-```{r}
-print(2+2)
+```{r, message = FALSE}
+library(corncob)
+library(phyloseq)
+data(soil_phylo)
 ```
 
+If you are unfamiliar with \texttt{phyloseq}, we can view a description of the data using:
 
+```{r}
+soil_phylo
+```
 
-Testing vignette.
+Let's examine a small subset of our data in more detail.
+```{r}
+otu_table(soil_phylo)[1:5, 1:5]
+sample_data(soil_phylo)[1:5, ]
+```

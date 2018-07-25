@@ -1,20 +1,23 @@
 ---
-title: "Introduction to CORNCOB"
+title: "Introduction to corncob
 author: "Bryan D Martin"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to CORNCOB}
+  %\VignetteIndexEntry{Introduction to corncob}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ## Introduction
 
-When studying dysbiosis, the focus is often on identifying differentially abundant taxa. However, microbial imbalance can also affect the stability of taxa. Here, we introduce CORNCOB, an individual taxon regression model that uses abundance tables and sample data. CORNCOB is able to identify differentially abundant taxa and differentially variable taxa. In addition, it is able to compare microbiomes using continuous covariates (not just group assignment covariates). CORNCOB is appropriate for both rare and common taxa, excessive zeros, overdispersion, and inconsistent sequencing depths.
+When studying dysbiosis, the focus is often on identifying differentially abundant taxa. However, microbial imbalance can also affect the stability of taxa. Here, we introduce \texttt{corncob}, an individual taxon regression model that uses abundance tables and sample data. \texttt{corncob} is able to identify differentially abundant taxa and differentially variable taxa. In addition, it is able to compare microbiomes using continuous covariates (not just group assignment covariates). \texttt{corncob} is appropriate for both rare and common taxa, excessive zeros, overdispersion, and inconsistent sequencing depths.
+
+
 
 ```{r}
-print(2 + 2)
+print(2+2)
 ```
+
 
 
 Testing vignette.

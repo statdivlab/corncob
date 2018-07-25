@@ -1,17 +1,17 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
+r: bioc-devel
 warnings_are_errors: true
 sudo: false
 cache: packages
+
+after_success:
+  - Rscript -e 'covr::codecov()'
 
 env:
   - R_KEEP_PKG_SOURCE=yes
   - _R_S3_METHOD_LOOKUP_BASEENV_AFTER_GLOBALENV_=true
   - _R_S3_METHOD_LOOKUP_USE_TOPENV_AS_DEFENV_=true
 
-r_packages:
-  - covr
 
-after_success:
-  - Rscript -e 'covr::codecov()'

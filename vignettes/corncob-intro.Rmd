@@ -34,7 +34,7 @@ otu_table(soil_phylo)[1:5, 1:5]
 sample_data(soil_phylo)[1:5, ]
 ```
 
-We now see that we have an OTU abundance table with 7770 OTUs and 119 samples, which we can extract using \texttt{otu_table()}. We also have 5 covariates associated with each sample, which we can extract using \texttt{sample_data()}. 
+We now see that we have an OTU abundance table with 7770 OTUs and 119 samples, which we can extract using \texttt{otu\_table()}. We also have 5 covariates associated with each sample, which we can extract using \texttt{sample\_data()}.
 
 # Fitting a Model
 

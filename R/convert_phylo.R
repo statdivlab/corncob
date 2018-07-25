@@ -1,7 +1,7 @@
 #' Function to subset and convert phyloseq data
 #'
-#' @param data \texttt{phyloseq} object
-#' @param select Name of OTU or taxa to select, must match taxa name in \texttt{data}
+#' @param data \code{phyloseq} object
+#' @param select Name of OTU or taxa to select, must match taxa name in \code{data}
 #'
 #' @return A data.frame object
 #' @examples

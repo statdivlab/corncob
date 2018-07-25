@@ -1,6 +1,8 @@
-#' Print ummary function
+#' Print summary function
 #'
-#' @param object Model summary output from \code{\link{summary.bbdml}}
+#' @param x Model summary output from \code{\link{summary.bbdml}}
+#' @param digits the nnumber of significant digits to use when printing.
+#' @param signif.stars logical. If \code{TRUE}, `significance stars' are printed for each coefficient.
 #' @param ... See details
 #'
 #' @details ... TODO

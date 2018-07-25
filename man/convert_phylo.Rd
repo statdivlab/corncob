@@ -7,9 +7,9 @@
 convert_phylo(data, select)
 }
 \arguments{
-\item{data}{\texttt{phyloseq} object}
+\item{data}{\code{phyloseq} object}
 
-\item{select}{Name of OTU or taxa to select, must match taxa name in \texttt{data}}
+\item{select}{Name of OTU or taxa to select, must match taxa name in \code{data}}
 }
 \value{
 A data.frame object

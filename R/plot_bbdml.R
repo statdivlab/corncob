@@ -1,4 +1,4 @@
-#' Plotting function (in beta)
+#' Plotting function
 #'
 #' @param x Output from \code{\link{bbdml}}
 #' @param ... See details

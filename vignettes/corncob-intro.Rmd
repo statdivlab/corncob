@@ -36,7 +36,7 @@ sample_data(soil_phylo)[1:5, ]
 
 We now see that we have an OTU abundance table with 7770 OTUs and 119 samples, which we can extract using \texttt{otu_table()}. We also have 5 covariates associated with each sample, which we can extract using \texttt{sample_data()}. 
 
-# Defining a Model
+# Fitting a Model
 
 Now, let's set up our model. We will demonstrate with OTU149.
 
@@ -46,11 +46,17 @@ First, let's subset our data to only include samples with the \texttt{DayAmdmt} 
 soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
 ```
 
+Next, let's fit our model. For now, we will not include any covariates, so we use \texttt{~ 1} as our model formula responses.
+
 ```{r}
 mod <- bbdml(formula = OTU149 ~ DayAmdmt,
              phi.formula = ~ DayAmdmt,
              data = soil)
+```
 
-plot(mod, group = "DayAmdmt")
+# Interpreting a Model
+
+```{r}
+plot(mod)
 ```
 

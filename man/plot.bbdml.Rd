@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_bbdml.R
 \name{plot.bbdml}
 \alias{plot.bbdml}
-\title{Plotting function (in beta)}
+\title{Plotting function}
 \usage{
 \method{plot}{bbdml}(x, ...)
 }
@@ -15,7 +15,7 @@
 Model plot
 }
 \description{
-Plotting function (in beta)
+Plotting function
 }
 \details{
 ... can include boolean indicator called RA for whether to plot on relative abundance scale, which defaults to FALSE. It can also include "group", a string of a covariate in the model data, if you want the plot to be colored by group.

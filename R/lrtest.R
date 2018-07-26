@@ -9,6 +9,7 @@
 #' \dontrun{
 #' TODO
 #' }
+#' @export
 lrtest <- function(mod1, mod2) {
   dof.dif <- mod2$df.model - mod1$df.model
   chi.val <- 2 * abs(mod2$logL - mod1$logL)

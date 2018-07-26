@@ -8,8 +8,7 @@
 #' \dontrun{
 #' TODO
 #' }
-
-
+#' @export
 waldtest <- function(mod) {
   # Covariance matrix
   covMat <- chol2inv(chol(hessian(mod)))

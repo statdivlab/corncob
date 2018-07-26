@@ -3,7 +3,7 @@
 #' @param p probability for quantile
 #' @param size size
 #' @param mu probability parameter
-#' @param rho overdispersion parameter
+#' @param phi overdispersion parameter
 #'
 #' @return quantile
 #'

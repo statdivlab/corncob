@@ -3,7 +3,7 @@
 #' @param percent percent interval
 #' @param size size
 #' @param mu probability parameter
-#' @param rho overdispersion parameter
+#' @param phi overdispersion parameter
 #'
 #' @return quantile
 #'

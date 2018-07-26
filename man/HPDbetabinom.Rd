@@ -13,7 +13,7 @@ HPDbetabinom(percent, size, mu, phi)
 
 \item{mu}{probability parameter}
 
-\item{rho}{overdispersion parameter}
+\item{phi}{overdispersion parameter}
 }
 \value{
 quantile

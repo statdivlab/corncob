@@ -22,4 +22,5 @@ Function to subset and convert phyloseq data
 data(soil_phylo)
 convert_phylo(soil_phylo, "OTU1")
 }
+
 }

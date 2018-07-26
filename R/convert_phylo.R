@@ -9,6 +9,8 @@
 #' data(soil_phylo)
 #' convert_phylo(soil_phylo, "OTU1")
 #' }
+#'
+#' @import phyloseq
 #' @export
 convert_phylo <- function(data, select) {
   subsamp <- phyloseq::prune_taxa(select, data)

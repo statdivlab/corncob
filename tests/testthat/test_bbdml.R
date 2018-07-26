@@ -1,4 +1,5 @@
 library(corncob)
+library(phyloseq)
 context("Test bbdml")
 
 set.seed(1)
@@ -47,4 +48,16 @@ test_that("bad init gives warning", {
                        phi.link = "logit",
                        method = "trust",
                        inits = cbind(1,-1000,1,1000)))
+})
+
+data(soil_phylo)
+soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
+
+out_phylo <- bbdml(formula = OTU149 ~ 1,
+             phi.formula = ~ 1,
+             data = soil)
+
+
+test_that("bbdml works with phyloseq object", {
+  expect_is(out_phylo, "bbdml")
 })

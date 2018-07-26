@@ -31,4 +31,14 @@ test_that("bbdml is S3", {
 test_that("bbdml S3 plotting works", {
   expect_is(plot(out), "ggplot")
   expect_is(plot(out, RA = TRUE), "ggplot")
+  expect_is(plot(out, group = "X1"), "ggplot")
+  expect_is(plot(out, group = "X1", RA = TRUE), "ggplot")
+})
+
+test_that("summary function works", {
+  expect_is(summary(out), "summary.bbdml")
+})
+
+test_that("summary printing works", {
+  expect_null(print(summary(out)))
 })

@@ -1,5 +1,5 @@
 library(corncob)
-context("Test waldtest")
+context("Test lrtest")
 
 set.seed(1)
 seq_depth <- rpois(20, lambda = 10000)
@@ -9,13 +9,20 @@ colnames(my_covariate) <- c("X1")
 
 test_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
 
-out <- bbdml(formula = cbind(W, M - W) ~ X1,
+out1 <- bbdml(formula = cbind(W, M - W) ~ 1,
+              phi.formula = ~ 1,
+              data = test_data,
+              link = "logit",
+              phi.link = "logit",
+              nstart = 1)
+
+out2 <- bbdml(formula = cbind(W, M - W) ~ X1,
              phi.formula = ~ X1,
              data = test_data,
              link = "logit",
              phi.link = "logit",
              nstart = 1)
 
-test_that("waldtest works", {
-  expect_is(waldtest(out), "matrix")
+test_that("lrtest works", {
+  expect_is(lrtest(out1,out2), "numeric")
 })

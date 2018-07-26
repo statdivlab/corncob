@@ -13,8 +13,6 @@
 #' }
 #' @export
 summary.bbdml <- function(object, ...) {
-
-  aliased <- is.na(object$param)
   # For now, just Wald test
   coef.table <- waldtest(object)
   keep <- match(c("call", "df.model", "df.residual", "logL", "link", "phi.link", "formula", "phi.formula"),

@@ -18,8 +18,7 @@ summary.bbdml <- function(object, ...) {
   keep <- match(c("call", "df.model", "df.residual", "logL", "link", "phi.link", "formula", "phi.formula"),
                 names(object), 0L)
   ans <- c(object[keep],
-           list(coefficients = coef.table,
-                aliased = aliased))
+           list(coefficients = coef.table))
 
   class(ans) <- "summary.bbdml"
   return(ans)

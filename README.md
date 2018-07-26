@@ -10,5 +10,5 @@ To download the CORNCOB package, use the code below.
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("martinbryan/CORNCOB")
+devtools::install_github("bryandmartin/CORNCOB")
 ```

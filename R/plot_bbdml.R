@@ -25,6 +25,13 @@ plot.bbdml <- function(x, ...) {
   M <- mod$M
   W <- mod$W
 
+  ymin <- ymax <- rep(NA, length(M))
+  for (i in 1:length(M)) {
+    HPD <- HPDbetabinom(percent = 0.95, size = M[i], mu = mu_est[i], phi = phi_est[i])
+    ymin[i] <- HPD$lower
+    ymax[i] <- HPD$upper
+  }
+
 
 
   # Fix for global bindings warnings
@@ -37,13 +44,14 @@ plot.bbdml <- function(x, ...) {
                           E_RA = mu_est,
                           SE_RA = sqrt(mu_est*(1 - mu_est)*(1 + ((M - 1)*phi_est))/M),
                           group = group,
-                          index = 1:length(M)
+                          index = order(order(group)),
+                          ymin = ymin/M,
+                          ymax = ymax/M
       )
-
-      ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA)) +
-        ggplot2::geom_point(ggplot2::aes(color = group)) +
+      ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA, color = group, group = group)) +
+        ggplot2::geom_point(ggplot2::aes(color = group, group = group)) +
         #ggplot2::geom_point(ggplot2::aes(x = index, y = E_RA, color = group), pch = 2) +
-        ggplot2::geom_errorbar(ggplot2::aes(ymin = E_RA - 2*SE_RA, ymax = E_RA + 2*SE_RA, color = group), width = .2,
+        ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax, color = group), width = .2,
                                position = ggplot2::position_dodge(.05)) +
         ggplot2::labs(x = "Sample", y = "Relative Abundance", title = "Model Fit", colour = "Group") +
         ggplot2::theme_bw() +
@@ -53,13 +61,14 @@ plot.bbdml <- function(x, ...) {
                           E_RA = mu_est*M,
                           SE_RA = sqrt(M*mu_est*(1 - mu_est)*(1 + ((M - 1)*phi_est))),
                           group = group,
-                          index = 1:length(M)
+                          index = order(order(group)),
+                          ymin = ymin,
+                          ymax = ymax
       )
-
-      ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA)) +
-        ggplot2::geom_point(ggplot2::aes(color = group)) +
+      ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA, color = group, group = group)) +
+        ggplot2::geom_point(ggplot2::aes(color = group, group = group)) +
         #ggplot2::geom_point(ggplot2::aes(x = index, y = E_RA, color = group), pch = 2) +
-        ggplot2::geom_errorbar(ggplot2::aes(ymin = E_RA - 2*SE_RA, ymax = E_RA + 2*SE_RA, color = group), width = .2,
+        ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax, color = group), width = .2,
                                position = ggplot2::position_dodge(.05)) +
         ggplot2::labs(x = "Sample", y = "Absolute Abundance", title = "Model Fit", colour = "Group") +
         ggplot2::theme_bw() +
@@ -70,13 +79,15 @@ plot.bbdml <- function(x, ...) {
       df_RA <- data.frame(RA = W/M,
                           E_RA = mu_est,
                           SE_RA = sqrt(mu_est*(1 - mu_est)*(1 + ((M - 1)*phi_est))/M),
-                          index = 1:length(M)
+                          index = 1:length(M),
+                          ymin = ymin/M,
+                          ymax = ymax/M
       )
 
       ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA)) +
         ggplot2::geom_point() +
         #ggplot2::geom_point(ggplot2::aes(x = index, y = E_RA), pch = 2) +
-        ggplot2::geom_errorbar(ggplot2::aes(ymin = E_RA - 2*SE_RA, ymax = E_RA + 2*SE_RA), width = .2,
+        ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax), width = .2,
                                position = ggplot2::position_dodge(.05)) +
         ggplot2::labs(x = "Sample", y = "Relative Abundance", title = "Model Fit") +
         ggplot2::theme_bw() +
@@ -85,13 +96,15 @@ plot.bbdml <- function(x, ...) {
       df_RA <- data.frame(RA = W,
                           E_RA = mu_est*M,
                           SE_RA = sqrt(M*mu_est*(1 - mu_est)*(1 + ((M - 1)*phi_est))),
-                          index = 1:length(M)
+                          index = 1:length(M),
+                          ymin = ymin,
+                          ymax = ymax
       )
 
       ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA)) +
         ggplot2::geom_point() +
         #ggplot2::geom_point(ggplot2::aes(x = index, y = E_RA), pch = 2) +
-        ggplot2::geom_errorbar(ggplot2::aes(ymin = E_RA - 2*SE_RA, ymax = E_RA + 2*SE_RA), width = .2,
+        ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax), width = .2,
                                position = ggplot2::position_dodge(.05)) +
         ggplot2::labs(x = "Sample", y = "Absolute Abundance", title = "Model Fit") +
         ggplot2::theme_bw() +

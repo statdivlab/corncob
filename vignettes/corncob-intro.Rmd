@@ -49,8 +49,8 @@ soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
 Next, let's fit our model. For now, we will not include any covariates, so we use \texttt{~ 1} as our model formula responses.
 
 ```{r}
-mod <- bbdml(formula = OTU149 ~ DayAmdmt,
-             phi.formula = ~ DayAmdmt,
+mod <- bbdml(formula = OTU149 ~ 1,
+             phi.formula = ~ 1,
              data = soil)
 ```
 
@@ -60,3 +60,22 @@ mod <- bbdml(formula = OTU149 ~ DayAmdmt,
 plot(mod)
 ```
 
+```{r}
+plot(mod, RA = TRUE)
+```
+
+# Adding covariates
+
+```{r}
+mod <- bbdml(formula = OTU149 ~ DayAmdmt,
+             phi.formula = ~ DayAmdmt,
+             data = soil)
+```
+
+```{r}
+plot(mod, group = "DayAmdmt")
+```
+
+```{r}
+plot(mod, group = "DayAmdmt", RA = TRUE)
+```

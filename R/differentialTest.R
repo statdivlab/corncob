@@ -62,20 +62,24 @@ differentialTest <- function(formula, phi.formula,
       fit_unr <- try(bbdml(formula = formula_i, phi.formula = phi.formula,
                        data = data_i, link = link, phi.link = phi.link, ...),
                      silent = TRUE)
-      if (class(fit_unr) == "try-error") {
+
+      coef.table <- try(waldtest(fit_unr), silent = TRUE)
+
+      if (class(fit_unr) == "try-error" || class(coef.table) == "try-error") {
         out[i, 3] <- 1
       } else {
-        coef.table <- waldtest(fit_unr)
-        out[i, ] <- c(coef.table[c(2, 4), 4], 0)
+          out[i, ] <- c(coef.table[c(2, 4), 4], 0)
       } # Closes if/else for try-error check
     } ### This closes loop through taxa
 
     # Now have matrix of taxa with p-values and indicator for model fit
     post_fdr <- matrix(stats::p.adjust(out[,c(1,2)], method = fdr), ncol = 2)
+    colnames(post_fdr) <- colnames(out)[1:2]
+    rownames(post_fdr) <- rownames(out)
     # Record significant taxa
     DA_vec <- rownames(out)[which(post_fdr[,1] < cutoff)]
     DV_vec <- rownames(out)[which(post_fdr[,2] < cutoff)]
-    error_vec <- rownames(out)[which(post_fdr[,3] == 1)]
+    error_vec <- rownames(out)[which(out[,3] == 1)]
 
     return(list("p" = out, "p_fdr" = post_fdr,
                 "DA" = DA_vec, "DV" = DV_vec, "error" = error_vec))

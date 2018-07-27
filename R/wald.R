@@ -11,7 +11,10 @@
 #' @export
 waldtest <- function(mod) {
   # Covariance matrix
-  covMat <- chol2inv(chol(hessian(mod)))
+  covMat <- try(chol2inv(chol(hessian(mod))), silent = TRUE)
+  if (class(covMat) == "try-error") {
+    stop("Singular Hessian!")
+  }
   # Standard errors
   se <- sqrt(diag(covMat))
   # test statistic

@@ -1,20 +1,40 @@
 ---
-title: "Introduction to corncob"
+title: "STAMPS 2018 - corncob Introduction"
 author: "Bryan D Martin"
 output: pdf_document
+header-includes:
+    - \usepackage{fancyhdr}
 vignette: >
   %\VignetteIndexEntry{Introduction to corncob}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+\addtolength{\headheight}{-.025\textheight} 
+\thispagestyle{fancyplain} 
+\rhead{\includegraphics[height=.1\textheight]{logo.png}}
+\renewcommand{\headrulewidth}{0pt}
+
+
+# Vignette Information
+
+We thank Dr. Thea Whitman for kindly providing us with the example data set we use for this vignette. You can read more about this data in Whitman, Thea, et al. "Dynamics of microbial community composition and soil organic carbon mineralization in soil following addition of pyrogenic and fresh organic matter." \textit{The ISME Journal} 10.12 (2016): 2918.
+
+
 # Introduction
 
-This tutorial is intended for STAMPS 2019.
+Effectively modeling microbial relative abundance poses a number of statistical challenges, including:
+\begin{itemize}
+\item different sequencing depth,
+\item excessive zeros from unobserved taxa,
+\item high variability of empirical relative abundances (overdispersion),
+\item within-taxon correlation,
+\item hypothesis testing with categorical and continuous covariates.
+\end{itemize}
 
-When studying dysbiosis, the focus is often on identifying differentially abundant taxa. However, microbial imbalance can also affect the stability of taxa. Here, we introduce \texttt{corncob}, an individual taxon regression model that uses abundance tables and sample data. \texttt{corncob} is able to model differential abundance and differential variability. \texttt{corncob} is appropriate for both rare and common taxa, excessive zeros, overdispersion, and inconsistent sequencing depths.
+Here, we introduce \texttt{corncob}, an individual taxon regression model that uses abundance tables and sample data. \texttt{corncob} is able to model differential abundance and differential variability, and addresses each of the challenges presented above.
 
-To begin, we load an example data set as a \texttt{phyloseq} object.
+To begin, we load our example data set as a \texttt{phyloseq} object.
 
 ```{r, message = FALSE}
 library(corncob)
@@ -37,7 +57,21 @@ We can also see that we have 5 sample variables. We can extract this using \text
 ```{r}
 sample_data(soil_phylo)[1:5, ]
 ```
+Our covariates are as follows:
+\begin{itemize}
+\item  \texttt{Plants}: Indicator of whether plants are in the soil for this sample.
+\item \texttt{Amdmt}: Cateogircal variable representing one of three soil additives; none, biochar, freshbiomas.
+\item \texttt{ID}:
+\end{itemize}
 
+
+, is an indicator of whether plants are in the soil,  is a categorical variable representing 
+
+
+Finally, we have a taxonomy table with 7 taxonomic ranks. 
+```{r}
+tax_table(soil_phylo)[1:5, ]
+```
 
 # Fitting a Model
 
@@ -52,7 +86,7 @@ soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
 Next, let's fit our model. For now, we will not include any covariates, so we use \texttt{~ 1} as our model formula responses.
 
 ```{r}
-mod <- bbdml(formula = OTU149 ~ 1,
+mod <- bbdml(formula = OTU.4 ~ 1,
              phi.formula = ~ 1,
              data = soil)
 ```
@@ -89,7 +123,7 @@ We can observe on this plot that it might be of interest to distinguish between 
 Let's try modeling the expected relative abundance and the variability of the absolute abundance with \texttt{DayAmdmt} as a covariate. We do this by modifying \texttt{formula} and \texttt{phi.formula} as:
 
 ```{r}
-mod_cov <- bbdml(formula = OTU149 ~ DayAmdmt,
+mod_cov <- bbdml(formula = OTU.4 ~ DayAmdmt,
              phi.formula = ~ DayAmdmt,
              data = soil)
 ```
@@ -135,7 +169,7 @@ What if we want to test all the taxa in our data to see if they are differential
 This will take a few seconds to complete, so for the sake of time in this tutorial, let's use the \texttt{prune\_taxa} function from the \texttt{phyloseq} package to select only the first 100 OTUs. We can then examine the data to make sure it did what we wanted.
 
 ```{r}
-subsoil <- phyloseq::prune_taxa(x = soil, taxa = rownames(otu_table(soil))[1:100])
+subsoil <- phyloseq::prune_taxa(x = soil, taxa = rownames(otu_table(soil))[1:25])
 subsoil
 ```
 

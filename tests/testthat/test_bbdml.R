@@ -53,7 +53,7 @@ test_that("bad init gives warning", {
 data(soil_phylo)
 soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
 
-out_phylo <- bbdml(formula = OTU149 ~ 1,
+out_phylo <- bbdml(formula = OTU.4 ~ 1,
              phi.formula = ~ 1,
              data = soil)
 

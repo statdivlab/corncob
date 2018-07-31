@@ -41,6 +41,7 @@ library(corncob)
 library(phyloseq)
 library(dplyr)
 data(soil_phylo)
+knitr::opts_chunk$set(fig.width=8, fig.height=4) 
 ```
 
 If you are unfamiliar with \texttt{phyloseq}, we can view a description of the data using:
@@ -51,12 +52,12 @@ soil_phylo
 
 We now see that we have an OTU abundance table with 7770 OTUs and 119 samples. We can extract using \texttt{otu\_table()}. Let's examine a small subset of our data in more detail.
 ```{r}
-otu_table(soil_phylo)[1:5, 1:5]
+otu_table(soil_phylo)[1:3, 1:3]
 ```
 
 We can also see that we have 5 sample variables. We can extract this using \texttt{sample\_data()}. Let's again examine a small subset in more detail.
 ```{r}
-sample_data(soil_phylo)[1:5, ]
+sample_data(soil_phylo)[1:3, ]
 ```
 Our covariates are as follows:
 \begin{itemize}
@@ -68,7 +69,7 @@ Our covariates are as follows:
 
 Finally, we have a taxonomy table with 7 taxonomic ranks. 
 ```{r}
-tax_table(soil_phylo)[1:5, ]
+tax_table(soil_phylo)[1:3, ]
 ```
 
 # Fitting a Model
@@ -107,9 +108,11 @@ corncob <- bbdml(formula = OTU.1 ~ 1,
              data = soil)
 ```
 
+\newpage
+
 # Interpreting a Model
 
-First, let's plot our model on the relative abundance scale. To do this, we simply type:
+First, let's plot the data with our model fit on the relative abundance scale. To do this, we simply type:
 
 ```{r}
 plot(corncob)
@@ -117,7 +120,7 @@ plot(corncob)
 
 The points represent the relative abundances. The bars represent the 95\% confidence intervals for the relative abundance by sample. 
 
-Now let's look at the same model, but on the absolute abundance scale with 95\% prediction intervals (since absolute abundance is not a parameter). To do this, we add the option \texttt{AA = TRUE} to our plotting code.
+Now let's look at the same plot, but on the absolute abundance scale with 95\% prediction intervals (since absolute abundance is not a parameter). To do this, we add the option \texttt{AA = TRUE} to our plotting code.
 
 ```{r}
 plot(corncob, AA = TRUE)

@@ -8,6 +8,7 @@ vignette: >
   %\VignetteIndexEntry{Introduction to corncob}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+urlcolor: blue
 ---
 
 \addtolength{\headheight}{-.025\textheight} 
@@ -32,6 +33,10 @@ Effectively modeling microbial relative abundance poses a number of statistical 
 \item hypothesis testing with categorical and continuous covariates.
 \end{itemize}
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=4) 
+```
+
 Here, we introduce \texttt{corncob}, an individual taxon regression model that uses abundance tables and sample data. \texttt{corncob} is able to model differential abundance and differential variability, and addresses each of the challenges presented above.
 
 To begin, we load our example data set as a \texttt{phyloseq} object.
@@ -41,7 +46,6 @@ library(corncob)
 library(phyloseq)
 library(dplyr)
 data(soil_phylo)
-knitr::opts_chunk$set(fig.width=8, fig.height=4) 
 ```
 
 If you are unfamiliar with \texttt{phyloseq}, we can view a description of the data using:
@@ -118,7 +122,7 @@ First, let's plot the data with our model fit on the relative abundance scale. T
 plot(corncob)
 ```
 
-The points represent the relative abundances. The bars represent the 95\% confidence intervals for the relative abundance by sample. 
+The points represent the relative abundances. The bars represent the 95\% prediction intervals for the observed relative abundance by sample. 
 
 Now let's look at the same plot, but on the absolute abundance scale with 95\% prediction intervals (since absolute abundance is not a parameter). To do this, we add the option \texttt{AA = TRUE} to our plotting code.
 
@@ -271,6 +275,6 @@ check_GN04 <- bbdml(formula = OTU.4206 ~ DayAmdmt,
                  data = soil)
 ```
 
-While the model fits, we should be skeptical of **any** statisical model fit on a single observed count, including \texttt{corncob}!
+While the model fits, we should be skeptical of **any** statisical model fit on a single observed count!
 
-\texttt{corncob} is stable, but new. If you notice and issues, please [log them on github](https://github.com/bryandmartin/CORNCOB/issues) to help us help you!
+\texttt{corncob} is stable, but new. If you notice any issues, please [log them on Github](https://github.com/bryandmartin/CORNCOB/issues) to help us help you!

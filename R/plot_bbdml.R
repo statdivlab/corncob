@@ -26,28 +26,32 @@ plot.bbdml <- function(x, ...) {
   W <- mod$W
 
   ymin <- ymax <- rep(NA, length(M))
-  if (AA) {
-    for (i in 1:length(M)) {
-      HPD <- HPDbetabinom(percent = 0.95, size = M[i], mu = mu_est[i], phi = phi_est[i])
-      ymin[i] <- HPD$lower
-      ymax[i] <- HPD$upper
-    }
-  } else {
-      # When doing RA plot
-      # Create a CI for mu
 
-      # X
-      X_mu <- x$X.mu
-      # variance of beta - in Wald Test as well
-      covMat <- try(chol2inv(chol(hessian(mod))), silent = TRUE)
-      if (class(covMat) == "try-error") {
-        stop("Singular Hessian!")
-      }
-      mu_se <- sqrt(diag(X_mu %*% covMat[1:x$np.mu,1:x$np.mu] %*% t(X_mu)))
-      ymin <- x$mu.resp + qnorm(.025)*mu_se
-      ymax <- x$mu.resp + qnorm(.975)*mu_se
+  for (i in 1:length(M)) {
+    HPD <- HPDbetabinom(percent = 0.95, size = M[i], mu = mu_est[i], phi = phi_est[i])
+    ymin[i] <- HPD$lower
+    ymax[i] <- HPD$upper
   }
+  if (!AA) {
+    ymin <- ymin/M
+    ymax <- ymax/M
+  }
+  # When doing RA plot
+  # If we want to create a CI for mu, uncomment (and move)
 
+  # ginv <- switch(x$link, "logit" = invlogit)
+  # g <- switch(x$link, "logit" = logit)
+  #
+  # # X
+  # X_mu <- x$X.mu
+  # # variance of beta - in Wald Test as well
+  # covMat <- try(chol2inv(chol(hessian(mod))), silent = TRUE)
+  # if (class(covMat) == "try-error") {
+  #   stop("Singular Hessian!")
+  # }
+  # mu_se <- sqrt(diag(X_mu %*% covMat[1:x$np.mu,1:x$np.mu] %*% t(X_mu)))
+  # ymin <- ginv(g(x$mu.resp) + qnorm(.025)*mu_se)
+  # ymax <- ginv(g(x$mu.resp) + qnorm(.975)*mu_se)
 
   samp_names <- rownames(x$dat)
 

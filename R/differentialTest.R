@@ -7,7 +7,7 @@
 #' @param data Data frame or \code{phyloseq} object
 #' @param link Link function for mean, defaults to "logit"
 #' @param phi.link Link function for overdispersion, defaults to "logit"
-#' @param cutoff Desired type 1 error rate
+#' @param fdr_cutoff Desired type 1 error rate
 #' @param fdr False discovery rate control method, defaults to "fdr"
 #' @param ... Additional arguments for \code{\link{bbdml}}
 #'
@@ -18,7 +18,7 @@ differentialTest <- function(formula, phi.formula,
                              data,
                              link = "logit",
                              phi.link = "logit",
-                             cutoff = 0.05,
+                             fdr_cutoff = 0.05,
                              fdr = "fdr",
                              ...) {
   # Record call
@@ -34,7 +34,7 @@ differentialTest <- function(formula, phi.formula,
     # Set up response
     out <- matrix(NA, ncol = 3, nrow = nrow(phyloseq::otu_table(data)))
     rownames(out) <- rownames(phyloseq::otu_table(data))
-    colnames(out) <- c("DA","DV","Error")
+    colnames(out) <- c("DA","DV","Warning")
 
     # Loop through OTU/taxa
     for (i in 1:nrow(out)) {
@@ -77,12 +77,12 @@ differentialTest <- function(formula, phi.formula,
     colnames(post_fdr) <- colnames(out)[1:2]
     rownames(post_fdr) <- rownames(out)
     # Record significant taxa
-    DA_vec <- rownames(out)[which(post_fdr[,1] < cutoff)]
-    DV_vec <- rownames(out)[which(post_fdr[,2] < cutoff)]
-    error_vec <- rownames(out)[which(out[,3] == 1)]
+    DA_vec <- rownames(out)[which(post_fdr[,1] < fdr_cutoff)]
+    DV_vec <- rownames(out)[which(post_fdr[,2] < fdr_cutoff)]
+    warning_vec <- rownames(out)[which(out[,3] == 1)]
 
     return(list("p" = out, "p_fdr" = post_fdr,
-                "DA" = DA_vec, "DV" = DV_vec, "error" = error_vec))
+                "DA" = DA_vec, "DV" = DV_vec, "warning" = warning_vec))
 
   } else { ### This closes phyloseq if
     stop("This function is in beta. \n It is currently only implemented for phyloseq objects.")

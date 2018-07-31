@@ -39,6 +39,7 @@ To begin, we load our example data set as a \texttt{phyloseq} object.
 ```{r, message = FALSE}
 library(corncob)
 library(phyloseq)
+library(dplyr)
 data(soil_phylo)
 ```
 
@@ -72,44 +73,64 @@ tax_table(soil_phylo)[1:5, ]
 
 # Fitting a Model
 
-TODO - switch from OTU to taxonomy
+Now, let's set up our model. 
 
-Now, let's set up our model. We will demonstrate with OTU.4.
+First, let's subset our samples to only include those with the \texttt{DayAmdmt} covariate equal to 11 or 21 and then collapse the samples to the phylum level.
 
-First, let's subset our data to only include samples with the \texttt{DayAmdmt} covariate equal to 11 or 21.
+
 
 ```{r}
-soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
+soil <- soil_phylo %>% 
+            phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+            tax_glom("Rank2") 
 ```
 
-Next, let's fit our model. For now, we will not include any covariates, so we use \texttt{~ 1} as our model formula responses.
+Let's examine the data and the taxonomy table again.
 
 ```{r}
-corncob <- bbdml(formula = OTU.4 ~ 1,
+soil
+```
+
+```{r}
+tax_table(soil)[1:5, ]
+```
+
+Note that collapsing the samples is not necessary, and this model can work at any taxonomic rank. However, we will later be fitting a model to every taxa. We can see that by agglomerating taxa to the phylum level, we have gone from from 7770 to 40 taxa. Thus we collapse in order to increase the speed for the purposes of this tutorial.
+
+Now we fit our model. We will demonstrate with Proteobacteria, or OTU.1. 
+
+For now, we will not include any covariates, so we use \texttt{~ 1} as our model formula responses.
+
+```{r}
+corncob <- bbdml(formula = OTU.1 ~ 1,
              phi.formula = ~ 1,
              data = soil)
 ```
 
 # Interpreting a Model
 
-First, let's plot our model on the absolute abundance scale. To do this, we simply type:
+First, let's plot our model on the relative abundance scale. To do this, we simply type:
 
 ```{r}
 plot(corncob)
 ```
 
-The points represent the absolute abundances. The bars represent the 95\% confidence intervals for the absolute abundance by sample. 
+The points represent the relative abundances. The bars represent the 95\% confidence intervals for the relative abundance by sample. 
 
-Now let's look at the same model, but on the relative abundance scale. To do this, we add the option \texttt{RA = TRUE} to our plotting code.
+Now let's look at the same model, but on the absolute abundance scale with 95\% prediction intervals (since absolute abundance is not a parameter). To do this, we add the option \texttt{AA = TRUE} to our plotting code.
 
 ```{r}
-plot(corncob, RA = TRUE)
+plot(corncob, AA = TRUE)
 ```
 
-Finally, let's color the plot by the \texttt{DayAmdmt} covariate. To do this, we add the option \texttt{group = "DayAmdmt"} to our plotting code. 
+Finally, let's color the plot by the \texttt{DayAmdmt} covariate. To do this, we add the option \texttt{color = "DayAmdmt"} to our plotting code. 
 
 ```{r}
-plot(corncob, RA = TRUE, group = "DayAmdmt")
+plot(corncob, AA = TRUE, color = "DayAmdmt")
+```
+
+```{r}
+plot(corncob, color = "DayAmdmt")
 ```
 
 Notice that this plot also reorders our samples so that groups appear together so that they are easier to compare.
@@ -122,7 +143,7 @@ We can observe on this plot that it might be of interest to distinguish between 
 Let's try modeling the expected relative abundance and the variability of the absolute abundance with \texttt{DayAmdmt} as a covariate. We do this by modifying \texttt{formula} and \texttt{phi.formula} as:
 
 ```{r}
-corncob_cov <- bbdml(formula = OTU.4 ~ DayAmdmt,
+corncob_da <- bbdml(formula = OTU.1 ~ DayAmdmt,
              phi.formula = ~ DayAmdmt,
              data = soil)
 ```
@@ -130,21 +151,21 @@ corncob_cov <- bbdml(formula = OTU.4 ~ DayAmdmt,
 Let's also plot this data on both the absolute abudance relative abundance scale.
 
 ```{r}
-plot(corncob_cov, group = "DayAmdmt")
+plot(corncob_da, color = "DayAmdmt", AA = TRUE)
 ```
 
 ```{r}
-plot(corncob_cov, group = "DayAmdmt", RA = TRUE)
+plot(corncob_da, color = "DayAmdmt")
 ```
 
 Visually, the model with covariates seems to provide a much better fit to the data, but how can we compare the two models statistically?
 
 # Model Selection
 
-Let's use a likelihood ratio test to select our final model for this taxon. We want to test the null hypothesis that the model with covariates does not have a statistically significantly different log-likelihood than the model without covariates. To do this test, we use:
+Let's use a likelihood ratio test to select our final model for this taxon. We want to test the null hypothesis that the likelihood of the model with covariates is equal to the likelihood of the model without covariates. To do this test, we use:
 
 ```{r}
-lrtest(corncob, corncob_cov)
+lrtest(corncob, corncob_da)
 ```
 We obtain a p-value much smaller than a cut-off of 0.05. Therefore we conclude that there is a statistically significant difference in the likelihood of the two models. Thus, we probably want to use the model with covariates for this taxon.
 
@@ -153,30 +174,23 @@ We obtain a p-value much smaller than a cut-off of 0.05. Therefore we conclude t
 Now that we have chosen our model, let's interpret our model output. To see a summary of the model, type:
 
 ```{r}
-summary(corncob_cov)
+summary(corncob_da)
 ```
-This output will look familiar if you have done regression analysis in R in the past. Covariates associated with the overdispersion of the absolute abundances are preceded by \texttt{phi.}. 
+This output will look familiar if you have done regression analysis in R in the past. Covariates associated with the expected relative abundance are preceded by \texttt{mu.}; covariates associated with the variance of the absolute abundances are preceded by \texttt{phi.}. 
 
-From this model summary, we can see that the \texttt{DayAmdmt21} coefficient is negative and statistically significant. This suggests that this taxon is differentially-abundant across \texttt{DayAmdmt}, and that samples with \texttt{DayAmdmt = 21} are expected to have a lower relative abundance. This matches what we would expect given the plot of the data.
+From this model summary, we can see that the \texttt{mu.DayAmdmt21} coefficient is negative and statistically significant. This suggests that this taxon is differentially-abundant across \texttt{DayAmdmt}, and that samples with \texttt{DayAmdmt = 21} are expected to have a lower relative abundance. This matches what we saw from the observed abundances.
 
-We can also see that the \texttt{phi.DayAmdmt21} coefficient is negative and statistically significant. This suggests that this taxon is differentially-variable across \texttt{DayAmdmt}, and that samples with \texttt{DayAmdmt = 21} are expected to have a lower variability. This also matches what we would expect given the plot of the data.
+We can also see that the \texttt{phi.DayAmdmt21} coefficient is negative and statistically significant. This suggests that this taxon is differentially-variable across \texttt{DayAmdmt}, and that samples with \texttt{DayAmdmt = 21} are expected to have a lower variability. This matches what we saw from the observed abundances.
 
 # Analysis for Multiple Taxa
 
 What if we want to test all the taxa in our data to see if they are differentially-abundant or differentially-variable? We use the \texttt{differentialTest} function. It will perform the above tests on all taxa, and it will control the false discovery rate to account for multiple comparisons.
 
-This will take a few seconds to complete, so for the sake of time in this tutorial, let's use the \texttt{prune\_taxa} function from the \texttt{phyloseq} package to select only the first 100 OTUs. We can then examine the data to make sure it did what we wanted.
-
-```{r}
-subsoil <- phyloseq::prune_taxa(x = soil, taxa = rownames(otu_table(soil))[1:25])
-subsoil
-```
-
 Next, we use the \texttt{differentialTest} command. We specify the covariates of our model using \texttt{formula} and \texttt{phi.formula} as before, except we no longer include the response term because we are testing multiple taxa. We also specify which covariates we want to test for by removing them in the \texttt{formula\_null} and \texttt{phi.formula\_null} arguments. 
 
 The difference between the formulas and the null version of the formulas will be the variables that are tested. In this case, as when we examined the single taxon, we will be testing the coefficients of \texttt{DayAmdmt} for both the expected relative abundance and the overdispersion.
 
-We set \texttt{cutoff} to be our controlled false discovery rate.
+We set \texttt{fdr\_cutoff} to be our controlled false discovery rate.
 
 In this example, we also set \texttt{inits} argument. This is not necessary, but it will speed up our computation because the algorithm does not need to identify initializations for the parameters for each taxon.
 
@@ -186,10 +200,28 @@ fullAnalysis <- differentialTest(formula = ~ DayAmdmt,
                                  phi.formula = ~ DayAmdmt,
                                  formula_null = ~ 1,
                                  phi.formula_null = ~ 1,
-                                 data = subsoil,
-                                 cutoff = 0.05,
-                                 inits = rbind(rep(.1, 4)))
+                                 data = soil,
+                                 fdr_cutoff = 0.05,
+                                 inits = rbind(rep(.01, 4)))
 ```
+
+We can see a list of differentially-abundant taxa using: 
+
+```{r}
+fullAnalysis$DA
+```
+
+In this case, we identified 14 taxa that are differentially-abundant across \texttt{DayAmdmt} (out of the 40 taxa tested).
+
+
+We can see a list of differentially-variable taxa using:
+
+```{r}
+fullAnalysis$DV
+```
+
+In this case, we identified 4 taxa that are differentially-variable across \texttt{DayAmdmt} (out of the 40 taxa tested).
+
 
 We can examine a subset of the p-values of our tests using:
 
@@ -197,7 +229,7 @@ We can examine a subset of the p-values of our tests using:
 fullAnalysis$p[1:5,]
 ```
 
-where \texttt{DA} is the p-value associated with the test for differential abundance, \texttt{DV} is the p-value associated with the test for differential variance, and \texttt{Error} is a flag to let us know if the test wasn't able to complete for that OTU so that we may investigate further.
+where \texttt{DA} is the p-value associated with the test for differential abundance, \texttt{DV} is the p-value associated with the test for differential variance, and \texttt{warning} is a flag to let us know if the test wasn't able to complete for that OTU so that we may investigate further.
 
 We can examine a subset of the p-values after controlling for the false discovery rate using:
 
@@ -207,30 +239,35 @@ fullAnalysis$p_fdr[1:5,]
 
 where the columns are defined similarly as before, but the values are now adjusted to control the false discovery rate at 0.05.
 
-We can see a list of differentially-abundant taxa using: 
+
+Finally, we can see a list of any taxa for which we were not able to fit a model using:
 
 ```{r}
-fullAnalysis$DA
+fullAnalysis$warning
 ```
 
-In this case, we identified 21 taxa that are differentially-abundant across \texttt{DayAmdmt} (out of the 100 taxa tested).
-
-
-We can see a list of differentially-variable taxa using:
+In this case, we weren't able to fit \texttt{OTU.4206} automatically. It's worthwhile to investigate the OTU individually if this is the case. First let's check what phylum this represents.
 
 ```{r}
-fullAnalysis$DV
+tax_table(soil)["OTU.4206"]
 ```
 
-In this case, we identified 4 taxa that are differentially-variable across \texttt{DayAmdmt} (out of the 100 taxa tested).
+It may be that the model is overparameterized because there aren't enough observations, or it may just be that the initializations were invalid for that taxa and it needs to be re-evaluated with new initializations.
 
-Finally, we can see a list of any taxa that were not able to be compiled using:
+Let's first try examining the data. 
 
 ```{r}
-fullAnalysis$error
+otu_table(soil)["OTU.4206"]
 ```
 
-In this case, the list is empty so we were able to perform the test for all 100 taxa. If this list contained taxa, it would be worthwhile to investigate them individually to see what went wrong. For example, it may be that the model is overparameterized because there aren't enough observations, or it may just be that the initializations were invalid for that taxa and it needs to be re-evaluated with new initializations.
+We see that the observed counts of OTU is zero in all samples except for \texttt{S102}, where we observed a single count. Let's try fitting the model individually by letting the model select the initializations automatically.
 
-Note: The function \texttt{differentialTest} is currently in beta. If you notice an issues, please let me know! It will be completed soon.
+```{r}
+check_GN04 <- bbdml(formula = OTU.4206 ~ DayAmdmt,
+                 phi.formula = ~ DayAmdmt,
+                 data = soil)
+```
 
+While the model fits, we should be skeptical of **any** statisical model fit on a single observed count, including \texttt{corncob}!
+
+\texttt{corncob} is stable, but new. If you notice and issues, please [log them on github](https://github.com/bryandmartin/CORNCOB/issues) to help us help you!

@@ -5,7 +5,8 @@
 \title{Identify differentially-abundant and differentially-variable taxa}
 \usage{
 differentialTest(formula, phi.formula, formula_null, phi.formula_null, data,
-  link = "logit", phi.link = "logit", cutoff = 0.05, fdr = "fdr", ...)
+  link = "logit", phi.link = "logit", fdr_cutoff = 0.05, fdr = "fdr",
+  ...)
 }
 \arguments{
 \item{formula}{Formula for mean, without response}
@@ -22,7 +23,7 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null, data,
 
 \item{phi.link}{Link function for overdispersion, defaults to "logit"}
 
-\item{cutoff}{Desired type 1 error rate}
+\item{fdr_cutoff}{Desired type 1 error rate}
 
 \item{fdr}{False discovery rate control method, defaults to "fdr"}
 

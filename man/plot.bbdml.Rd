@@ -18,7 +18,7 @@ Model plot
 Plotting function
 }
 \details{
-... can include boolean indicator called RA for whether to plot on relative abundance scale, which defaults to FALSE. It can also include "group", a string of a covariate in the model data, if you want the plot to be colored by group.
+... can include boolean indicator called AA for whether to plot on absolute abundance scale, which defaults to FALSE. It can also include "color", a string of a covariate in the model data, if you want the plot to be colored by color.
 }
 \examples{
 \dontrun{

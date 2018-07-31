@@ -58,6 +58,7 @@ plot.bbdml <- function(x, ...) {
 
   # Fix for global bindings warnings
   index <- NULL
+  RA <- NULL
 
   if (!is.null(input$color)) {
     color <- factor(mod$dat[[input$color]])

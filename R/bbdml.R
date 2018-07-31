@@ -231,7 +231,7 @@ bbdml <- function(formula, phi.formula, data,
 
 
 
-  namb <- colnames(X.b)
+  namb <- paste("mu", colnames(X.b), sep = ".")
   namphi <- paste("phi", colnames(X.bstar), sep = ".")
   names(theta) <- c(namb, namphi)
 

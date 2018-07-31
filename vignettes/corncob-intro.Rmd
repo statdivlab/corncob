@@ -39,6 +39,14 @@ knitr::opts_chunk$set(fig.width=8, fig.height=4)
 
 Here, we introduce \texttt{corncob}, an individual taxon regression model that uses abundance tables and sample data. \texttt{corncob} is able to model differential abundance and differential variability, and addresses each of the challenges presented above.
 
+Note that in order to follow along with this tutorial (but not to use \texttt{corncob}!) you will need to have \texttt{phyloseq} installed. 
+
+Install \texttt{corncob} using:
+```{r, eval = FALSE}
+devtools::install_github("bryandmartin/CORNCOB")
+```
+
+
 To begin, we load our example data set as a \texttt{phyloseq} object.
 
 ```{r, message = FALSE}

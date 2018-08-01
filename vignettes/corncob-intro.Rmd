@@ -164,7 +164,7 @@ corncob_da <- bbdml(formula = OTU.1 ~ DayAmdmt,
              data = soil)
 ```
 
-Let's also plot this data on both the absolute abudance relative abundance scale.
+Let's also plot this data on both the absolute abudance and relative abundance scale.
 
 ```{r}
 plot(corncob_da, color = "DayAmdmt", AA = TRUE)
@@ -294,6 +294,6 @@ check_GN04 <- bbdml(formula = OTU.4206 ~ DayAmdmt,
                  data = soil)
 ```
 
-While the model fits, we should be skeptical of **any** statisical model fit on a single observed count!
+While the model fits, we should be skeptical of **any** statistical model fit on a single observed count!
 
 \texttt{corncob} is stable, but new. If you notice any issues, please [log them on Github](https://github.com/bryandmartin/CORNCOB/issues) to help us help you!

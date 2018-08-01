@@ -4,7 +4,7 @@ Version: 0.1.0
 Authors@R: person("Bryan D", "Martin", email = "bmartin6@uw.edu", role = c("aut", "cre"))
 Description: This packages models correlated count data using the beta-binomial distribution. It allows for both mean and overdispersion covariates.
 Depends: R (>= 3.2),
-    phyloseq (>= 1.24.0)
+    phyloseq (>= 1.22.0)
 License: GPL (>= 2)
 Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, GenSA, ggplot2, trust, dplyr, magrittr
 Encoding: UTF-8

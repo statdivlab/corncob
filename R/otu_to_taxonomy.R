@@ -14,5 +14,5 @@
 #'
 #' @export
 otu_to_taxonomy <- function(OTU, data) {
-  return(apply(tax_table(data), 1, function(x) {paste(na.omit(x), collapse = '_')}))
+  return(apply(tax_table(data)[OTU,], 1, function(x) {paste(na.omit(x), collapse = '_')}))
 }

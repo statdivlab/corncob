@@ -235,7 +235,7 @@ We can see a list of differentially-variable taxa using:
 fullAnalysis$DV
 ```
 
-We can switch the OTU labels to taxonomic labels using \texttt{otu_to_taxonomy}. We supply our OTU labels as strings for the \texttt{OTU} argument. We supply the \texttt{phyloseq} object for the \texttt{data} argument.
+We can switch the OTU labels to taxonomic labels using \texttt{otu\_to\_taxonomy}. We supply our OTU labels as strings for the \texttt{OTU} argument. We supply the \texttt{phyloseq} object for the \texttt{data} argument.
 
 ```{r}
 otu_to_taxonomy(fullAnalysis$DA, soil)

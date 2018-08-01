@@ -238,11 +238,11 @@ fullAnalysis$DV
 We can switch the OTU labels to taxonomic labels using \texttt{otu\_to\_taxonomy}. We supply our OTU labels as strings for the \texttt{OTU} argument. We supply the \texttt{phyloseq} object for the \texttt{data} argument.
 
 ```{r}
-otu_to_taxonomy(fullAnalysis$DA, soil)
+otu_to_taxonomy(OTU = fullAnalysis$DA, data = soil)
 ```
 
 ```{r}
-otu_to_taxonomy(fullAnalysis$DV, soil)
+otu_to_taxonomy(OTU = fullAnalysis$DV, data = soil)
 ```
 
 In this case, we identified 4 taxa that are differentially-variable across \texttt{DayAmdmt} (out of the 40 taxa tested).
@@ -274,7 +274,7 @@ fullAnalysis$warning
 In this case, we weren't able to fit \texttt{OTU.4206} automatically. It's worthwhile to investigate the OTU individually if this is the case. First let's check what phylum this represents.
 
 ```{r}
-tax_table(soil)["OTU.4206"]
+otu_to_taxonomy(OTU = "OTU.4206", data = soil)
 ```
 
 It may be that the model is overparameterized because there aren't enough observations, or it may just be that the initializations were invalid for that taxa and it needs to be re-evaluated with new initializations.

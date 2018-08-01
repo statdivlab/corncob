@@ -6,7 +6,7 @@ Description: This packages models correlated count data using the beta-binomial 
 Depends: R (>= 3.2),
     phyloseq (>= 1.24.0)
 License: GPL (>= 2)
-Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, GenSA, ggplot2, trust, dplyr
+Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, GenSA, ggplot2, trust, dplyr, magrittr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1

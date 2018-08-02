@@ -43,7 +43,7 @@ Note that in order to follow along with this tutorial (but not to use \texttt{co
 
 Install \texttt{corncob} using:
 ```{r, eval = FALSE}
-devtools::install_github("bryandmartin/CORNCOB")
+devtools::install_github("bryandmartin/corncob")
 ```
 
 

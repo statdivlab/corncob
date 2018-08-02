@@ -16,11 +16,17 @@ temp <- differentialTest(formula = ~ Plants + DayAmdmt,
                          inits_null_phi = rbind(rep(0.01, 4)))
 
 # Add this to cause some warnings and check those
-temp_noinit <- differentialTest(formula = ~ DayAmdmt,
+temp_noinit_sing <- differentialTest(formula = ~ DayAmdmt,
                                 phi.formula = ~ DayAmdmt,
                                 formula_null = ~ 1,
                                 phi.formula_null = ~ 1,
                                 data = subsoil)
+
+temp_noinit <- differentialTest(formula = ~ Plants + DayAmdmt,
+                         phi.formula = ~ Plants + DayAmdmt,
+                         formula_null = ~ 1,
+                         phi.formula_null = ~ 1,
+                         data = subsoil)
 
 temp_sing <- differentialTest(formula = ~ DayAmdmt,
                               phi.formula = ~ DayAmdmt,
@@ -46,6 +52,7 @@ test_that("differentialTest works", {
   expect_is(temp_sing, "list")
   expect_is(temp_nonphylo, "list")
   expect_is(temp_noinit, "list")
+  expect_is(temp_noinit_sing, "list")
 })
 
 test_that("differentialTest works without phyloseq", {

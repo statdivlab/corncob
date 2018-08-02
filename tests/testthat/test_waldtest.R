@@ -19,3 +19,7 @@ out <- bbdml(formula = cbind(W, M - W) ~ X1,
 test_that("waldtest works", {
   expect_is(waldtest(out), "matrix")
 })
+
+test_that("waldtest can break", {
+  expect_error(waldtest(c(1,2,3)))
+})

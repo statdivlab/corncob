@@ -4,9 +4,10 @@
 \alias{differentialTest}
 \title{Identify differentially-abundant and differentially-variable taxa}
 \usage{
-differentialTest(formula, phi.formula, formula_null, phi.formula_null, data,
-  link = "logit", phi.link = "logit", fdr_cutoff = 0.05, fdr = "fdr",
-  ...)
+differentialTest(formula, phi.formula, formula_null, phi.formula_null,
+  data, sample_data = NULL, taxa_are_rows = TRUE, link = "logit",
+  phi.link = "logit", fdr_cutoff = 0.05, fdr = "fdr", inits = NULL,
+  inits_null_mu = NULL, inits_null_phi = NULL, ...)
 }
 \arguments{
 \item{formula}{Formula for mean, without response}
@@ -17,7 +18,11 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null, data,
 
 \item{phi.formula_null}{Formula for overdispersion under null, without response}
 
-\item{data}{Data frame or \code{phyloseq} object}
+\item{data}{Data frame or matrix of count data.  Alternatively, a \code{phyloseq} object}
+
+\item{sample_data}{Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates.}
+
+\item{taxa_are_rows}{Boolean. Optional. If \code{data} is a data frame or matrix, this indicates whether taxa are rows. Defaults to \code{TRUE}.}
 
 \item{link}{Link function for mean, defaults to "logit"}
 
@@ -27,6 +32,12 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null, data,
 
 \item{fdr}{False discovery rate control method, defaults to "fdr"}
 
+\item{inits}{Initializations for the unrestricted model to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
+
+\item{inits_null_mu}{Initializations for model restricted under \code{formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
+
+\item{inits_null_phi}{Initializations for model restricted under \code{phi.formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
+
 \item{...}{Additional arguments for \code{\link{bbdml}}}
 }
 \value{
@@ -34,4 +45,7 @@ List of differentially-abundant taxa and differentially-variable taxa
 }
 \description{
 Identify differentially-abundant and differentially-variable taxa
+}
+\details{
+Note that if you are testing a single covariate, this function will use a Wald test. If you are testing multiple covariates, this function will use a likelihood ratio test. If you are testing multiple variables. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null_mu} or \code{inits_null_phi}.
 }

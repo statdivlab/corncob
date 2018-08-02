@@ -4,9 +4,9 @@
 \alias{differentialTest}
 \title{Identify differentially-abundant and differentially-variable taxa}
 \usage{
-differentialTest(formula, phi.formula, formula_null, phi.formula_null, data,
-  link = "logit", phi.link = "logit", fdr_cutoff = 0.05, fdr = "fdr",
-  ...)
+differentialTest(formula, phi.formula, formula_null, phi.formula_null,
+  data, link = "logit", phi.link = "logit", fdr_cutoff = 0.05,
+  fdr = "fdr", ...)
 }
 \arguments{
 \item{formula}{Formula for mean, without response}
@@ -17,7 +17,7 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null, data,
 
 \item{phi.formula_null}{Formula for overdispersion under null, without response}
 
-\item{data}{Data frame or \code{phyloseq} object}
+\item{data}{Data frame, matrix, or \code{phyloseq} object}
 
 \item{link}{Link function for mean, defaults to "logit"}
 
@@ -34,4 +34,7 @@ List of differentially-abundant taxa and differentially-variable taxa
 }
 \description{
 Identify differentially-abundant and differentially-variable taxa
+}
+\details{
+Note that if you are testing a single covariate, this function will use a Wald test. If you are testing multiple covariates, this function will use a likelihood ratio test.
 }

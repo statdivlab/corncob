@@ -4,12 +4,14 @@
 #' @param phi.formula Formula for overdispersion, without response
 #' @param formula_null Formula for mean under null, without response
 #' @param phi.formula_null Formula for overdispersion under null, without response
-#' @param data Data frame or \code{phyloseq} object
+#' @param data Data frame, matrix, or \code{phyloseq} object
 #' @param link Link function for mean, defaults to "logit"
 #' @param phi.link Link function for overdispersion, defaults to "logit"
 #' @param fdr_cutoff Desired type 1 error rate
 #' @param fdr False discovery rate control method, defaults to "fdr"
 #' @param ... Additional arguments for \code{\link{bbdml}}
+#'
+#' @details Note that if you are testing a single covariate, this function will use a Wald test. If you are testing multiple covariates, this function will use a likelihood ratio test.
 #'
 #' @return List of differentially-abundant taxa and differentially-variable taxa
 #' @export
@@ -34,7 +36,14 @@ differentialTest <- function(formula, phi.formula,
     # Set up response
     out <- matrix(NA, ncol = 3, nrow = nrow(phyloseq::otu_table(data)))
     rownames(out) <- rownames(phyloseq::otu_table(data))
-    colnames(out) <- c("DA","DV","Warning")
+  } else if (is.matrix(data) || is.data.frame(data)) {
+    out <- matrix(NA, ncol = 3, nrow = nrow(data))
+    rownames(out) <- rownames(data)
+  } else {
+    stop("Input must be either data frame, matrix, or phyloseq object!")
+  }
+
+  colnames(out) <- c("DA","DV","Warning")
 
     # Loop through OTU/taxa
     for (i in 1:nrow(out)) {
@@ -53,10 +62,52 @@ differentialTest <- function(formula, phi.formula,
       # phi model matrix
       X.bstar_null_i <- stats::model.matrix(object = phi.formula_null, data = data_i)
 
-      ### TODO
       if (ncol(X.b_i) - ncol(X.b_null_i) > 1 || ncol(X.bstar_i) - ncol(X.bstar_null_i) > 1) {
-        stop("This function is in beta. \n It is currently only implemented for testing a single covariate in each link function.")
-      }
+        # Begin multiple testing if
+
+        # Fit unrestricted model
+        fit_unr <- try(bbdml(formula = formula_i, phi.formula = phi.formula,
+                             data = data_i, link = link, phi.link = phi.link, ...),
+                       silent = TRUE)
+
+        # If doesn't load, don't need to test other model
+        if (class(fit_unr) == "try-error") {
+          out[i, 3] <- 1
+        } else {
+          # Fit restricted model  for mu
+          fit_res_mu <- try(bbdml(formula = formula_null_i, phi.formula = phi.formula,
+                               data = data_i, link = link, phi.link = phi.link, ...),
+                         silent = TRUE)
+          p.val_mu <- try(lrtest(fit_res_mu, fit_unr), silent = TRUE)
+
+          # Fit restricted model for phi
+          fit_res_phi <- try(bbdml(formula = formula_i, phi.formula = phi.formula_null,
+                                  data = data_i, link = link, phi.link = phi.link, ...),
+                            silent = TRUE)
+          p.val_phi <- try(lrtest(fit_res_phi, fit_unr), silent = TRUE)
+
+          # Begin testing fit_res_mu
+          if (class(fit_res_mu) == "try-error" || class(p.val_mu) == "try-error") {
+            out[i, 3] <- 1
+          } else {
+            out[i, 1] <- lrtest(fit_res_mu, fit_unr)
+          } # if fit_res_mu or p.val breaks
+
+          # Begin testing fit_res_phi
+          if (class(fit_res_phi) == "try-error" || class(p.val_phi) == "try-error") {
+            out[i, 3] <- 1
+          } else {
+            out[i, 2] <- lrtest(fit_res_phi, fit_unr)
+          } # if fit_res_phi or p.val breaks
+
+          # Put a 0 if neither breaks
+          if (is.na(out[i, 3])) {
+            out[i, 3] <- 0
+          } # end if need to replace warning with 0
+
+        } # end else after testing that fit_unr fit
+
+      } # End multiple testing if
 
       # Fit unrestricted model
       fit_unr <- try(bbdml(formula = formula_i, phi.formula = phi.formula,
@@ -83,9 +134,4 @@ differentialTest <- function(formula, phi.formula,
 
     return(list("p" = out, "p_fdr" = post_fdr,
                 "DA" = DA_vec, "DV" = DV_vec, "warning" = warning_vec))
-
-  } else { ### This closes phyloseq if
-    stop("This function is in beta. \n It is currently only implemented for phyloseq objects.")
-  }
-
 }

@@ -15,6 +15,13 @@ temp <- differentialTest(formula = ~ Plants + DayAmdmt,
                          inits_null_mu = rbind(rep(0.01, 4)),
                          inits_null_phi = rbind(rep(0.01, 4)))
 
+# Add this to cause some warnings and check those
+temp_noinit <- differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~ 1,
+                                phi.formula_null = ~ 1,
+                                data = subsoil)
+
 temp_sing <- differentialTest(formula = ~ DayAmdmt,
                               phi.formula = ~ DayAmdmt,
                               formula_null = ~ 1,
@@ -38,6 +45,7 @@ test_that("differentialTest works", {
   expect_is(temp, "list")
   expect_is(temp_sing, "list")
   expect_is(temp_nonphylo, "list")
+  expect_is(temp_noinit, "list")
 })
 
 test_that("differentialTest works without phyloseq", {
@@ -47,4 +55,13 @@ test_that("differentialTest works without phyloseq", {
 
 test_that("otu_to_taxonomy works", {
   expect_is(otu_to_taxonomy(temp$DA, soil_phylo), "character")
+})
+
+test_that("requires data frame, matrix, or phyloseq", {
+  expect_error(differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~ 1,
+                                phi.formula_null = ~ 1,
+                                data = c(1,2,3),
+                                inits = rbind(rep(.01, 4))))
 })

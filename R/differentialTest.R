@@ -112,25 +112,19 @@ differentialTest <- function(formula, phi.formula,
                             silent = TRUE)
           p.val_phi <- try(lrtest(fit_res_phi, fit_unr), silent = TRUE)
 
-          # Begin testing fit_res_mu
-          if (class(fit_res_mu) == "try-error" || class(p.val_mu) == "try-error") {
+          # Begin testing  for try_error
+          if ("try-error" %in% c(class(fit_res_mu), class(p.val_mu), class(fit_res_phi), class(p.val_phi))) {
             out[i, 3] <- 1
           } else {
-            out[i, 1] <- lrtest(fit_res_mu, fit_unr)
+            out[i, 3] <- 0
           } # if fit_res_mu or p.val breaks
 
-          # Begin testing fit_res_phi
-          if (class(fit_res_phi) == "try-error" || class(p.val_phi) == "try-error") {
-            out[i, 3] <- 1
-          } else {
-            out[i, 2] <- lrtest(fit_res_phi, fit_unr)
-          } # if fit_res_phi or p.val breaks
-
-          # Put a 0 if neither breaks
-          if (is.na(out[i, 3])) {
-            out[i, 3] <- 0
-          } # end if need to replace warning with 0
-
+          if (class(p.val_mu) != "try-error") {
+            out[i, 1] <- p.val_mu
+          }
+          if (class(p.val_phi) != "try-error") {
+            out[i, 2] <- p.val_phi
+          }
         } # end else after testing that fit_unr fit
         # End multiple covariates LRT if
       } else {

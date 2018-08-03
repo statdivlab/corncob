@@ -43,7 +43,7 @@ differentialTest <- function(formula, phi.formula,
   if ("phyloseq" %in% class(data)) {
     # Set up response
     out <- matrix(NA, ncol = 3, nrow = length(phyloseq::taxa_names(data)))
-    rownames(out) <- rownames(phyloseq::otu_table(data))
+    rownames(out) <- phyloseq::taxa_names(data)
   } else if (is.matrix(data) || is.data.frame(data)) {
 
     # use phyloseq

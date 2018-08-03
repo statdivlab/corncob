@@ -14,14 +14,11 @@
 #' @export
 convert_phylo <- function(data, select) {
   subsamp <- phyloseq::prune_taxa(select, data)
-  if (taxa_are_rows(data)) {
-    W_tmp <- phyloseq::otu_table(subsamp)@.Data
-  } else {
-    W_tmp <- t(phyloseq::otu_table(subsamp)@.Data)
-  }
+  W_tmp <- matrix(phyloseq::otu_table(subsamp)@.Data, ncol = 1)
+
 
   out <- data.frame(W = W_tmp,
                     M = phyloseq::sample_sums(data),
-                    as.matrix(phyloseq::sample_data(subsamp)))
+                    data.frame(phyloseq::sample_data(subsamp)))
   return(out)
 }

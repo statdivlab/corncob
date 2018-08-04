@@ -43,8 +43,8 @@ differentialTest <- function(formula, phi.formula,
   # Convert phyloseq objects
   if ("phyloseq" %in% class(data)) {
     # Set up response
-    out <- matrix(NA, ncol = 3, nrow = nrow(phyloseq::otu_table(data)))
-    rownames(out) <- rownames(phyloseq::otu_table(data))
+    out <- matrix(NA, ncol = 3, nrow = length(phyloseq::taxa_names(data)))
+    rownames(out) <- phyloseq::taxa_names(data)
   } else if (is.matrix(data) || is.data.frame(data)) {
 
     # use phyloseq
@@ -59,8 +59,8 @@ differentialTest <- function(formula, phi.formula,
     # Make phyloseq object
     data <- phyloseq::phyloseq(OTU, sampledata)
     # Set up response
-    out <- matrix(NA, ncol = 3, nrow = nrow(phyloseq::otu_table(data)))
-    rownames(out) <- rownames(phyloseq::otu_table(data))
+    out <- matrix(NA, ncol = 3, nrow = length(phyloseq::taxa_names(data)))
+    rownames(out) <- phyloseq::taxa_names(data)
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")
   }

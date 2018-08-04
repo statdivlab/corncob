@@ -32,6 +32,7 @@ differentialTest <- function(formula, phi.formula,
                              inits_null_mu = NULL,
                              inits_null_phi = NULL,
                              ...) {
+
   # Record call
   call <- match.call(expand.dots = TRUE)
   # Record mu link
@@ -63,6 +64,32 @@ differentialTest <- function(formula, phi.formula,
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")
   }
+
+  # check to make sure inits is of the same length
+  if (!is.null(inits)) {
+    ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
+    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data))))
+    if (length(inits) != ncol1 + ncol2) {
+      stop("inits must match number of regression parameters in formula and phi.formula!")
+    }
+  }
+  # inits_null_mu
+  if (!is.null(inits_null_mu)) {
+    ncol1 <- ncol(stats::model.matrix(object = formula_null, data = data.frame(sample_data(data))))
+    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data))))
+    if (length(inits_null_mu) != ncol1 + ncol2) {
+      stop("init_null_mu must match number of regression parameters in formula_null and phi.formula!")
+    }
+  }
+  # inits_null_phi
+  if (!is.null(inits_null_phi)) {
+    ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
+    ncol2 <- ncol(stats::model.matrix(object = phi.formula_null, data = data.frame(sample_data(data))))
+    if (length(inits_null_phi) != ncol1 + ncol2) {
+      stop("init_null_phi must match number of regression parameters in formula and phi.formula_null!")
+    }
+  }
+
 
   colnames(out) <- c("DA","DV","Warning")
 

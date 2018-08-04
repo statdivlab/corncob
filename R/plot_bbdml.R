@@ -2,7 +2,7 @@
 #'
 #' @param x Output from \code{\link{bbdml}} of class \code{bbdml}.
 #' @param AA (Optional). Default \code{FALSE}. Boolean indicator for whether to plot on absolute abundance scale
-#' @param color (Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.
+#' @param color (Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples. Use a character vector to have \code{ggplot2} default.
 #' @param shape (Optional). Default \code{NULL}. The sample variable to map to different shapes. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.
 #' @param facet (Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.
 #' @param title (Optional). Default NULL. Character string. The main title for the graphic.
@@ -48,6 +48,7 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
   )
 
   my_ord_str <- ""
+  custom_color <- custom_shape <- FALSE
   color_name <- shape_name <- NULL
   if (!is.null(color)) {
     if (length(color) == 1) {
@@ -55,11 +56,14 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
       color_name <- color
       my_ord_str <- paste(my_ord_str, df[[color]], sep = "_")
     } else if (length(color) == nrow(df)) {
-      df[[color]] <- color
+      df[["color"]] <- color
+      color <- color_name <- "color"
+      custom_color <- TRUE
     } else {
       stop("color must either match a variable or be a custom vector of correct length!")
     }
   } # End if (!is.null(color))
+
 
   if (!is.null(shape)) {
     if (length(shape) == 1) {
@@ -67,7 +71,9 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
       shape_name <- shape
       my_ord_str <- paste(my_ord_str, df[[shape]], sep = "_")
     } else if (length(shape) == nrow(df)) {
-      df[[shape]] <- shape
+      df[["shape"]] <- shape
+      shape <- shape_name <- "shape"
+      custom_shape <- TRUE
     } else {
       stop("shape must either match a variable or be a custom vector of correct length!")
     }
@@ -90,6 +96,13 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
     ggplot2::labs(title = title, x = "", y = ylab_tmp, colour = color_name, shape = shape_name) +
     ggplot2::theme_bw() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+
+  if (custom_color) {
+    my_gg <- my_gg + ggplot2::guides(colour = FALSE)
+  }
+  if (custom_shape) {
+    my_gg <- my_gg + ggplot2::scale_shape_identity()
+  }
 
 
   if (!is.null(facet)) {

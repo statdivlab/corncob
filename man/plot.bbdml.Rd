@@ -12,7 +12,7 @@
 
 \item{AA}{(Optional). Default \code{FALSE}. Boolean indicator for whether to plot on absolute abundance scale}
 
-\item{color}{(Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.}
+\item{color}{(Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples. Use a character vector to have \code{ggplot2} default.}
 
 \item{shape}{(Optional). Default \code{NULL}. The sample variable to map to different shapes. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.}
 

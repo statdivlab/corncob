@@ -1,9 +1,12 @@
 #' Plotting function
 #'
-#' @param x Output from \code{\link{bbdml}}
-#' @param ... See details
-#'
-#' @details ... can include boolean indicator called AA for whether to plot on absolute abundance scale, which defaults to FALSE. It can also include "color", a string of a covariate in the model data, if you want the plot to be colored by color.
+#' @param x Output from \code{\link{bbdml}} of class \code{bbdml}.
+#' @param AA (Optional). Default \code{FALSE}. Boolean indicator for whether to plot on absolute abundance scale
+#' @param color (Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples. Use a character vector to have \code{ggplot2} default.
+#' @param shape (Optional). Default \code{NULL}. The sample variable to map to different shapes. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.
+#' @param facet (Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.
+#' @param title (Optional). Default NULL. Character string. The main title for the graphic.
+#' @param ... There are no optional parameters at this time.
 #'
 #' @return Model plot
 #'
@@ -12,14 +15,10 @@
 #' TODO
 #' }
 #' @export
-plot.bbdml <- function(x, ...) {
-  input <- match.call(expand.dots = TRUE)
+plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, ...) {
+  # input <- match.call(expand.dots = TRUE)
   mod <- x
-  if (is.null(input$AA)) {
-    input$AA <- FALSE
-  }
 
-  AA <- input$AA
   mu_est <- mod$mu.resp
   phi_est <- mod$phi.resp
   M <- mod$M
@@ -32,111 +31,82 @@ plot.bbdml <- function(x, ...) {
     ymin[i] <- HPD$lower
     ymax[i] <- HPD$upper
   }
+  resp <- W
   if (!AA) {
     ymin <- ymin/M
     ymax <- ymax/M
+    resp <- W/M
   }
-  # When doing RA plot
-  # If we want to create a CI for mu, uncomment (and move)
 
-  # ginv <- switch(x$link, "logit" = invlogit)
-  # g <- switch(x$link, "logit" = logit)
-  #
-  # # X
-  # X_mu <- x$X.mu
-  # # variance of beta - in Wald Test as well
-  # covMat <- try(chol2inv(chol(hessian(mod))), silent = TRUE)
-  # if (class(covMat) == "try-error") {
-  #   stop("Singular Hessian!")
-  # }
-  # mu_se <- sqrt(diag(X_mu %*% covMat[1:x$np.mu,1:x$np.mu] %*% t(X_mu)))
-  # ymin <- ginv(g(x$mu.resp) + qnorm(.025)*mu_se)
-  # ymax <- ginv(g(x$mu.resp) + qnorm(.975)*mu_se)
+  samp_names <- names(W)
+  dat_noNA <- mod$dat[samp_names,]
 
-  samp_names <- rownames(x$dat)
+  df <- data.frame(RA = resp,
+                      samples = samp_names,
+                      ymin = ymin,
+                      ymax = ymax
+  )
 
-
-  # Fix for global bindings warnings
-  index <- NULL
-  RA <- NULL
-
-  if (!is.null(input$color)) {
-    color <- factor(mod$dat[[input$color]])
-    color_name <- input$color
-    if (!AA) {
-      df_RA <- data.frame(RA = W/M,
-                          E_RA = mu_est,
-                          SE_RA = sqrt(mu_est*(1 - mu_est)*(1 + ((M - 1)*phi_est))/M),
-                          color = color,
-                          #index = order(order(color)),
-                          index = samp_names,
-                          ymin = ymin,
-                          ymax = ymax
-      )
-      ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA, color = color, group = color)) +
-        ggplot2::geom_point(ggplot2::aes(color = color, group = color)) +
-        #ggplot2::geom_point(ggplot2::aes(x = index, y = E_RA, color = color), pch = 2) +
-        ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax, color = color), width = .2,
-                               position = ggplot2::position_dodge(.05)) +
-        ggplot2::labs(x = "Sample", y = "Relative Abundance", title = "Model Fit", colour = color_name) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), plot.title = ggplot2::element_text(hjust = 0.5))
+  my_ord_str <- ""
+  custom_color <- custom_shape <- FALSE
+  color_name <- shape_name <- NULL
+  if (!is.null(color)) {
+    if (length(color) == 1) {
+      df[[color]] <- factor(dat_noNA[[color]])
+      color_name <- color
+      my_ord_str <- paste(my_ord_str, df[[color]], sep = "_")
+    } else if (length(color) == nrow(df)) {
+      df[["color"]] <- color
+      color <- color_name <- "color"
+      custom_color <- TRUE
     } else {
-      df_RA <- data.frame(RA = W,
-                          E_RA = mu_est*M,
-                          SE_RA = sqrt(M*mu_est*(1 - mu_est)*(1 + ((M - 1)*phi_est))),
-                          color = color,
-                          #index = order(order(color)),
-                          index = samp_names,
-                          ymin = ymin,
-                          ymax = ymax
-      )
-      ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA, color = color, group = color)) +
-        ggplot2::geom_point(ggplot2::aes(color = color, group = color)) +
-        #ggplot2::geom_point(ggplot2::aes(x = index, y = E_RA, color = color), pch = 2) +
-        ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax, color = color), width = .2,
-                               position = ggplot2::position_dodge(.05)) +
-        ggplot2::labs(x = "Sample", y = "Absolute Abundance", title = "Model Fit", colour = color_name) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), plot.title = ggplot2::element_text(hjust = 0.5))
+      stop("color must either match a variable or be a custom vector of correct length!")
     }
-  } else {
-    if (!AA) {
-      df_RA <- data.frame(RA = W/M,
-                          E_RA = mu_est,
-                          SE_RA = sqrt(mu_est*(1 - mu_est)*(1 + ((M - 1)*phi_est))/M),
-                          #index = 1:length(M),
-                          index = samp_names,
-                          ymin = ymin,
-                          ymax = ymax
-      )
+  } # End if (!is.null(color))
 
-      ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA)) +
-        ggplot2::geom_point() +
-        #ggplot2::geom_point(ggplot2::aes(x = index, y = E_RA), pch = 2) +
-        ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax), width = .2,
-                               position = ggplot2::position_dodge(.05)) +
-        ggplot2::labs(x = "Sample", y = "Relative Abundance", title = "Model Fit") +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), plot.title = ggplot2::element_text(hjust = 0.5))
+
+  if (!is.null(shape)) {
+    if (length(shape) == 1) {
+      df[[shape]] <- factor(dat_noNA[[shape]])
+      shape_name <- shape
+      my_ord_str <- paste(my_ord_str, df[[shape]], sep = "_")
+    } else if (length(shape) == nrow(df)) {
+      df[["shape"]] <- shape
+      shape <- shape_name <- "shape"
+      custom_shape <- TRUE
     } else {
-      df_RA <- data.frame(RA = W,
-                          E_RA = mu_est*M,
-                          SE_RA = sqrt(M*mu_est*(1 - mu_est)*(1 + ((M - 1)*phi_est))),
-                          #index = 1:length(M),
-                          index = samp_names,
-                          ymin = ymin,
-                          ymax = ymax
-      )
-
-      ggplot2::ggplot(df_RA, ggplot2::aes(x = index, y = RA)) +
-        ggplot2::geom_point() +
-        #ggplot2::geom_point(ggplot2::aes(x = index, y = E_RA), pch = 2) +
-        ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax), width = .2,
-                               position = ggplot2::position_dodge(.05)) +
-        ggplot2::labs(x = "Sample", y = "Absolute Abundance", title = "Model Fit") +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), plot.title = ggplot2::element_text(hjust = 0.5))
+      stop("shape must either match a variable or be a custom vector of correct length!")
     }
+  } # End if (!is.null(shape))
+
+  if (!is.null(facet)) {
+    df[[facet]] <- factor(dat_noNA[[facet]])
   }
+
+  # reorder
+  my_ord_str <- paste(my_ord_str, df$samples, sep = "_")
+  df$order <- factor(df$samples, levels = df$samples[order(my_ord_str)])
+
+  ylab_tmp <- ifelse(!AA, "Relative Abundance", "Absolute Abundance")
+
+  aes_map <- ggplot2::aes_string(x = "order", y = "RA", colour = color, shape = shape, labs = "samples")
+  my_gg <- ggplot2::ggplot(df, aes_map) +
+    ggplot2::geom_point() +
+    ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax), width = .2) +
+    ggplot2::labs(title = title, x = "", y = ylab_tmp, colour = color_name, shape = shape_name) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+
+  if (custom_color) {
+    my_gg <- my_gg + ggplot2::guides(colour = FALSE)
+  }
+  if (custom_shape) {
+    my_gg <- my_gg + ggplot2::scale_shape_identity()
+  }
+
+
+  if (!is.null(facet)) {
+    my_gg <- my_gg + ggplot2::facet_grid(paste0("~", facet), scales = "free_x", space = "free_x", labeller = ggplot2::label_both)
+  }
+  my_gg
 }

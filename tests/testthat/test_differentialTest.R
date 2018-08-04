@@ -72,3 +72,24 @@ test_that("requires data frame, matrix, or phyloseq", {
                                 data = c(1,2,3),
                                 inits = rbind(rep(.01, 4))))
 })
+
+test_that("inits require correct length", {
+  expect_error(differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~ 1,
+                                phi.formula_null = ~ 1,
+                                data = subsoil,
+                                inits = rbind(rep(.01, 6))))
+  expect_error(differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~ 1,
+                                phi.formula_null = ~ 1,
+                                data = subsoil,
+                                inits_null_mu = rbind(rep(.01, 4))))
+  expect_error(differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~ 1,
+                                phi.formula_null = ~ 1,
+                                data = subsoil,
+                                inits_null_phi = rbind(rep(.01, 4))))
+})

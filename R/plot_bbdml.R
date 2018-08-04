@@ -38,7 +38,8 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
     resp <- W/M
   }
 
-  samp_names <- rownames(x$dat)
+  samp_names <- names(W)
+  dat_noNA <- mod$dat[samp_names,]
 
   df <- data.frame(RA = resp,
                       samples = samp_names,
@@ -50,7 +51,7 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
   color_name <- shape_name <- NULL
   if (!is.null(color)) {
     if (length(color) == 1) {
-      df[[color]] <- factor(mod$dat[[color]])
+      df[[color]] <- factor(dat_noNA[[color]])
       color_name <- color
       my_ord_str <- paste(my_ord_str, df[[color]], sep = "_")
     } else if (length(color) == nrow(df)) {
@@ -62,7 +63,7 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
 
   if (!is.null(shape)) {
     if (length(shape) == 1) {
-      df[[shape]] <- factor(mod$dat[[shape]])
+      df[[shape]] <- factor(dat_noNA[[shape]])
       shape_name <- shape
       my_ord_str <- paste(my_ord_str, df[[shape]], sep = "_")
     } else if (length(shape) == nrow(df)) {
@@ -72,13 +73,17 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
     }
   } # End if (!is.null(shape))
 
+  if (!is.null(facet)) {
+    df[[facet]] <- factor(dat_noNA[[facet]])
+  }
+
   # reorder
   my_ord_str <- paste(my_ord_str, df$samples, sep = "_")
   df$order <- factor(df$samples, levels = df$samples[order(my_ord_str)])
 
   ylab_tmp <- ifelse(!AA, "Relative Abundance", "Absolute Abundance")
 
-  aes_map <- ggplot2::aes_string(x = "order", y = "resp", colour = color, shape = shape)
+  aes_map <- ggplot2::aes_string(x = "order", y = "RA", colour = color, shape = shape, labs = "samples")
   my_gg <- ggplot2::ggplot(df, aes_map) +
     ggplot2::geom_point() +
     ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax), width = .2) +
@@ -88,7 +93,7 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
 
 
   if (!is.null(facet)) {
-    my_gg <- my_gg + ggplot2::facet_grid(paste0("~", facet), scales = "free_x", space = "free_x")
+    my_gg <- my_gg + ggplot2::facet_grid(paste0("~", facet), scales = "free_x", space = "free_x", labeller = ggplot2::label_both)
   }
   my_gg
 }

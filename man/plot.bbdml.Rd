@@ -4,21 +4,29 @@
 \alias{plot.bbdml}
 \title{Plotting function}
 \usage{
-\method{plot}{bbdml}(x, ...)
+\method{plot}{bbdml}(x, AA = FALSE, color = NULL, shape = NULL,
+  facet = NULL, title = NULL, ...)
 }
 \arguments{
-\item{x}{Output from \code{\link{bbdml}}}
+\item{x}{Output from \code{\link{bbdml}} of class \code{bbdml}.}
 
-\item{...}{See details}
+\item{AA}{(Optional). Default \code{FALSE}. Boolean indicator for whether to plot on absolute abundance scale}
+
+\item{color}{(Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.}
+
+\item{shape}{(Optional). Default \code{NULL}. The sample variable to map to different shapes. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.}
+
+\item{facet}{(Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.}
+
+\item{title}{(Optional). Default NULL. Character string. The main title for the graphic.}
+
+\item{...}{There are no optional parameters at this time.}
 }
 \value{
 Model plot
 }
 \description{
 Plotting function
-}
-\details{
-... can include boolean indicator called AA for whether to plot on absolute abundance scale, which defaults to FALSE. It can also include "color", a string of a covariate in the model data, if you want the plot to be colored by color.
 }
 \examples{
 \dontrun{

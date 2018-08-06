@@ -36,6 +36,10 @@ test_that("bbdml S3 plotting works", {
   expect_error(plot(out, shape = c(1,2)))
 })
 
+test_that("bbdml print generic works", {
+  expect_is(print(bbdml), "NULL")
+})
+
 test_that("summary function works", {
   expect_is(summary(out), "summary.bbdml")
 })

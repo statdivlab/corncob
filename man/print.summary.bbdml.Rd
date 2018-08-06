@@ -14,16 +14,13 @@
 
 \item{signif.stars}{logical. If \code{TRUE}, `significance stars' are printed for each coefficient.}
 
-\item{...}{See details}
+\item{...}{No optional arguments are accepted at this time.}
 }
 \value{
 Model summary print
 }
 \description{
 Print summary function
-}
-\details{
-... TODO
 }
 \examples{
 \dontrun{

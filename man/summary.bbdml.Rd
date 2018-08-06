@@ -7,18 +7,15 @@
 \method{summary}{bbdml}(object, ...)
 }
 \arguments{
-\item{object}{Model fit output from \code{\link{bbdml}}}
+\item{object}{Object of class \code{bbdml}}
 
-\item{...}{See details}
+\item{...}{No optional arguments are accepted at this time.}
 }
 \value{
 Model summary
 }
 \description{
 Summary function
-}
-\details{
-... TODO
 }
 \examples{
 \dontrun{

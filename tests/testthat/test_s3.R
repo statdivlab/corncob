@@ -37,7 +37,7 @@ test_that("bbdml S3 plotting works", {
 })
 
 test_that("bbdml print generic works", {
-  expect_is(print(bbdml), "NULL")
+  expect_is(print(out), "NULL")
 })
 
 test_that("summary function works", {

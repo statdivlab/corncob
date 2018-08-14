@@ -70,16 +70,14 @@ bbdml <- function(formula, phi.formula, data,
 
   # Generate inits
   if (is.null(inits)) {
-    inits <- suppressWarnings(genInits(nstart = nstart,
-                                       W = W,
+    inits <- suppressWarnings(genInits(W = W,
                                        M = M,
                                        X = X.b,
                                        X_star = X.bstar,
                                        np = np,
                                        npstar = npstar,
                                        link = link,
-                                       phi.link = phi.link,
-                                       logpar = TRUE))
+                                       phi.link = phi.link))
   } else {
     nstart <- nrow(inits)
     # Or test feasibility of given inits. Same check as in objfun

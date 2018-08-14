@@ -217,8 +217,7 @@ fullAnalysis <- differentialTest(formula = ~ DayAmdmt,
                                  formula_null = ~ 1,
                                  phi.formula_null = ~ 1,
                                  data = soil,
-                                 fdr_cutoff = 0.05,
-                                 inits = rbind(rep(.01, 4)))
+                                 fdr_cutoff = 0.05)
 ```
 
 We can see a list of differentially-abundant taxa using: 
@@ -246,7 +245,7 @@ otu_to_taxonomy(OTU = fullAnalysis$DA, data = soil)
 otu_to_taxonomy(OTU = fullAnalysis$DV, data = soil)
 ```
 
-In this case, we identified 4 taxa that are differentially-variable across \texttt{DayAmdmt} (out of the 40 taxa tested).
+In this case, we identified 5 taxa that are differentially-variable across \texttt{DayAmdmt} (out of the 40 taxa tested).
 
 
 We can examine a subset of the p-values of our tests using:

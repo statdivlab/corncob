@@ -4,16 +4,9 @@
 \alias{genInits}
 \title{Generate initialization for optimization}
 \usage{
-genInits(nstart, max.call = NULL, temperature = NULL, W, M, X, X_star,
-  np, npstar, link, phi.link, logpar, lower = NULL, upper = NULL)
+genInits(W, M, X, X_star, np, npstar, link, phi.link)
 }
 \arguments{
-\item{nstart}{Number of starts for optimization}
-
-\item{max.call}{TODO}
-
-\item{temperature}{TODO}
-
 \item{W}{absolute abundance}
 
 \item{M}{sample size}
@@ -29,12 +22,6 @@ genInits(nstart, max.call = NULL, temperature = NULL, W, M, X, X_star,
 \item{link}{Link function for mean}
 
 \item{phi.link}{Link function for overdispersion}
-
-\item{logpar}{Indicator of log-likelihood}
-
-\item{lower}{Lower bound for parameter values. Defaults to -20}
-
-\item{upper}{Upper bound for parameter values. Defaults to 20.}
 }
 \value{
 Matrix of initializations

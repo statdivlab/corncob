@@ -10,21 +10,20 @@ colnames(my_covariate) <- c("X1")
 
 test_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
 
-out <- genInits(nstart = 1, max.call = NULL, temperature = NULL,
-         W = my_counts, M = seq_depth,
+out <- genInits(W = my_counts, M = seq_depth,
          X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
          np = 2, npstar = 2,
-         link = "logit", phi.link = "logit", logpar = TRUE)
+         link = "logit", phi.link = "logit")
 
 test_that("genInits works", {
   expect_is(out, "matrix")
 })
 
 
-test_that("genInits breaks properly", {
-  expect_error(suppressWarnings(genInits(1, W = rep(c(1000,0), each = 10), M = seq_depth,
-                        X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
-                        np = 2, npstar = 2,
-                        link = "logit", phi.link = "fishZ", logpar = TRUE, max.call = 100)))
-})
+# test_that("genInits breaks properly", {
+#   expect_error(suppressWarnings(genInits(W = rep(c(1000,0), each = 10), M = seq_depth,
+#                         X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
+#                         np = 2, npstar = 2,
+#                         link = "logit", phi.link = "fishZ")))
+# })
 

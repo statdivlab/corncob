@@ -53,6 +53,13 @@ temp_sing <- differentialTest(formula = ~ DayAmdmt,
                               data = subsoil,
                               inits = rbind(rep(.01, 4)))
 
+temp_badinits3 <- differentialTest(formula = ~ DayAmdmt,
+                              phi.formula = ~ DayAmdmt,
+                              formula_null = ~ 1,
+                              phi.formula_null = ~ 1,
+                              data = subsoil,
+                              inits = rbind(rep(Inf, 4)))
+
 mydat <- phyloseq::get_taxa(subsoil)
 mysampdat <- phyloseq::get_variable(subsoil)
 
@@ -73,6 +80,7 @@ test_that("differentialTest works", {
   expect_is(temp_noinit_sing, "list")
   expect_is(temp_badinits1, "list")
   expect_is(temp_badinits2, "list")
+  expect_is(temp_badinits3, "list")
 })
 
 test_that("differentialTest works without phyloseq", {

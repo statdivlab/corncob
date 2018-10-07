@@ -16,7 +16,7 @@
 #' @param inits_null_phi Initializations for model restricted under \code{phi.formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.
 #' @param ... Additional arguments for \code{\link{bbdml}}
 #'
-#' @details Note that if you are testing a single covariate, this function will use a Wald test. If you are testing multiple covariates, this function will use a likelihood ratio test. If you are testing multiple variables. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null_mu} or \code{inits_null_phi}.
+#' @details Note that if you are testing a single covariate, this function will use a Wald test. If you are testing multiple covariates, this function will use a likelihood ratio test. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null_mu} or \code{inits_null_phi}.
 #'
 #' @return List of differentially-abundant taxa and differentially-variable taxa
 #' @export

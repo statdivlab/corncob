@@ -162,7 +162,7 @@ differentialTest <- function(formula, phi.formula,
                          inits = inits, ...),
                        silent = TRUE)
 
-        coef.table <- try(waldtest(fit_unr), silent = TRUE)
+        coef.table <- try(waldt(fit_unr), silent = TRUE)
 
         if (class(fit_unr) == "try-error" || class(coef.table) == "try-error") {
           out[i, 3] <- 1

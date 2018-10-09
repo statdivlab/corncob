@@ -181,7 +181,7 @@ Visually, the model with covariates seems to provide a much better fit to the da
 Let's use a likelihood ratio test to select our final model for this taxon. We want to test the null hypothesis that the likelihood of the model with covariates is equal to the likelihood of the model without covariates. To do this test, we use:
 
 ```{r}
-lrtest(corncob, corncob_da)
+lrtest(mod_null = corncob, mod = corncob_da)
 ```
 We obtain a p-value much smaller than a cut-off of 0.05. Therefore we conclude that there is a statistically significant difference in the likelihood of the two models. Thus, we probably want to use the model with covariates for this taxon.
 
@@ -216,7 +216,7 @@ da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                  phi.formula = ~ DayAmdmt,
                                  formula_null = ~ 1,
                                  phi.formula_null = ~ DayAmdmt,
-                                 test = "LRT", boot = FALSE,
+                                 test = "Wald", boot = FALSE,
                                  data = soil,
                                  fdr_cutoff = 0.05)
 ```
@@ -260,14 +260,14 @@ In this case, we identified `r length(dv_analysis$significant_taxa)` taxa that a
 We can examine a subset of the p-values of our tests using:
 
 ```{r}
-da_analysis$p[1:5,]
+da_analysis$p[1:5]
 ```
 
 
 We can examine a subset of the p-values after controlling for the false discovery rate using:
 
 ```{r}
-da_analysis$p_fdr[1:5,]
+da_analysis$p_fdr[1:5]
 ```
 
 where the values are now adjusted to control the false discovery rate at 0.05.
@@ -276,7 +276,7 @@ where the values are now adjusted to control the false discovery rate at 0.05.
 Finally, we can see a list of any taxa for which we were not able to fit a model using:
 
 ```{r}
-fullAnalysis$warning
+which(is.na(da_analysis$p)) %>% names
 ```
 
 In this case, we weren't able to fit \texttt{OTU.4206} automatically. It's worthwhile to investigate the OTU individually if this is the case. First let's check what phylum this represents.

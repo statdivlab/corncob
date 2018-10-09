@@ -15,8 +15,7 @@
 #' @param fdr_cutoff Desired type 1 error rate
 #' @param fdr False discovery rate control method, defaults to "fdr"
 #' @param inits Initializations for the unrestricted model to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.
-#' @param inits_null_mu Initializations for model restricted under \code{formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.
-#' @param inits_null_phi Initializations for model restricted under \code{phi.formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.
+#' @param inits_null Initializations for model restricted under the null to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.
 #' @param ... Additional arguments for \code{\link{bbdml}}
 #'
 #' @details Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null_mu} or \code{inits_null_phi}.
@@ -36,8 +35,7 @@ differentialTest <- function(formula, phi.formula,
                              fdr_cutoff = 0.05,
                              fdr = "fdr",
                              inits = NULL,
-                             inits_null_mu = NULL,
-                             inits_null_phi = NULL,
+                             inits_null = NULL,
                              ...) {
 
   # Record call
@@ -82,21 +80,14 @@ differentialTest <- function(formula, phi.formula,
     }
   }
   # inits_null_mu
-  if (!is.null(inits_null_mu)) {
+  if (!is.null(inits_null)) {
     ncol1 <- ncol(stats::model.matrix(object = formula_null, data = data.frame(sample_data(data))))
-    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data))))
-    if (length(inits_null_mu) != ncol1 + ncol2) {
-      stop("init_null_mu must match number of regression parameters in formula_null and phi.formula!")
-    }
-  }
-  # inits_null_phi
-  if (!is.null(inits_null_phi)) {
-    ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
     ncol2 <- ncol(stats::model.matrix(object = phi.formula_null, data = data.frame(sample_data(data))))
-    if (length(inits_null_phi) != ncol1 + ncol2) {
-      stop("init_null_phi must match number of regression parameters in formula and phi.formula_null!")
+    if (length(inits_null) != ncol1 + ncol2) {
+      stop("init_null must match number of regression parameters in formula_null and phi.formula_null!")
     }
   }
+
 
     # Loop through OTU/taxa
     for (i in 1:length(taxanames)) {
@@ -116,7 +107,7 @@ differentialTest <- function(formula, phi.formula,
       # Fit restricted model
       mod_null <- try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
                        data = data_i, link = link, phi.link = phi.link,
-                       inits = inits, ...), silent = TRUE)
+                       inits = inits_null, ...), silent = TRUE)
 
       if (!("try-error" %in% c(class(mod), class(mod_null)))) {
         # If both models fit, otherwise keep as NA

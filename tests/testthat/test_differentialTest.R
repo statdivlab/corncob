@@ -10,54 +10,51 @@ temp <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,
                          formula_null = ~ 1,
                          phi.formula_null = ~ 1,
-                         data = subsoil,
+                         data = subsoil, boot = FALSE, test = "LRT",
                          inits = rbind(rep(.01, 6)),
-                         inits_null_mu = rbind(rep(0.01, 4)),
-                         inits_null_phi = rbind(rep(0.01, 4)))
+                         inits_null = rbind(rep(0.01, 2)))
 
 temp_badinits1 <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,
                          formula_null = ~ 1,
                          phi.formula_null = ~ 1,
-                         data = subsoil,
+                         data = subsoil, boot = FALSE, test = "LRT",
                          inits = rbind(rep(Inf, 6)),
-                         inits_null_mu = rbind(rep(0.01, 4)),
-                         inits_null_phi = rbind(rep(0.01, 4)))
+                         inits_null = rbind(rep(0.01, 2)))
 
 temp_badinits2 <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,
                          formula_null = ~ 1,
                          phi.formula_null = ~ 1,
-                         data = subsoil,
+                         data = subsoil, boot = FALSE, test = "LRT",
                          inits = rbind(rep(.01, 6)),
-                         inits_null_mu = rbind(rep(Inf, 4)),
-                         inits_null_phi = rbind(rep(Inf, 4)))
+                         inits_null = rbind(rep(Inf, 2)))
 
 # Add this to cause some warnings and check those
 temp_noinit_sing <- differentialTest(formula = ~ DayAmdmt,
                                 phi.formula = ~ DayAmdmt,
                                 formula_null = ~ 1,
-                                phi.formula_null = ~ 1,
+                                phi.formula_null = ~ 1, boot = FALSE, test = "LRT",
                                 data = subsoil)
 
 temp_noinit <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,
                          formula_null = ~ 1,
-                         phi.formula_null = ~ 1,
+                         phi.formula_null = ~ 1, boot = FALSE, test = "LRT",
                          data = subsoil)
 
 temp_sing <- differentialTest(formula = ~ DayAmdmt,
                               phi.formula = ~ DayAmdmt,
                               formula_null = ~ 1,
                               phi.formula_null = ~ 1,
-                              data = subsoil,
+                              data = subsoil, boot = FALSE, test = "LRT",
                               inits = rbind(rep(.01, 4)))
 
 temp_badinits3 <- differentialTest(formula = ~ DayAmdmt,
                               phi.formula = ~ DayAmdmt,
                               formula_null = ~ 1,
                               phi.formula_null = ~ 1,
-                              data = subsoil,
+                              data = subsoil, boot = FALSE, test = "LRT",
                               inits = rbind(rep(Inf, 4)))
 
 mydat <- phyloseq::get_taxa(subsoil)
@@ -67,7 +64,7 @@ temp_nonphylo <- differentialTest(formula = ~ DayAmdmt,
                                               phi.formula = ~ DayAmdmt,
                                               formula_null = ~ 1,
                                               phi.formula_null = ~ 1,
-                                              data = mydat,
+                                              data = mydat, boot = FALSE, test = "LRT",
                                               sample_data = mysampdat,
                                               inits = rbind(rep(.01, 4)))
 
@@ -97,7 +94,7 @@ test_that("requires data frame, matrix, or phyloseq", {
                                 phi.formula = ~ DayAmdmt,
                                 formula_null = ~ 1,
                                 phi.formula_null = ~ 1,
-                                data = c(1,2,3),
+                                data = c(1,2,3), boot = FALSE, test = "LRT",
                                 inits = rbind(rep(.01, 4))))
 })
 
@@ -106,18 +103,12 @@ test_that("inits require correct length", {
                                 phi.formula = ~ DayAmdmt,
                                 formula_null = ~ 1,
                                 phi.formula_null = ~ 1,
-                                data = subsoil,
+                                data = subsoil, boot = FALSE, test = "LRT",
                                 inits = rbind(rep(.01, 6))))
   expect_error(differentialTest(formula = ~ DayAmdmt,
                                 phi.formula = ~ DayAmdmt,
                                 formula_null = ~ 1,
                                 phi.formula_null = ~ 1,
-                                data = subsoil,
-                                inits_null_mu = rbind(rep(.01, 4))))
-  expect_error(differentialTest(formula = ~ DayAmdmt,
-                                phi.formula = ~ DayAmdmt,
-                                formula_null = ~ 1,
-                                phi.formula_null = ~ 1,
-                                data = subsoil,
-                                inits_null_phi = rbind(rep(.01, 4))))
+                                data = subsoil, boot = FALSE, test = "LRT",
+                                inits_null = rbind(rep(.01, 4))))
 })

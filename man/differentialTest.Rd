@@ -7,8 +7,8 @@
 differentialTest(formula, phi.formula, formula_null, phi.formula_null,
   data, test, boot, B = 1000, sample_data = NULL,
   taxa_are_rows = TRUE, link = "logit", phi.link = "logit",
-  fdr_cutoff = 0.05, fdr = "fdr", inits = NULL,
-  inits_null_mu = NULL, inits_null_phi = NULL, ...)
+  fdr_cutoff = 0.05, fdr = "fdr", inits = NULL, inits_null = NULL,
+  ...)
 }
 \arguments{
 \item{formula}{Formula for mean, without response}
@@ -41,9 +41,7 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null,
 
 \item{inits}{Initializations for the unrestricted model to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
 
-\item{inits_null_mu}{Initializations for model restricted under \code{formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
-
-\item{inits_null_phi}{Initializations for model restricted under \code{phi.formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
+\item{inits_null}{Initializations for model restricted under the null to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
 
 \item{...}{Additional arguments for \code{\link{bbdml}}}
 }

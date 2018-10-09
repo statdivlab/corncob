@@ -21,7 +21,7 @@ test_that("waldt works", {
 })
 
 test_that("waldchisq works", {
-  expect_is(waldchisq(out, restriction = c(2,4)), "matrix")
+  expect_is(waldchisq(out, restrictions = c(2,4)), "numeric")
 })
 
 test_that("waldtest can break", {

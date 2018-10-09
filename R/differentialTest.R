@@ -50,8 +50,8 @@ differentialTest <- function(formula, phi.formula,
   # Convert phyloseq objects
   if ("phyloseq" %in% class(data)) {
     # Set up response
-    out <- matrix(NA, ncol = 3, nrow = length(phyloseq::taxa_names(data)))
-    rownames(out) <- phyloseq::taxa_names(data)
+    taxanames <- phyloseq::taxa_names(data)
+    pvals <- rep(NA, length(taxanames))
   } else if (is.matrix(data) || is.data.frame(data)) {
 
     # use phyloseq
@@ -99,10 +99,10 @@ differentialTest <- function(formula, phi.formula,
   }
 
     # Loop through OTU/taxa
-    for (i in 1:nrow(out)) {
+    for (i in 1:length(taxanames)) {
 
       # Subset data to only select that taxa
-      data_i <- convert_phylo(data, select = rownames(out)[i])
+      data_i <- convert_phylo(data, select = taxanames[i])
 
       # Update formula to match
       formula_i <- stats::update(formula, cbind(W, M) ~ .)
@@ -122,15 +122,27 @@ differentialTest <- function(formula, phi.formula,
         # If both models fit, otherwise keep as NA
         if (test == "Wald") {
           if (boot) {
-            pvals[i] <- pbWald(mod = mod, mod_null = mod_null, B = B)
+            tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
+            if (class(tmp) != "try-error") {
+              pvals[i] <- tmp
+            }
           } else {
-            pvals[i] <- waldchisq(mod = mod, mod_null = mod_null)
+            tmp <- try(waldchisq(mod = mod, mod_null = mod_null), silent = TRUE)
+            if (class(tmp) != "try-error") {
+              pvals[i] <- tmp
+            }
           }
         } else if (test == "LRT") {
           if (boot) {
-            pvals[i] <- pbLRT(mod = mod, mod_null = mod_null, B = B)
+            tmp <- try(pbLRT(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
+            if (class(tmp) != "try-error") {
+              pvals[i] <- tmp
+            }
           } else {
-            pvals[i] <- lrtest(mod = mod, mod_null = mod_null)
+            tmp <- try(lrtest(mod = mod, mod_null = mod_null), silent = TRUE)
+            if (class(tmp) != "try-error") {
+              pvals[i] <- tmp
+            }
           }
         }
       }

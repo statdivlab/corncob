@@ -81,7 +81,7 @@ waldchisq_test <- function(mod, restrictions, testonly = NULL) {
 
   cov_test <- covMat[index, index]
   par_test <- mod$param[index]
-  chi.val <- crossprod(par_test, chol2inv(chol(cov_test))) %*% par_test
+  chi.val <- c(crossprod(par_test, chol2inv(chol(cov_test))) %*% par_test)
   attr(chi.val, "df") <- length(index)
   return(chi.val)
 }
@@ -105,7 +105,10 @@ waldchisq <- function(mod, mod_null = NULL, restrictions = NULL, testonly = NULL
     restrictions <- getRestrictionTerms(mod = mod, mod_null = mod_null)
     testonly <- attr(restrictions, "testonly")
   }
-  chi.val <- waldchisq_test(mod, restrictions, testonly)
+  chi.val <- try(waldchisq_test(mod, restrictions, testonly), silent = TRUE)
+  if (class(chi.val) == "try-error") {
+    return(NA)
+  }
   dof.dif <- attr(chi.val, "df")
   return(stats::pchisq(chi.val, dof.dif, lower.tail = FALSE))
 }

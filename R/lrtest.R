@@ -1,18 +1,18 @@
 #' Likelihood ratio test
 #'
-#' @param mod1 model fit from bbdml, nested within \code{mod2}
-#' @param mod2 model fit from bbdml
+#' @param mod model fit from bbdml
+#' @param mod_null model fit from bbdml, nested within \code{mod}
 #'
-#' @return Matrix with likelihood ratio test statistic and p-value
+#' @return P-value.
 #'
 #' @examples
 #' \dontrun{
 #' TODO
 #' }
 #' @export
-lrtest <- function(mod1, mod2) {
-  dof.dif <- mod2$df.model - mod1$df.model
-  chi.val <- 2 * abs(mod2$logL - mod1$logL)
+lrtest <- function(mod, mod_null) {
+  dof.dif <- mod$df.model - mod_null$df.model
+  chi.val <- 2 * abs(mod$logL - mod_null$logL)
   pvalue <- stats::pchisq(chi.val, dof.dif, lower.tail = FALSE)
   return(pvalue)
 }

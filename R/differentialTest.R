@@ -5,6 +5,9 @@
 #' @param formula_null Formula for mean under null, without response
 #' @param phi.formula_null Formula for overdispersion under null, without response
 #' @param data Data frame or matrix of count data.  Alternatively, a \code{phyloseq} object
+#' @param test Character. Type of test. One of \code{"Wald"}, \code{"LRT"}
+#' @param boot Boolean. Defaults to \code{FALSE}. Indicator of whether or not to use parametric bootstrap algorithm.
+#' @param B Integer. Optional. Defaults to \code{NULL}. Number of bootstrap iterations. Ignored if \code{boot} is \code{FALSE}. Otherwise, if \code{NULL}, uses 1000.
 #' @param sample_data Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates.
 #' @param taxa_are_rows Boolean. Optional. If \code{data} is a data frame or matrix, this indicates whether taxa are rows. Defaults to \code{TRUE}.
 #' @param link Link function for mean, defaults to "logit"
@@ -16,13 +19,17 @@
 #' @param inits_null_phi Initializations for model restricted under \code{phi.formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.
 #' @param ... Additional arguments for \code{\link{bbdml}}
 #'
-#' @details Note that if you are testing a single covariate, this function will use a Wald test. If you are testing multiple covariates, this function will use a likelihood ratio test. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null_mu} or \code{inits_null_phi}.
+#' @details Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null_mu} or \code{inits_null_phi}.
 #'
-#' @return List of differentially-abundant taxa and differentially-variable taxa
+#' @return List of p-values and taxa names for test specified by contrast between formulas and formulas under the null.
 #' @export
 differentialTest <- function(formula, phi.formula,
                              formula_null, phi.formula_null,
-                             data, sample_data = NULL,
+                             data,
+                             test,
+                             boot,
+                             B = 1000,
+                             sample_data = NULL,
                              taxa_are_rows = TRUE,
                              link = "logit",
                              phi.link = "logit",
@@ -59,8 +66,9 @@ differentialTest <- function(formula, phi.formula,
     # Make phyloseq object
     data <- phyloseq::phyloseq(OTU, sampledata)
     # Set up response
-    out <- matrix(NA, ncol = 3, nrow = length(phyloseq::taxa_names(data)))
-    rownames(out) <- phyloseq::taxa_names(data)
+    taxanames <- phyloseq::taxa_names(data)
+    pvals <- rep(NA, length(taxanames))
+
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")
   }
@@ -90,9 +98,6 @@ differentialTest <- function(formula, phi.formula,
     }
   }
 
-
-  colnames(out) <- c("DA","DV","Warning")
-
     # Loop through OTU/taxa
     for (i in 1:nrow(out)) {
 
@@ -103,84 +108,39 @@ differentialTest <- function(formula, phi.formula,
       formula_i <- stats::update(formula, cbind(W, M) ~ .)
       formula_null_i <- stats::update(formula_null, cbind(W, M) ~ .)
 
-      # mu model matrix
-      X.b_i <- stats::model.matrix(object = formula_i, data = data_i)
-      # phi model matrix
-      X.bstar_i <- stats::model.matrix(object = phi.formula, data = data_i)
-      # mu model matrix under null
-      X.b_null_i <- stats::model.matrix(object = formula_null_i, data = data_i)
-      # phi model matrix
-      X.bstar_null_i <- stats::model.matrix(object = phi.formula_null, data = data_i)
+      # Fit unrestricted model
+      mod <- try(bbdml(formula = formula_i, phi.formula = phi.formula,
+                    data = data_i, link = link, phi.link = phi.link,
+                    inits = inits, ...), silent = TRUE)
 
-      if (ncol(X.b_i) - ncol(X.b_null_i) > 1 || ncol(X.bstar_i) - ncol(X.bstar_null_i) > 1) {
-        # Begin multiple testing if
+      # Fit restricted model
+      mod_null <- try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
+                       data = data_i, link = link, phi.link = phi.link,
+                       inits = inits, ...), silent = TRUE)
 
-        # Fit unrestricted model
-        fit_unr <- try(bbdml(formula = formula_i, phi.formula = phi.formula,
-                             data = data_i, link = link, phi.link = phi.link,
-                             inits = inits, ...),
-                       silent = TRUE)
-
-        # If doesn't load, don't need to test other model
-        if (class(fit_unr) == "try-error") {
-          out[i, 3] <- 1
-        } else {
-          # Fit restricted model  for mu
-          fit_res_mu <- try(bbdml(formula = formula_null_i, phi.formula = phi.formula,
-                               data = data_i, link = link, phi.link = phi.link,
-                               inits = inits_null_mu, ...),
-                         silent = TRUE)
-          p.val_mu <- try(lrtest(fit_res_mu, fit_unr), silent = TRUE)
-
-          # Fit restricted model for phi
-          fit_res_phi <- try(bbdml(formula = formula_i, phi.formula = phi.formula_null,
-                                  data = data_i, link = link, phi.link = phi.link,
-                                  inits = inits_null_phi, ...),
-                            silent = TRUE)
-          p.val_phi <- try(lrtest(fit_res_phi, fit_unr), silent = TRUE)
-
-          # Begin testing  for try_error
-          if ("try-error" %in% c(class(fit_res_mu), class(p.val_mu), class(fit_res_phi), class(p.val_phi))) {
-            out[i, 3] <- 1
+      if (!("try-error" %in% c(class(mod), class(mod_null)))) {
+        # If both models fit, otherwise keep as NA
+        if (test == "Wald") {
+          if (boot) {
+            pvals[i] <- pbWald(mod = mod, mod_null = mod_null, B = B)
           } else {
-            out[i, 3] <- 0
-          } # if fit_res_mu or p.val breaks
-
-          if (class(p.val_mu) != "try-error") {
-            out[i, 1] <- p.val_mu
+            pvals[i] <- waldchisq(mod = mod, mod_null = mod_null)
           }
-          if (class(p.val_phi) != "try-error") {
-            out[i, 2] <- p.val_phi
+        } else if (test == "LRT") {
+          if (boot) {
+            pvals[i] <- pbLRT(mod = mod, mod_null = mod_null, B = B)
+          } else {
+            pvals[i] <- lrtest(mod = mod, mod_null = mod_null)
           }
-        } # end else after testing that fit_unr fit
-        # End multiple covariates LRT if
-      } else {
+        }
+      }
+    }
 
-        # Fit unrestricted model
-        fit_unr <- try(bbdml(formula = formula_i, phi.formula = phi.formula,
-                         data = data_i, link = link, phi.link = phi.link,
-                         inits = inits, ...),
-                       silent = TRUE)
-
-        coef.table <- try(waldt(fit_unr), silent = TRUE)
-
-        if (class(fit_unr) == "try-error" || class(coef.table) == "try-error") {
-          out[i, 3] <- 1
-        } else {
-            out[i, ] <- c(coef.table[c(2, 4), 4], 0)
-        } # Closes if/else for try-error check
-      } # End wald test
-    } ### This closes loop through taxa
-
-    # Now have matrix of taxa with p-values and indicator for model fit
-    post_fdr <- matrix(stats::p.adjust(out[,c(1,2)], method = fdr), ncol = 2)
-    colnames(post_fdr) <- colnames(out)[1:2]
-    rownames(post_fdr) <- rownames(out)
+    post_fdr <- stats::p.adjust(pvals, method = fdr)
+    names(pvals) <- names(post_fdr) <- taxanames
     # Record significant taxa
-    DA_vec <- rownames(out)[which(post_fdr[,1] < fdr_cutoff)]
-    DV_vec <- rownames(out)[which(post_fdr[,2] < fdr_cutoff)]
-    warning_vec <- rownames(out)[which(out[,3] == 1)]
+    signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
 
-    return(list("p" = out, "p_fdr" = post_fdr,
-                "DA" = DA_vec, "DV" = DV_vec, "warning" = warning_vec))
+    return(list("p" = pvals, "p_fdr" = post_fdr,
+                "significant_taxa" = signif_vec))
 }

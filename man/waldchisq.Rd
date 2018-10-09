@@ -4,12 +4,14 @@
 \alias{waldchisq}
 \title{Wald-type chi-squared test}
 \usage{
-waldchisq(mod, restrictions, testonly = NULL)
+waldchisq(mod, mod_null = NULL, restrictions = NULL, testonly = NULL)
 }
 \arguments{
 \item{mod}{unrestricted model fit from \code{bbdml}}
 
-\item{restrictions}{Numeric vector indicating the parameters to test, or character vector with name of variable to test.}
+\item{mod_null}{Optional. Restricted model fit from \code{bbdml}. If not included, need to include \code{restrictions}.}
+
+\item{restrictions}{Optional. Numeric vector indicating the parameters to test, or character vector with name of variable to test.}
 
 \item{testonly}{Optional. Defaults to \code{NULL}. If set to \code{"mu"}, then only the effect of the variable provided in \code{restrictions} on the mean is tested. If set to \code{"phi"}, then only the effect of the variable provided in \code{restrictions} on the variance is tested. Otherwise, the effects are jointly tested.}
 }

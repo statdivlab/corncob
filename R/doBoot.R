@@ -29,21 +29,8 @@ doBoot <- function(mod, mod_null, test) {
   if (test == "LRT") {
     test.stat <- 2 * abs(newout_alt$logL - newout_null$logL)
   } else if (test == "Wald") {
-    altterms.mu <- attr(stats::terms(stats::model.frame(newout_alt$formula, data = newout_alt$dat)), "term.labels")
-    altterms.phi <- attr(stats::terms(stats::model.frame(newout_alt$phi.formula, data = newout_alt$dat)), "term.labels")
-    nullterms.mu <- attr(stats::terms(stats::model.frame(newout_null$formula, data = newout_null$dat)), "term.labels")
-    nullterms.phi <- attr(stats::terms(stats::model.frame(newout_null$phi.formula, data = newout_null$dat)), "term.labels")
-
-    res_mu <- setdiff(altterms.mu, nullterms.mu)
-    res_phi <- setdiff(altterms.phi, nullterms.phi)
-    if (length(res_mu) == 0) {
-      testonly <- "phi"
-    } else if (length(res_phi) == 0) {
-      testonly <- "mu"
-    } else {
-      testonly <- NULL
-    }
-    restrictions <- union(res_mu, res_phi)
+    restrictions <- getRestrictionTerms(mod = newout_alt, mod_null = newout_null)
+    testonly <- attr(restrictions, "testonly")
     test.stat <- waldchisq_test(mod = newout_alt, restrictions = restrictions, testonly = testonly)
   }
   return(test.stat)

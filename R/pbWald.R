@@ -12,7 +12,10 @@
 #' }
 #' @export
 pbWald <- function(mod, mod_null, B = 1000) {
-  t.observed <- 2 * (mod$logL - mod_null$logL)
+  restrictions <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+  testonly <- attr(restrictions, "testonly")
+  t.observed <- waldchisq_test(mod, restrictions, testonly)
+
   BOOT <- rep(NA, B)
   for (j in 1:B) {
     #print(j)

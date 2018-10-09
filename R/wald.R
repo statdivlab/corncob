@@ -36,7 +36,7 @@ waldt <- function(mod) {
 #'
 #' @param mod unrestricted model fit from \code{bbdml}
 #' @param restrictions Numeric vector indicating the parameters to test, or character vector with name of variable to test.
-#' @param testonly Optional. Defaults to \code{NULL}. If set to \code{"mu"}, then only the effect of the variable provided in \code{restrictions} on the mean is tested. If set to \code{"phi"}, then only the effect of the variable provided in \code{restrictions} on the variance is tested. Otherwise, the effects are jointly tested.
+#' @param testonly Optional. If set to \code{"mu"}, then only the effect of the variable provided in \code{restrictions} on the mean is tested. If set to \code{"phi"}, then only the effect of the variable provided in \code{restrictions} on the variance is tested. Otherwise, the effects are jointly tested.
 #'
 #' @return Test statistic.
 waldchisq_test <- function(mod, restrictions, testonly = NULL) {
@@ -89,7 +89,8 @@ waldchisq_test <- function(mod, restrictions, testonly = NULL) {
 #' Wald-type chi-squared test
 #'
 #' @param mod unrestricted model fit from \code{bbdml}
-#' @param restrictions Numeric vector indicating the parameters to test, or character vector with name of variable to test.
+#' @param mod_null Optional. Restricted model fit from \code{bbdml}. If not included, need to include \code{restrictions}.
+#' @param restrictions Optional. Numeric vector indicating the parameters to test, or character vector with name of variable to test.
 #' @param testonly Optional. Defaults to \code{NULL}. If set to \code{"mu"}, then only the effect of the variable provided in \code{restrictions} on the mean is tested. If set to \code{"phi"}, then only the effect of the variable provided in \code{restrictions} on the variance is tested. Otherwise, the effects are jointly tested.
 #'
 #' @return P-value.
@@ -99,7 +100,11 @@ waldchisq_test <- function(mod, restrictions, testonly = NULL) {
 #' TODO
 #' }
 #' @export
-waldchisq <- function(mod, restrictions, testonly = NULL) {
+waldchisq <- function(mod, mod_null = NULL, restrictions = NULL, testonly = NULL) {
+  if (is.null(restrictions)) {
+    restrictions <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+    testonly <- attr(restrictions, "testonly")
+  }
   chi.val <- waldchisq_test(mod, restrictions, testonly)
   dof.dif <- attr(chi.val, "df")
   return(stats::pchisq(chi.val, dof.dif, lower.tail = FALSE))

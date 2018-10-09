@@ -16,10 +16,14 @@ out <- bbdml(formula = cbind(W, M - W) ~ X1,
              phi.link = "logit",
              nstart = 1)
 
-test_that("waldtest works", {
-  expect_is(waldtest(out), "matrix")
+test_that("waldt works", {
+  expect_is(waldt(out), "matrix")
+})
+
+test_that("waldchisq works", {
+  expect_is(waldchisq(out, restrictions = c(2,4)), "numeric")
 })
 
 test_that("waldtest can break", {
-  expect_error(waldtest(c(1,2,3)))
+  expect_error(waldt(c(1,2,3)))
 })

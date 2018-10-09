@@ -181,7 +181,7 @@ Visually, the model with covariates seems to provide a much better fit to the da
 Let's use a likelihood ratio test to select our final model for this taxon. We want to test the null hypothesis that the likelihood of the model with covariates is equal to the likelihood of the model without covariates. To do this test, we use:
 
 ```{r}
-lrtest(corncob, corncob_da)
+lrtest(mod_null = corncob, mod = corncob_da)
 ```
 We obtain a p-value much smaller than a cut-off of 0.05. Therefore we conclude that there is a statistically significant difference in the likelihood of the two models. Thus, we probably want to use the model with covariates for this taxon.
 
@@ -212,10 +212,11 @@ In this example, we also set \texttt{inits} argument. This is not necessary, but
 
 ```{r}
 set.seed(1)
-fullAnalysis <- differentialTest(formula = ~ DayAmdmt,
+da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                  phi.formula = ~ DayAmdmt,
                                  formula_null = ~ 1,
-                                 phi.formula_null = ~ 1,
+                                 phi.formula_null = ~ DayAmdmt,
+                                 test = "Wald", boot = FALSE,
                                  data = soil,
                                  fdr_cutoff = 0.05)
 ```
@@ -223,52 +224,59 @@ fullAnalysis <- differentialTest(formula = ~ DayAmdmt,
 We can see a list of differentially-abundant taxa using: 
 
 ```{r}
-fullAnalysis$DA
+da_analysis$significant_taxa
 ```
 
-In this case, we identified 14 taxa that are differentially-abundant across \texttt{DayAmdmt} (out of the 40 taxa tested).
+In this case, we identified `r length(da_analysis$significant_taxa)` taxa that are differentially-abundant across \texttt{DayAmdmt} (out of the 40 taxa tested).
 
 
 We can see a list of differentially-variable taxa using:
 
 ```{r}
-fullAnalysis$DV
+set.seed(1)
+dv_analysis <- differentialTest(formula = ~ DayAmdmt,
+                                 phi.formula = ~ DayAmdmt,
+                                 formula_null = ~ DayAmdmt,
+                                 phi.formula_null = ~ 1,
+                                 data = soil,
+                                 test = "LRT", boot = FALSE,
+                                 fdr_cutoff = 0.05)
+dv_analysis$significant_taxa
 ```
 
 We can switch the OTU labels to taxonomic labels using \texttt{otu\_to\_taxonomy}. We supply our OTU labels as strings for the \texttt{OTU} argument. We supply the \texttt{phyloseq} object for the \texttt{data} argument.
 
 ```{r}
-otu_to_taxonomy(OTU = fullAnalysis$DA, data = soil)
+otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil)
 ```
 
 ```{r}
-otu_to_taxonomy(OTU = fullAnalysis$DV, data = soil)
+otu_to_taxonomy(OTU = dv_analysis$significant_taxa, data = soil)
 ```
 
-In this case, we identified 5 taxa that are differentially-variable across \texttt{DayAmdmt} (out of the 40 taxa tested).
+In this case, we identified `r length(dv_analysis$significant_taxa)` taxa that are differentially-variable across \texttt{DayAmdmt} (out of the 40 taxa tested).
 
 
 We can examine a subset of the p-values of our tests using:
 
 ```{r}
-fullAnalysis$p[1:5,]
+da_analysis$p[1:5]
 ```
 
-where \texttt{DA} is the p-value associated with the test for differential abundance, \texttt{DV} is the p-value associated with the test for differential variance, and \texttt{warning} is a flag to let us know if the test wasn't able to complete for that OTU so that we may investigate further.
 
 We can examine a subset of the p-values after controlling for the false discovery rate using:
 
 ```{r}
-fullAnalysis$p_fdr[1:5,]
+da_analysis$p_fdr[1:5]
 ```
 
-where the columns are defined similarly as before, but the values are now adjusted to control the false discovery rate at 0.05.
+where the values are now adjusted to control the false discovery rate at 0.05.
 
 
 Finally, we can see a list of any taxa for which we were not able to fit a model using:
 
 ```{r}
-fullAnalysis$warning
+which(is.na(da_analysis$p)) %>% names
 ```
 
 In this case, we weren't able to fit \texttt{OTU.4206} automatically. It's worthwhile to investigate the OTU individually if this is the case. First let's check what phylum this represents.

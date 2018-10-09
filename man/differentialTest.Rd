@@ -5,9 +5,10 @@
 \title{Identify differentially-abundant and differentially-variable taxa}
 \usage{
 differentialTest(formula, phi.formula, formula_null, phi.formula_null,
-  data, sample_data = NULL, taxa_are_rows = TRUE, link = "logit",
-  phi.link = "logit", fdr_cutoff = 0.05, fdr = "fdr", inits = NULL,
-  inits_null_mu = NULL, inits_null_phi = NULL, ...)
+  data, test, boot, B = 1000, sample_data = NULL,
+  taxa_are_rows = TRUE, link = "logit", phi.link = "logit",
+  fdr_cutoff = 0.05, fdr = "fdr", inits = NULL, inits_null = NULL,
+  ...)
 }
 \arguments{
 \item{formula}{Formula for mean, without response}
@@ -19,6 +20,12 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null,
 \item{phi.formula_null}{Formula for overdispersion under null, without response}
 
 \item{data}{Data frame or matrix of count data.  Alternatively, a \code{phyloseq} object}
+
+\item{test}{Character. Type of test. One of \code{"Wald"}, \code{"LRT"}}
+
+\item{boot}{Boolean. Defaults to \code{FALSE}. Indicator of whether or not to use parametric bootstrap algorithm.}
+
+\item{B}{Integer. Optional. Defaults to \code{NULL}. Number of bootstrap iterations. Ignored if \code{boot} is \code{FALSE}. Otherwise, if \code{NULL}, uses 1000.}
 
 \item{sample_data}{Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates.}
 
@@ -34,18 +41,16 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null,
 
 \item{inits}{Initializations for the unrestricted model to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
 
-\item{inits_null_mu}{Initializations for model restricted under \code{formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
-
-\item{inits_null_phi}{Initializations for model restricted under \code{phi.formula_null} to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
+\item{inits_null}{Initializations for model restricted under the null to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.}
 
 \item{...}{Additional arguments for \code{\link{bbdml}}}
 }
 \value{
-List of differentially-abundant taxa and differentially-variable taxa
+List of p-values and taxa names for test specified by contrast between formulas and formulas under the null.
 }
 \description{
 Identify differentially-abundant and differentially-variable taxa
 }
 \details{
-Note that if you are testing a single covariate, this function will use a Wald test. If you are testing multiple covariates, this function will use a likelihood ratio test. If you are testing multiple variables. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null_mu} or \code{inits_null_phi}.
+Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null_mu} or \code{inits_null_phi}.
 }

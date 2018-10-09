@@ -14,7 +14,7 @@
 #' @export
 summary.bbdml <- function(object, ...) {
   # For now, Wald test
-  coef.table <- waldtest(object)
+  coef.table <- waldt(object)
   keep <- match(c("call", "df.model", "df.residual", "logL", "link", "phi.link", "formula", "phi.formula"),
                 names(object), 0L)
   ans <- c(object[keep],

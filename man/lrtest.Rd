@@ -4,15 +4,15 @@
 \alias{lrtest}
 \title{Likelihood ratio test}
 \usage{
-lrtest(mod1, mod2)
+lrtest(mod, mod_null)
 }
 \arguments{
-\item{mod1}{model fit from bbdml, nested within \code{mod2}}
+\item{mod}{model fit from bbdml}
 
-\item{mod2}{model fit from bbdml}
+\item{mod_null}{model fit from bbdml, nested within \code{mod}}
 }
 \value{
-Matrix with likelihood ratio test statistic and p-value
+P-value.
 }
 \description{
 Likelihood ratio test

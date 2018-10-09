@@ -92,18 +92,32 @@ bbdml <- function(formula, phi.formula, data,
       mu_init <- switch(link, "logit" = invlogit(mu.withlink_init))
       phi_init <- switch(phi.link, "fishZ" = invfishZ(phi.withlink_init), "logit" = invlogit(phi.withlink_init))
 
-      val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
-      if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
+
+      if (any(is.nan(mu_init)) || any(is.nan(phi_init))) {
         warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
         inits[i,] <- suppressWarnings(genInits(W = W,
-                                           M = M,
-                                           X = X.b,
-                                           X_star = X.bstar,
-                                           np = np,
-                                           npstar = npstar,
-                                           link = link,
-                                           phi.link = phi.link))
+                                               M = M,
+                                               X = X.b,
+                                               X_star = X.bstar,
+                                               np = np,
+                                               npstar = npstar,
+                                               link = link,
+                                               phi.link = phi.link))
+      } else {
+        val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
+        if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
+          warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
+          inits[i,] <- suppressWarnings(genInits(W = W,
+                                                 M = M,
+                                                 X = X.b,
+                                                 X_star = X.bstar,
+                                                 np = np,
+                                                 npstar = npstar,
+                                                 link = link,
+                                                 phi.link = phi.link))
+        }
       }
+
     } ### END FOR: checking inits
   }
 

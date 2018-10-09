@@ -24,5 +24,5 @@ out2 <- bbdml(formula = cbind(W, M - W) ~ X1,
              nstart = 1)
 
 test_that("lrtest works", {
-  expect_is(lrtest(out1,out2), "numeric")
+  expect_is(lrtest(mod = out2, mod_null = out1), "numeric")
 })

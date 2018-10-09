@@ -24,7 +24,7 @@ pbWald <- function(mod, mod_null, B = 1000) {
     #print(j)
     BOOT[j] <- doBoot(mod = mod, mod_null = mod_null, test = "Wald")
   }
-  perc.rank <- function(x, y) (1 + sum(na.omit(y) >= x)) / (length(na.omit(y)) + 1)
+  perc.rank <- function(x, y) (1 + sum(stats::na.omit(y) >= x)) / (length(stats::na.omit(y)) + 1)
   p.val <- perc.rank(t.observed, BOOT)
   return(p.val)
 }

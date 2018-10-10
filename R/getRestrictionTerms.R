@@ -12,6 +12,7 @@ getRestrictionTerms <- function(mod, mod_null) {
 
   res_mu <- setdiff(altterms.mu, nullterms.mu)
   res_phi <- setdiff(altterms.phi, nullterms.phi)
+  testonly <- NULL
   if (length(res_mu) == 0) {
     testonly <- "phi"
   } else if (length(res_phi) == 0) {

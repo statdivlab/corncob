@@ -16,66 +16,66 @@ score <- function(mod, numerical = FALSE, forHess = FALSE) {
   mu <- mod$mu.resp
   phi <- mod$phi.resp
   gam <- phi/(1 - phi)
-  N <- mod$W
+  W <- mod$W
   M <- mod$M
   X <- mod$X.mu
-  W <- mod$X.phi
+  X_star <- mod$X.phi
   link <- mod$link
   phi.link <- mod$phi.link
 
   npx <- ncol(X)
-  npw <- ncol(W)
+  npw <- ncol(X_star)
+
 
   if (numerical) {
-    return(numDeriv::grad(func = dbetabin_pos, x = mod$param, W = N, M = M,
-                          X = X, X_star = W, np = npx, npstar = npw,
+    return(numDeriv::grad(func = dbetabin_pos, x = mod$param, W = W, M = M,
+                          X = X, X_star = X_star, np = npx, npstar = npw,
                           link = mod$link, phi.link = mod$phi.link))
   }
 
+  ### STEP 2 - Gradient
+
+  # define gam
+  gam <- phi/(1 - phi)
+
   # Hold digammas
-  dg1 <- digamma(M - (mu + N * gam - 1)/gam)
-  dg2 <- digamma((1 - mu)/gam)
-  dg3 <- digamma(mu/gam)
-  dg4 <- digamma(mu/gam + N)
-  dg5 <- digamma(1/gam)
-  dg6 <- digamma(M + 1/gam)
+  dg1 <- digamma(1/gam)
+  dg2 <- digamma(M + 1/gam)
+  dg3 <- digamma(M - (mu + W * gam - 1)/gam)
+  dg4 <- digamma((1 - mu)/gam)
+  dg5 <- digamma(mu/gam)
+  dg6 <- digamma(mu/gam + W)
 
   # Hold partials - this part is fully generalized
-  dldmu <- (-dg1 + dg2 - dg3 + dg4)/gam
-  dldgam <- (-dg5 + dg6 + (mu - 1) * (dg1 - dg2) + mu * (dg3 - dg4))/(gam^2)
+  dldmu <- (-dg3 + dg4 - dg5 + dg6)/gam
+  dldgam <- (-dg1 + dg2 + (mu - 1) * (dg3 - dg4) + mu *
+               (dg5 - dg6))/gam^2
 
   # NOTE: Below depends on link functions! Right now for logit and fishZ
-  # n by p
-  if (link == "logit") {
-    tmp_b <- mu * (1 - mu) * dldmu
-  }
-  if (phi.link == "fishZ") {
-    tmp_bstar <- (gam + 0.5) * dldgam
-  } else if (phi.link == "logit") {
-    tmp_bstar <- gam * dldgam
-  }
+  tmp_b <- switch(link, "logit" = mu * (1 - mu) * dldmu)
+  tmp_bstar <- switch(phi.link, "fishZ" = (gam + 0.5) * dldgam, "logit" = gam * dldgam)
 
+
+  # Add in covariates
+  g_b <- c(crossprod(tmp_b, X))
+  g_bstar <- c(crossprod(tmp_bstar, X_star))
 
   # Keep in terms of subject-specific score, useful for sandwich
   if (forHess) {
     V <- matrix(0, nrow = npx + npw, ncol = npx + npw)
     nu <- rep(0, npx + npw)
     # sample size
-    n <- length(N)
+    n <- length(W)
     for (i in 1:n) {
       x <- X[i,]
       b <- tmp_b[i,]
-      w <- W[i,]
+      x_star <- X_star[i,]
       bst <- tmp_bstar[i,]
-      nu <- c(x * b, w * bst)
+      nu <- c(x * b, x_star * bst)
       V <- V + tcrossprod(nu)
     }
     return(V)
   }
-
-  # Add in covariates
-  g_b <- c(crossprod(tmp_b, X))
-  g_bstar <- c(crossprod(tmp_bstar, W))
 
   return(c(g_b, g_bstar))
 }

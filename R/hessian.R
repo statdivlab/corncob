@@ -15,90 +15,63 @@ hessian <- function(mod, numerical = FALSE) {
   mu <- mod$mu.resp
   phi <- mod$phi.resp
   gam <- phi/(1 - phi)
-  N <- mod$W
+  W <- mod$W
   M <- mod$M
   X <- mod$X.mu
-  W <- mod$X.phi
+  X_star <- mod$X.phi
   link <- mod$link
   phi.link <- mod$phi.link
 
-
   npx <- ncol(X)
-  npw <- ncol(W)
-  H <- matrix(0, nrow = npx + npw, ncol = npx + npw)
+  npw <- ncol(X_star)
 
   if (numerical) {
-    return(numDeriv::hessian(func = dbetabin, x = mod$param, W = N, M = M,
-                             X = X, X_star = W, np = npx, npstar = npw,
+    return(numDeriv::hessian(func = dbetabin, x = mod$param, W = W, M = M,
+                             X = X, X_star = X_star, np = npx, npstar = npw,
                              link = mod$link, phi.link = mod$phi.link))
   }
 
-  # This part is fully generalized
-  for (i in 1:length(mu)) {
-    m <- mu[i]
-    g <- gam[i]
-    y <- N[i]
-    n <- M[i]
-    x <- X[i,]
-    w <- W[i,]
-    tg1 <- trigamma(n - (m + y*g - 1)/g)
-    tg2 <- trigamma((1 - m)/g)
-    tg3 <- trigamma(m/g)
-    tg4 <- trigamma(m/g + y)
+  # Hold digammas
+  dg1 <- digamma(1/gam)
+  dg2 <- digamma(M + 1/gam)
+  dg3 <- digamma(M - (mu + W * gam - 1)/gam)
+  dg4 <- digamma((1 - mu)/gam)
+  dg5 <- digamma(mu/gam)
+  dg6 <- digamma(mu/gam + W)
 
-    tg5 <- trigamma(1/g)
-    tg6 <- trigamma(n + 1/g)
+  # Hold partials - this part is fully generalized
+  dldmu <- (-dg3 + dg4 - dg5 + dg6)/gam
+  dldgam <- (-dg1 + dg2 + (mu - 1) * (dg3 - dg4) + mu *
+               (dg5 - dg6))/gam^2
 
-    dg1 <- digamma(1/g)
-    dg2 <- digamma(n + 1/g)
-    dg3 <- digamma(n - (m + y*g - 1)/g)
-    dg4 <- digamma((1 - m)/g)
-    dg5 <- digamma(m/g)
-    dg6 <- digamma(m/g + y)
+  tg1 <- trigamma(M - (mu + W * gam - 1)/gam)
+  tg2 <- trigamma((1 - mu)/gam)
+  tg3 <- trigamma(mu/gam)
+  tg4 <- trigamma(mu/gam + W)
+  tg5 <- trigamma(1/gam)
+  tg6 <- trigamma(M + 1/gam)
 
-    # Generalizable single derivatives dL
-    dldmu <- (-dg3 + dg4 - dg5 + dg6)/g
-    dldgam <- (-dg1 + dg2 + (m - 1)*(dg3 - dg4) + m*(dg5 - dg6))/g^2
-    # Generalizable double derivatives
-    dldmu2 <- (tg1 - tg2 - tg3 + tg4)/g^2
-    dldgam2 <- (2*g*dg1 + tg5 - 2*g*dg2 - tg6 + (m - 1)^2*tg1 -
-                  2*g*(m - 1)*dg3 - m^2*tg3 + m^2*tg4 + (m - 1)^2*(-tg2) +
-                  2*g*(m - 1)*dg4 - 2*g*m*dg5 + 2*g*m*dg6)/g^4
-    dldmdg <- (g*(dg3 - dg4 + dg5 - dg6) + (m - 1)*(tg2 - tg1) + m*(tg3 - tg4))/g^3
+  dldmu2 <- (tg1 - tg2 - tg3 + tg4)/gam^2
+  dldgam2 <- (2 * gam * dg1 + tg5 - 2 * gam * dg2 - tg6 +
+                (mu - 1)^2 * tg1 - 2 * gam * (mu - 1) * dg3 - mu^2 *
+                tg3 + mu^2 * tg4 + (mu - 1)^2 * (-tg2) + 2 * gam * (mu -
+                                                                      1) * dg4 - 2 * gam * mu * dg5 + 2 * gam * mu * dg6)/gam^4
+  dldmdg <- (gam * (dg3 - dg4 + dg5 - dg6) + (mu - 1) * (tg2 -
+                                                           tg1) + mu * (tg3 - tg4))/gam^3
 
-    # Not generalizeable single dm and dg
-    if (link == "logit") {
-      dpdb <- x * m * (1 - m)
-    }
-    if (phi.link == "fishZ") {
-      dgdb <- w * (g + 0.5)
-    } else if (phi.link == "logit") {
-      dgdb <- w * g
-    }
+  dpdb <- switch(link, logit = t(X * c(mu * (1 - mu))))
+  dgdb <- switch(phi.link, fishZ = t(X_star * c(gam + 0.5)),
+                 logit = t(X_star * c(gam)))
 
+  mid4 <- switch(link, logit = c(dldmu * mu * (1 - mu) * (1 - 2 * mu)))
+  mid5 <- switch(phi.link, fishZ = c(dldgam * (gam + 0.5)),
+                 logit = c(dldgam * gam))
+  term4 <- crossprod(X, diag(mid4)) %*% X
+  term5 <- crossprod(X_star, diag(mid5)) %*% X_star
+  term1 <- dpdb %*% tcrossprod(diag(c(-dldmu2)), dpdb)
+  term2 <- dpdb %*% tcrossprod(diag(c(-dldmdg)), dgdb)
+  term3 <- dgdb %*% tcrossprod(diag(c(-dldgam2)), dgdb)
 
-
-    dpdb <- c(dpdb, rep(0, npw))
-    dgdb <- c(rep(0, npx), dgdb)
-    # Not generalizable double
-    if (link == "logit") {
-      dpdb2 <- tcrossprod(c(x, rep(0, npw))) * m * (1 - m) * (1 - 2 * m)
-    }
-    if (phi.link == "fishZ") {
-      dgdb2 <- tcrossprod(c(rep(0, npx),w)) * (g + 0.5)
-    } else if (phi.link == "logit") {
-      dgdb2 <- tcrossprod(c(rep(0, npx),w)) * g
-    }
-
-    # dpdb2 <- as.matrix(Matrix::bdiag(dpdb2, matrix(0, nrow = npw, ncol = npw)))
-    # dgdb2 <- as.matrix(Matrix::bdiag(matrix(0, nrow = npx, ncol = npx), dgdb2))
-
-    term1 <- (-dldmu2) * tcrossprod(dpdb)
-    term2 <- (-dldmdg) * (tcrossprod(dpdb, dgdb) + tcrossprod(dgdb, dpdb))
-    term3 <- (-dldgam2) * tcrossprod(dgdb)
-    term4 <- dldmu*dpdb2
-    term5 <- dldgam*dgdb2
-    H <- H + term1 + term2 + term3 - term4 - term5
-  }
+  H <- cbind(rbind(term1 - term4, term2),rbind(term2, term3 - term5))
   return(H)
 }

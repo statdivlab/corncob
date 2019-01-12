@@ -279,10 +279,10 @@ Finally, we can see a list of any taxa for which we were not able to fit a model
 which(is.na(da_analysis$p)) %>% names
 ```
 
-In this case, we weren't able to fit \texttt{OTU.4206} automatically. It's worthwhile to investigate the OTU individually if this is the case. First let's check what phylum this represents.
+In this case, we weren't able to fit \texttt{OTU.8773} automatically. It's worthwhile to investigate the OTU individually if this is the case. First let's check what phylum this represents.
 
 ```{r}
-otu_to_taxonomy(OTU = "OTU.4206", data = soil)
+otu_to_taxonomy(OTU = "OTU.8773", data = soil)
 ```
 
 It may be that the model is overparameterized because there aren't enough observations, or it may just be that the initializations were invalid for that taxa and it needs to be re-evaluated with new initializations.
@@ -290,17 +290,17 @@ It may be that the model is overparameterized because there aren't enough observ
 Let's first try examining the data. 
 
 ```{r}
-otu_table(soil)["OTU.4206"]
+otu_table(soil)["OTU.8773"]
 ```
 
-We see that the observed counts of OTU is zero in all samples except for \texttt{S102}, where we observed a single count. Let's try fitting the model individually by letting the model select the initializations automatically.
+We see that the observed counts of OTU is zero in all samples except for \texttt{S212} and \texttt{S227}, where we observed a single count. Let's try fitting the model individually by letting the model select the initializations automatically.
 
 ```{r}
-check_GN04 <- bbdml(formula = OTU.4206 ~ DayAmdmt,
+check_GN02 <- bbdml(formula = OTU.8773 ~ DayAmdmt,
                  phi.formula = ~ DayAmdmt,
                  data = soil)
 ```
 
 While the model fits, we should be skeptical of **any** statistical model fit on a single observed count!
 
-\texttt{corncob} is stable, but new. If you notice any issues, please [log them on Github](https://github.com/bryandmartin/CORNCOB/issues) to help us help you!
+\texttt{corncob} is stable, but new. If you notice any issues, please [log them on Github](https://github.com/bryandmartin/corncob/issues) to help us help you!

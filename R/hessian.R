@@ -72,6 +72,6 @@ hessian <- function(mod, numerical = FALSE) {
   term2 <- dpdb %*% tcrossprod(diag(c(-dldmdg)), dgdb)
   term3 <- dgdb %*% tcrossprod(diag(c(-dldgam2)), dgdb)
 
-  H <- cbind(rbind(term1 - term4, term2),rbind(term2, term3 - term5))
+  H <- cbind(rbind(term1 - term4, t(term2)),rbind(term2, term3 - term5))
   return(H)
 }

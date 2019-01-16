@@ -16,7 +16,8 @@
 #' @export
 print.bbdml <- function(x, digits = max(3L, getOption("digits") - 3L),
                         signif.stars = getOption("show.signif.stars"), ...) {
-  # Update with print_summary_bbdml
+  x <- summary(x)
+  # Update below with print_summary_bbdml
   cat("\nCall:\n",
       paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
 

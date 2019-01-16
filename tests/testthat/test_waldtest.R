@@ -46,6 +46,7 @@ test_that("waldt works", {
 test_that("waldchisq works", {
   expect_is(waldchisq(out, restrictions = c(2,4)), "numeric")
   expect_is(waldchisq(out, out_nullmu), "numeric")
+  expect_is(waldchisq(out, out_nullphi), "numeric")
   expect_true(is.na(waldchisq(out, restrictions = 5)))
 })
 
@@ -56,6 +57,7 @@ test_that("waldtest can break", {
 
 test_that("waldchisq_test works", {
   expect_error(corncob:::waldchisq_test(out, restrictions = integer(0)))
+  expect_error(corncob:::waldchisq_test(out, restrictions = T))
   expect_is(corncob:::waldchisq_test(out, restrictions = "X1"), "numeric")
   expect_is(corncob:::waldchisq_test(out, restrictions = "X1", testonly = "mu"), "numeric")
   expect_is(corncob:::waldchisq_test(out, restrictions = "X1", testonly = "phi"), "numeric")

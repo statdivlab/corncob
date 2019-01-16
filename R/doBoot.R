@@ -9,10 +9,6 @@ doBoot <- function(mod, mod_null, test) {
   # Simulate n samples from the model fit under the null
   newW <- simulate(object = mod_null, nsim = nrow(mod_null$dat))
 
-  # Default to simpler model if no observed counts
-  if (sum(newW) == 0) {
-    return(0)
-  }
   newdf <- mod$dat
   newdf$W <- newW
   # Refit models using simulated data

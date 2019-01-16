@@ -46,3 +46,12 @@ test_that("pbWald works", {
 test_that("pbLRT works", {
   expect_is(pbLRT(out, out_nullmu, B = 10), "numeric")
 })
+
+
+out_error <- out
+out_error$phi.link <- "break"
+
+test_that("doBoot breaks properly", {
+  expect_error(doBoot(out_error, out_nullmu, test = "LRT"))
+  expect_error(doBoot(out, out, test = "Wald"))
+})

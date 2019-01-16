@@ -9,9 +9,32 @@ colnames(my_covariate) <- c("X1")
 
 test_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
 
+my_counts_bad <- my_counts
+my_counts_bad[1:10] <- 0
+test_data_bad <- data.frame("W" = my_counts_bad, "M" = seq_depth, my_covariate)
+
 out <- bbdml(formula = cbind(W, M - W) ~ X1,
              phi.formula = ~ X1,
              data = test_data,
+             link = "logit",
+             phi.link = "logit",
+             nstart = 1)
+out_nullmu <- bbdml(formula = cbind(W, M - W) ~ 1,
+                    phi.formula = ~ X1,
+                    data = test_data,
+                    link = "logit",
+                    phi.link = "logit",
+                    nstart = 1)
+out_nullphi <- bbdml(formula = cbind(W, M - W) ~ X1,
+                    phi.formula = ~ 1,
+                    data = test_data,
+                    link = "logit",
+                    phi.link = "logit",
+                    nstart = 1)
+
+out_bad <- bbdml(formula = cbind(W, M - W) ~ X1,
+             phi.formula = ~ X1,
+             data = test_data_bad,
              link = "logit",
              phi.link = "logit",
              nstart = 1)
@@ -22,8 +45,19 @@ test_that("waldt works", {
 
 test_that("waldchisq works", {
   expect_is(waldchisq(out, restrictions = c(2,4)), "numeric")
+  expect_is(waldchisq(out, out_nullmu), "numeric")
+  expect_true(is.na(waldchisq(out, restrictions = 5)))
 })
 
 test_that("waldtest can break", {
   expect_error(waldt(c(1,2,3)))
+  expect_error(waldt(out_bad))
+})
+
+test_that("waldchisq_test works", {
+  expect_error(corncob:::waldchisq_test(out, restrictions = integer(0)))
+  expect_is(corncob:::waldchisq_test(out, restrictions = "X1"), "numeric")
+  expect_is(corncob:::waldchisq_test(out, restrictions = "X1", testonly = "mu"), "numeric")
+  expect_is(corncob:::waldchisq_test(out, restrictions = "X1", testonly = "phi"), "numeric")
+  expect_error(corncob:::waldchisq_test(out_bad, restrictions = 2))
 })

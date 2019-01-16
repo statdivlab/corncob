@@ -68,8 +68,36 @@ temp_nonphylo <- differentialTest(formula = ~ DayAmdmt,
                                               sample_data = mysampdat,
                                               inits = rbind(rep(.01, 4)))
 
+temp_wald <- differentialTest(formula = ~ Plants + DayAmdmt,
+                         phi.formula = ~ Plants + DayAmdmt,
+                         formula_null = ~ 1,
+                         phi.formula_null = ~ 1,
+                         data = subsoil, boot = FALSE, test = "Wald",
+                         inits = rbind(rep(.01, 6)),
+                         inits_null = rbind(rep(0.01, 2)))
+
+temp_pblrt <- differentialTest(formula = ~ Plants + DayAmdmt,
+                         phi.formula = ~ Plants + DayAmdmt,
+                         formula_null = ~ 1,
+                         phi.formula_null = ~ 1,
+                         data = subsoil, boot = TRUE, B = 5, test = "LRT",
+                         inits = rbind(rep(.01, 6)),
+                         inits_null = rbind(rep(0.01, 2)))
+
+temp_pbwald <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants + DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil, boot = TRUE, B = 5, test = "Wald",
+                               inits = rbind(rep(.01, 6)),
+                               inits_null = rbind(rep(0.01, 2)))
+
 
 test_that("differentialTest works", {
+  expect_is(temp, "list")
+  expect_is(temp_wald, "list")
+  expect_is(temp_pbwald, "list")
+  expect_is(temp_pblrt, "list")
   expect_is(temp, "list")
   expect_is(temp_sing, "list")
   expect_is(temp_nonphylo, "list")

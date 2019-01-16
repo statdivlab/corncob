@@ -40,7 +40,7 @@ out_bad <- bbdml(formula = cbind(W, M - W) ~ X1,
 
 test_that("pbWald works", {
   expect_is(pbWald(out, out_nullmu, B = 10), "numeric")
-  expect_true(is.na(pbWald(out_bad, out_nullmu, B = 10)))
+  expect_error(pbWald(out_bad, out_nullmu, B = 10))
 })
 
 test_that("pbLRT works", {

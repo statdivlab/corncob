@@ -32,6 +32,13 @@ out_nullphi <- bbdml(formula = cbind(W, M - W) ~ X1,
                     phi.link = "logit",
                     nstart = 1)
 
+out_nullboth <- bbdml(formula = cbind(W, M - W) ~ 1,
+                      phi.formula = ~ 1,
+                      data = test_data,
+                      link = "logit",
+                      phi.link = "logit",
+                      nstart = 1)
+
 out_bad <- bbdml(formula = cbind(W, M - W) ~ X1,
              phi.formula = ~ X1,
              data = test_data_bad,
@@ -44,22 +51,23 @@ test_that("waldt works", {
 })
 
 test_that("waldchisq works", {
-  expect_is(waldchisq(out, restrictions = c(2,4)), "numeric")
+  expect_is(waldchisq(out, restrictions = 2, restrictions.phi = 2), "numeric")
   expect_is(waldchisq(out, out_nullmu), "numeric")
   expect_is(waldchisq(out, out_nullphi), "numeric")
+  expect_equal(waldchisq(out, restrictions = 2, restrictions.phi = 2), waldchisq(out, out_nullboth))
   expect_true(is.na(waldchisq(out, restrictions = 5)))
 })
 
 test_that("waldtest can break", {
   expect_error(waldt(c(1,2,3)))
-  expect_error(waldt(out_bad))
+  expect_warning(waldt(out_bad))
 })
 
 test_that("waldchisq_test works", {
   expect_error(corncob:::waldchisq_test(out, restrictions = integer(0)))
   expect_error(corncob:::waldchisq_test(out, restrictions = T))
+  expect_is(corncob:::waldchisq_test(out, restrictions = "X1", restrictions.phi = "X1"), "numeric")
+  expect_is(corncob:::waldchisq_test(out, restrictions.phi = "X1"), "numeric")
   expect_is(corncob:::waldchisq_test(out, restrictions = "X1"), "numeric")
-  expect_is(corncob:::waldchisq_test(out, restrictions = "X1", testonly = "mu"), "numeric")
-  expect_is(corncob:::waldchisq_test(out, restrictions = "X1", testonly = "phi"), "numeric")
   expect_error(corncob:::waldchisq_test(out_bad, restrictions = 2))
 })

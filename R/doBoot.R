@@ -29,9 +29,10 @@ doBoot <- function(mod, mod_null, test) {
   if (test == "LRT") {
     test.stat <- 2 * abs(newout_alt$logL - newout_null$logL)
   } else if (test == "Wald") {
-    restrictions <- getRestrictionTerms(mod = newout_alt, mod_null = newout_null)
-    testonly <- attr(restrictions, "testonly")
-    test.stat <- try(waldchisq_test(mod = newout_alt, restrictions = restrictions, testonly = testonly), silent = TRUE)
+    tmp <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+    restrictions <- tmp$mu
+    restrictions.phi <- tmp$phi
+    test.stat <- try(waldchisq_test(mod = newout_alt, restrictions = restrictions, restrictions.phi = restrictions.phi), silent = TRUE)
     if (class(test.stat) == "try-error") {
       return(NA)
     }

@@ -12,10 +12,10 @@
 #' }
 #' @export
 pbLRT <- function(mod, mod_null, B = 1000) {
+  checkNested(mod, mod_null)
   t.observed <- 2 * (mod$logL - mod_null$logL)
   BOOT <- rep(NA, B)
   for (j in 1:B) {
-    #print(j)
     BOOT[j] <- doBoot(mod = mod, mod_null = mod_null, test = "LRT")
   }
   perc.rank <- function(x, y) (1 + sum(stats::na.omit(y) >= x)) / (length(stats::na.omit(y)) + 1)

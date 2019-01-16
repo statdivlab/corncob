@@ -40,7 +40,7 @@ out_bad <- bbdml(formula = cbind(W, M - W) ~ X1,
 
 test_that("pbWald works", {
   expect_is(pbWald(out, out_nullmu, B = 10), "numeric")
-  expect_true(is.na(pbWald(out_bad, out_nullmu, B = 10)))
+  expect_error(pbWald(out_bad, out_nullmu, B = 10))
 })
 
 test_that("pbLRT works", {
@@ -54,4 +54,5 @@ out_error$phi.link <- "break"
 test_that("doBoot breaks properly", {
   expect_true(is.na(doBoot(out_error, out_nullmu, test = "LRT")))
   expect_true(is.na(doBoot(out, out, test = "Wald")))
+  expect_true(is.na(pbWald(out, out, B = 10)))
 })

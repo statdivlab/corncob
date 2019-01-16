@@ -4,14 +4,14 @@
 \alias{waldchisq_test}
 \title{Wald-type chi-squared test statistic}
 \usage{
-waldchisq_test(mod, restrictions, testonly = NULL)
+waldchisq_test(mod, restrictions = NULL, restrictions.phi = NULL)
 }
 \arguments{
 \item{mod}{unrestricted model fit from \code{bbdml}}
 
-\item{restrictions}{Numeric vector indicating the parameters to test, or character vector with name of variable to test.}
+\item{restrictions}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the abundance to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the abundance.}
 
-\item{testonly}{Optional. If set to \code{"mu"}, then only the effect of the variable provided in \code{restrictions} on the mean is tested. If set to \code{"phi"}, then only the effect of the variable provided in \code{restrictions} on the variance is tested. Otherwise, the effects are jointly tested.}
+\item{restrictions.phi}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the dispersion to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the dispersion.}
 }
 \value{
 Test statistic.

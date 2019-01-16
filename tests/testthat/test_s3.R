@@ -29,6 +29,7 @@ test_that("bbdml is S3", {
 })
 
 test_that("bbdml S3 plotting works", {
+  expect_is(plot(out, large = TRUE), "ggplot")
   expect_is(plot(out, facet = "X1"), "ggplot")
   expect_is(plot(out, color = "X1", shape = "X1", facet = "X1", AA = TRUE), "ggplot")
   expect_is(plot(out, color = as.character(1:20), shape = 1:20), "ggplot")

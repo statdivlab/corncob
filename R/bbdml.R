@@ -58,6 +58,11 @@ bbdml <- function(formula, phi.formula, data,
   # phi model matrix
   X.bstar <- stats::model.matrix(object = phi.f, data = dat)
 
+  # mu terms
+  terms.mu <- stats::terms(mu.f)
+  # phi terms
+  terms.phi <- stats::terms(phi.f)
+
   # Number of parameters
   np <- ncol(X.b)
   npstar <- ncol(X.bstar)
@@ -270,7 +275,8 @@ bbdml <- function(formula, phi.formula, data,
       X.mu = X.b, X.phi = X.bstar,
       resp = resp, M = M, W = W,
       param = theta, b.mu = b, b.phi = b_star,
-      param.response = theta.resp, mu.resp = mu.resp, phi.resp = phi.resp,
+      param.response = theta.resp, terms.mu = terms.mu, terms.phi = terms.phi,
+      mu.resp = mu.resp, phi.resp = phi.resp,
       np.total = nppar, np.mu = np, np.phi = npstar,
       df.model = df.model, df.residual = df.residual,
       logL = logL, inits = inits,

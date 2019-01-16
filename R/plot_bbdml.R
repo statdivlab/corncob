@@ -6,6 +6,7 @@
 #' @param shape (Optional). Default \code{NULL}. The sample variable to map to different shapes. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.
 #' @param facet (Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.
 #' @param title (Optional). Default NULL. Character string. The main title for the graphic.
+#' @param large (Optional). Default \code{FALSE}. Plotting may encounter problems data sets with very large sequencing depths (on the order of 10^7). In this case, setting \code{large = TRUE} should fix the problem.
 #' @param ... There are no optional parameters at this time.
 #'
 #' @return Model plot
@@ -15,7 +16,7 @@
 #' TODO
 #' }
 #' @export
-plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, ...) {
+plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, large = FALSE, ...) {
   # input <- match.call(expand.dots = TRUE)
   mod <- x
 
@@ -26,8 +27,16 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
 
   ymin <- ymax <- rep(NA, length(M))
 
-  ymin <- rmutil::qbetabinom(0.025, size = M, m = mu_est, s = (1 - phi_est)/phi_est)
-  ymax <- rmutil::qbetabinom(0.975, size = M, m = mu_est, s = (1 - phi_est)/phi_est)
+  if (large) {
+    ymin <- rmutil::qbetabinom(0.025, size = M, m = mu_est, s = (1 - phi_est)/phi_est)
+    ymax <- rmutil::qbetabinom(0.975, size = M, m = mu_est, s = (1 - phi_est)/phi_est)
+  } else {
+      for (i in 1:length(M)) {
+        HPD <- HPDbetabinom(percent = 0.95, size = M[i], mu = mu_est[i], phi = phi_est[i])
+        ymin[i] <- HPD$lower
+        ymax[i] <- HPD$upper
+      }
+  }
 
   resp <- W
   if (!AA) {

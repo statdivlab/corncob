@@ -5,7 +5,7 @@
 \title{Plotting function}
 \usage{
 \method{plot}{bbdml}(x, AA = FALSE, color = NULL, shape = NULL,
-  facet = NULL, title = NULL, ...)
+  facet = NULL, title = NULL, large = FALSE, ...)
 }
 \arguments{
 \item{x}{Output from \code{\link{bbdml}} of class \code{bbdml}.}
@@ -19,6 +19,8 @@
 \item{facet}{(Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.}
 
 \item{title}{(Optional). Default NULL. Character string. The main title for the graphic.}
+
+\item{large}{(Optional). Default \code{FALSE}. Plotting may encounter problems data sets with very large sequencing depths (on the order of 10^7). In this case, setting \code{large = TRUE} should fix the problem.}
 
 \item{...}{There are no optional parameters at this time.}
 }

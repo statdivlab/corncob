@@ -4,16 +4,17 @@
 \alias{waldchisq}
 \title{Wald-type chi-squared test}
 \usage{
-waldchisq(mod, mod_null = NULL, restrictions = NULL, testonly = NULL)
+waldchisq(mod, mod_null = NULL, restrictions = NULL,
+  restrictions.phi = NULL)
 }
 \arguments{
 \item{mod}{unrestricted model fit from \code{bbdml}}
 
-\item{mod_null}{Optional. Restricted model fit from \code{bbdml}. If not included, need to include \code{restrictions}.}
+\item{mod_null}{Optional. Restricted model fit from \code{bbdml}. If not included, need to include \code{restrictions} or \code{restrictions.phi}.}
 
-\item{restrictions}{Optional. Numeric vector indicating the parameters to test, or character vector with name of variable to test.}
+\item{restrictions}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the abundance to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the abundance.}
 
-\item{testonly}{Optional. Defaults to \code{NULL}. If set to \code{"mu"}, then only the effect of the variable provided in \code{restrictions} on the mean is tested. If set to \code{"phi"}, then only the effect of the variable provided in \code{restrictions} on the variance is tested. Otherwise, the effects are jointly tested.}
+\item{restrictions.phi}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the dispersion to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the dispersion.}
 }
 \value{
 P-value.

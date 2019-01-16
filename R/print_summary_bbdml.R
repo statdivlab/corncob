@@ -20,7 +20,7 @@ print.summary.bbdml <- function(x, digits = max(3L, getOption("digits") - 3L),
       paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
 
   cat("\nCoefficients associated with abundance:\n")
-  coefs.mu <- x$coefficients[1:x$np.mu,]
+  coefs.mu <- x$coefficients[1:x$np.mu,, drop = FALSE]
   rownames(coefs.mu) <- substring(rownames(coefs.mu), 4)
   stats::printCoefmat(coefs.mu, digits = digits, signif.stars = signif.stars,
                  na.print = "NA", ...)
@@ -28,7 +28,7 @@ print.summary.bbdml <- function(x, digits = max(3L, getOption("digits") - 3L),
   cat("\n")
 
   cat("\nCoefficients associated with dispersion:\n")
-  coefs.phi <- x$coefficients[(x$np.mu + 1):nrow(x$coefficients),]
+  coefs.phi <- x$coefficients[(x$np.mu + 1):nrow(x$coefficients),, drop = FALSE]
   rownames(coefs.phi) <- substring(rownames(coefs.phi), 5)
   stats::printCoefmat(coefs.phi, digits = digits, signif.stars = signif.stars,
                       na.print = "NA", ...)

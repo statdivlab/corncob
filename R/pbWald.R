@@ -12,9 +12,10 @@
 #' }
 #' @export
 pbWald <- function(mod, mod_null, B = 1000) {
-  restrictions <- getRestrictionTerms(mod = mod, mod_null = mod_null)
-  testonly <- attr(restrictions, "testonly")
-  t.observed <- try(waldchisq_test(mod, restrictions, testonly), silent = TRUE)
+  tmp <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+  restrictions <- tmp$mu
+  restrictions.phi <- tmp$phi
+  t.observed <- try(waldchisq_test(mod, restrictions = restrictions, restrictions.phi = restrictions.phi), silent = TRUE)
   if (class(t.observed) == "try-error") {
     return(NA)
   }

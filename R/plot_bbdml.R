@@ -26,11 +26,9 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
 
   ymin <- ymax <- rep(NA, length(M))
 
-  for (i in 1:length(M)) {
-    HPD <- HPDbetabinom(percent = 0.95, size = M[i], mu = mu_est[i], phi = phi_est[i])
-    ymin[i] <- HPD$lower
-    ymax[i] <- HPD$upper
-  }
+  ymin <- rmutil::qbetabinom(0.025, size = M, m = mu_est, s = (1 - phi_est)/phi_est)
+  ymax <- rmutil::qbetabinom(0.975, size = M, m = mu_est, s = (1 - phi_est)/phi_est)
+
   resp <- W
   if (!AA) {
     ymin <- ymin/M

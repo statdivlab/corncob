@@ -65,7 +65,8 @@ test_that("waldtest can break", {
 
 test_that("waldchisq_test works", {
   expect_error(corncob:::waldchisq_test(out, restrictions = integer(0)))
-  expect_error(corncob:::waldchisq_test(out, restrictions = T))
+  expect_error(corncob:::waldchisq_test(out, restrictions = TRUE))
+  expect_error(corncob:::waldchisq_test(out, restrictions.phi = TRUE))
   expect_is(corncob:::waldchisq_test(out, restrictions = "X1", restrictions.phi = "X1"), "numeric")
   expect_is(corncob:::waldchisq_test(out, restrictions.phi = "X1"), "numeric")
   expect_is(corncob:::waldchisq_test(out, restrictions = "X1"), "numeric")

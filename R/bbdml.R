@@ -59,9 +59,9 @@ bbdml <- function(formula, phi.formula, data,
   X.bstar <- stats::model.matrix(object = phi.f, data = dat)
 
   # mu terms
-  terms.mu <- terms(mu.f)
+  terms.mu <- stats::terms(mu.f)
   # phi terms
-  terms.phi <- terms(phi.f)
+  terms.phi <- stats::terms(phi.f)
 
   # Number of parameters
   np <- ncol(X.b)

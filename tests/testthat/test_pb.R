@@ -54,4 +54,5 @@ out_error$phi.link <- "break"
 test_that("doBoot breaks properly", {
   expect_true(is.na(doBoot(out_error, out_nullmu, test = "LRT")))
   expect_true(is.na(doBoot(out, out, test = "Wald")))
+  expect_true(is.na(pbWald(out, out, B = 10)))
 })

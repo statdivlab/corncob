@@ -64,7 +64,7 @@ waldchisq_test <- function(mod, restrictions = NULL, restrictions.phi = NULL) {
     if (is.character(restrictions.phi)) {
       restrictions.phi <- getRestrictionTerms(mod = mod, restrictions.phi = restrictions.phi)$phi
     } else {
-      stop("restrictions must be either character vector or integer vector!")
+      stop("restrictions.phi must be either character vector or integer vector!")
     }
   }
   if (is.null(attr(restrictions.phi, "added"))) {

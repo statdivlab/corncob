@@ -21,7 +21,7 @@ getRestrictionTerms <- function(mod, mod_null = NULL, restrictions = NULL, restr
     }
   }
 
-  if (is.numeric(restrictions.phi) && attr(restrictions.phi, "added") != TRUE) {
+  if (is.numeric(restrictions.phi) && is.null(attr(restrictions.phi, "added"))) {
     restrictions.phi <- restrictions.phi + mod$np.mu
     attr(restrictions.phi, "added") <- TRUE
   }
@@ -32,7 +32,7 @@ getRestrictionTerms <- function(mod, mod_null = NULL, restrictions = NULL, restr
       restrictions.phi <- which(!is.na(match(names(mod$param), restrictions.phi)))
       attr(restrictions.phi, "added") <- TRUE
     } else {
-      stop("restrictions must be either character vector or integer vector!")
+      stop("restrictions.phi must be either character vector or integer vector!")
     }
   }
 

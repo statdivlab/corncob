@@ -1,24 +1,85 @@
-#' Betabinomial density
+#' Negative betabinomial density
 #'
-#' @param theta parameters
-#' @param W absolute abundance
-#' @param M sample size
-#' @param X mean covariates
-#' @param X_star overdispersion covariates
-#' @param np number of mean parameters
-#' @param npstar number of overdisperion parameters
-#' @param link Link function for mean, defaults to "logit"
-#' @param phi.link Link function for overdispersion, defaults to "fishZ"
-#' @param logpar Indicator of log-likelihood, defaults to TRUE
+#' Created as a convenient helper function for optimization. Not intended for users.
 #'
-#' @return Beta-binomial log-likelihood
+#' @param theta Numeric vector. Parameters associated with \code{X} and \code{X_star}
+#' @param W Numeric vector of counts
+#' @param M Numeric vector of sequencing depth
+#' @param X Matrix of covariates associated with abundance (including intercept)
+#' @param X_star Matrix of covariates associated with dispersion (including intercept)
+#' @param np Number of covariates associated with abundance (including intercept)
+#' @param npstar Number of covariates associated with dispersion (including intercept)
+#' @param link ink function for abundance covariates
+#' @param phi.link ink function for dispersion covariates
+#' @param logpar Boolean. Defaults to \code{TRUE}. Indicator of whether to return log-likelihood.
+#'
+#' @return Negative beta-binomial (log-)likelihood
 #'
 #' @examples
 #' \dontrun{
-#' TODO
-#' }
+#' set.seed(1)
+#' seq_depth <- rpois(20, lambda = 10000)
+#' my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
+#' my_covariate <- cbind(rep(c(0,1), each = 10))
+#' colnames(my_covariate) <- c("X1")
 #'
-#' @export
+#' example_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
+#'
+#' dbetabin_neg(theta = rep(-4, 4), W = my_counts, M = seq_depth,
+#'        X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
+#'        np = 2, npstar = 2,
+#'        link = "logit",
+#'        phi.link = "logit")
+#' }
+dbetabin_neg <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar = TRUE) {
+
+  # extract matrix of betas (np x 1), first np entries
+  b      <- utils::head(theta, np)
+  # extract matrix of beta stars (npstar x 1), last npstar entries
+  b_star <- utils::tail(theta, npstar)
+
+  mu.withlink <- X %*% b
+  phi.withlink <- X_star %*% b_star
+  mu <- switch(link, "logit" = invlogit(mu.withlink))
+  phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
+
+  val <- sum(VGAM::dbetabinom(W, M, prob = mu, rho = phi, log = TRUE))
+
+  return(-val)
+}
+
+
+#' Betabinomial density
+#'
+#' @param theta Numeric vector. Parameters associated with \code{X} and \code{X_star}
+#' @param W Numeric vector of counts
+#' @param M Numeric vector of sequencing depth
+#' @param X Matrix of covariates associated with abundance (including intercept)
+#' @param X_star Matrix of covariates associated with dispersion (including intercept)
+#' @param np Number of covariates associated with abundance (including intercept)
+#' @param npstar Number of covariates associated with dispersion (including intercept)
+#' @param link ink function for abundance covariates
+#' @param phi.link ink function for dispersion covariates
+#' @param logpar Boolean. Defaults to \code{TRUE}. Indicator of whether to return log-likelihood.
+#'
+#' @return Negative beta-binomial (log-)likelihood
+#'
+#' @examples
+#' \dontrun{
+#' set.seed(1)
+#' seq_depth <- rpois(20, lambda = 10000)
+#' my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
+#' my_covariate <- cbind(rep(c(0,1), each = 10))
+#' colnames(my_covariate) <- c("X1")
+#'
+#' example_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
+#'
+#' dbetabin(theta = rep(-4, 4), W = my_counts, M = seq_depth,
+#'        X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
+#'        np = 2, npstar = 2,
+#'        link = "logit",
+#'        phi.link = "logit")
+#' }
 dbetabin <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar = TRUE) {
 
   # extract matrix of betas (np x 1), first np entries
@@ -31,95 +92,6 @@ dbetabin <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar 
   mu <- switch(link, "logit" = invlogit(mu.withlink))
   phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
 
-  # gam <- phi/(1 - phi)
-  #
-  # a1 <- mu/gam
-  # a2 <- (1 - mu)/gam
-  # #if (sum(a2) == Inf || any(a2 < 0)) {
-  # #if (sum(a2) == Inf) {
-  # # if (any(k_star == 0)) {
-  # #   # no overdispersion
-  # #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
-  # #   return(-val)
-  # # }
-  # # if (any(a2 <= 0)) {
-  # #   # want bad value just for optim, large positive for minimization
-  # #   return(1e9)
-  # # }
-  #
-  # #a1     <- a2 * (k - 1)
-  #
-  # # val <- sum(mapply(dbetabin_i,
-  # #                   a1 = a1, a2 = a2, W = W, M = M,
-  # #                   MoreArgs = list(logpar = logpar)))
-  # val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
-
-
-  # Use full set of checks already implemented in VGAM
-  val <- sum(VGAM::dbetabinom(W, M, prob = mu, rho = phi, log = TRUE))
-
-  return(-val)
-}
-
-
-#' Betabinomial density
-#'
-#' @param theta parameters
-#' @param W absolute abundance
-#' @param M sample size
-#' @param X mean covariates
-#' @param X_star overdispersion covariates
-#' @param np number of mean parameters
-#' @param npstar number of overdisperion parameters
-#' @param link Link function for mean, defaults to "logit"
-#' @param phi.link Link function for overdispersion, defaults to "fishZ"
-#' @param logpar Indicator of log-likelihood, defaults to TRUE
-#'
-#' @return Beta-binomial log-likelihood, positive, not for minimization
-#'
-#' @examples
-#' \dontrun{
-#' TODO
-#' }
-#'
-#' @export
-dbetabin_pos <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar = TRUE) {
-
-  # extract matrix of betas (np x 1), first np entries
-  b      <- utils::head(theta, np)
-  # extract matrix of beta stars (npstar x 1), last npstar entries
-  b_star <- utils::tail(theta, npstar)
-
-  mu.withlink <- X %*% b
-  phi.withlink <- X_star %*% b_star
-  mu <- switch(link, "logit" = invlogit(mu.withlink))
-  phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
-
-  # gam <- phi/(1 - phi)
-  #
-  # a1 <- mu/gam
-  # a2 <- (1 - mu)/gam
-  # #if (sum(a2) == Inf || any(a2 < 0)) {
-  # #if (sum(a2) == Inf) {
-  # # if (any(k_star == 0)) {
-  # #   # no overdispersion
-  # #   val <- sum(stats::dbinom(W, M, (k - 1)/k, log = TRUE))
-  # #   return(-val)
-  # # }
-  # # if (any(a2 <= 0)) {
-  # #   # want bad value just for optim, large positive for minimization
-  # #   return(1e9)
-  # # }
-  #
-  # #a1     <- a2 * (k - 1)
-  #
-  # # val <- sum(mapply(dbetabin_i,
-  # #                   a1 = a1, a2 = a2, W = W, M = M,
-  # #                   MoreArgs = list(logpar = logpar)))
-  # val <- sum(lbeta(a1 + W, a2 + M - W) - lbeta(a1, a2) + lchoose(M, W))
-
-
-  # Use full set of checks already implemented in VGAM
   val <- sum(VGAM::dbetabinom(W, M, prob = mu, rho = phi, log = TRUE))
 
   return(val)

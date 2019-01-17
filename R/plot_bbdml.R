@@ -1,6 +1,6 @@
 #' Plotting function
 #'
-#' @param x Output from \code{\link{bbdml}} of class \code{bbdml}.
+#' @param x Object of class \code{bbdml}.
 #' @param AA (Optional). Default \code{FALSE}. Boolean indicator for whether to plot on absolute abundance scale
 #' @param color (Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples. Use a character vector to have \code{ggplot2} default.
 #' @param shape (Optional). Default \code{NULL}. The sample variable to map to different shapes. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.
@@ -9,11 +9,18 @@
 #' @param large (Optional). Default \code{FALSE}. Plotting may encounter problems data sets with very large sequencing depths (on the order of 10^7). In this case, setting \code{large = TRUE} should fix the problem.
 #' @param ... There are no optional parameters at this time.
 #'
-#' @return Model plot
+#' @return Object of class \code{ggplot}
 #'
 #' @examples
 #' \dontrun{
-#' TODO
+#' data(soil_phylo)
+#' soil <- soil_phylo %>%
+#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+#' phyloseq::tax_glom("Phylum")
+#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = soil)
+#' plot(mod, color = "DayAmdmt")
 #' }
 #' @export
 plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, large = FALSE, ...) {
@@ -32,9 +39,9 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
     ymax <- rmutil::qbetabinom(0.975, size = M, m = mu_est, s = (1 - phi_est)/phi_est)
   } else {
       for (i in 1:length(M)) {
-        HPD <- HPDbetabinom(percent = 0.95, size = M[i], mu = mu_est[i], phi = phi_est[i])
-        ymin[i] <- HPD$lower
-        ymax[i] <- HPD$upper
+        HDI <- HDIbetabinom(percent = 0.95, M = M[i], mu = mu_est[i], phi = phi_est[i])
+        ymin[i] <- HDI$lower
+        ymax[i] <- HDI$upper
       }
   }
 

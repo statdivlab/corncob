@@ -1,25 +1,39 @@
 #' Generate initialization for optimization
 #'
-#' @param W absolute abundance
-#' @param M sample size
-#' @param X mean covariates
-#' @param X_star overdispersion covariates
-#' @param np number of mean parameters
-#' @param npstar number of overdisperion parameters
-#' @param link Link function for mean
-#' @param phi.link Link function for overdispersion
+#' @param W Numeric vector of counts
+#' @param M Numeric vector of sequencing depth
+#' @param X Matrix of covariates associated with abundance (including intercept)
+#' @param X_star Matrix of covariates associated with dispersion (including intercept)
+#' @param np Number of covariates associated with abundance (including intercept)
+#' @param npstar Number of covariates associated with dispersion (including intercept)
+#' @param link ink function for abundance covariates
+#' @param phi.link ink function for dispersion covariates
+#' @param logpar Boolean. Defaults to \code{TRUE}. Indicator of whether to return log-likelihood.
+#' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
+#' @param use Boolean. Defaults to \code{TRUE}. Indicator of whether to use deterministic intialization.
 #'
 #' @return Matrix of initializations
 #'
 #' @examples
 #' \dontrun{
-#' TODO
+#' set.seed(1)
+#' seq_depth <- rpois(20, lambda = 10000)
+#' my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
+#' my_covariate <- cbind(rep(c(0,1), each = 10))
+#' colnames(my_covariate) <- c("X1")
+#'
+#' genInits(W = my_counts, M = seq_depth,
+#'        X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
+#'        np = 2, npstar = 2,
+#'        link = "logit",
+#'        phi.link = "logit", nstart = 2, use = TRUE)
 #' }
 #' @export
 genInits <- function(W, M,
                      X, X_star,
                      np, npstar,
-                     link, phi.link) {
+                     link, phi.link,
+                     nstart = 1, use = TRUE) {
 
 
   init.glm <- eval(parse(text = paste("quasibinomial(link =", link,")")))
@@ -28,43 +42,19 @@ genInits <- function(W, M,
   disp_init <- sum((tmp$weights*tmp$residuals^2)[tmp$weights > 0])/tmp$df.r
   phi_init <- disp_init/(stats::median(M) - 1)
   bstar_int_init <- switch(phi.link, "fishZ" = fishZ(phi_init), "logit" = logit(phi_init))
-  bstar_init <- c(bstar_int_init, rep(0, npstar - 1))
-  inits <- rbind(c(b_init, bstar_init))
+  bstar_init <- c(bstar_int_init, rep(bstar_int_init*.2, npstar - 1))
+  init_start <- rbind(c(b_init, bstar_init))
+  if (use) {
+    inits <- init_start
+  } else {
+    inits <- stats::rnorm(length(init_start), init_start, .5)
+  }
 
-  # if (is.null(lower)) {
-  #   lower <- rep(-20, np + npstar)
-  # }
-  # if (is.null(upper)) {
-  #   upper <- rep(20, np + npstar)
-  # }
-  # if (is.null(max.call)) {
-  #   max.call <- 1000
-  # }
-  # if (is.null(temperature)) {
-  #   temperature <- 50000
-  # }
-#  inits <- matrix(NA, nrow = nstart, ncol = np + npstar)
-#   for (i in 1:nstart) {
-#     inits[i,] <- try(GenSA::GenSA(fn = dbetabin, lower = lower, upper = upper, W = W, M = M, X = X, X_star = X_star, np = np,
-#                          npstar = npstar, link = link, phi.link = phi.link,
-#                          control = list(max.call = max.call, temperature = temperature, smooth = FALSE)), silent = TRUE)$par
-#
-#     # Add check, same as in objfun and hessian
-#     # extract matrix of betas (np x 1), first np entries
-#     b_init      <- utils::head(inits[i,], np)
-#     # extract matrix of beta stars (npstar x 1), last npstar entries
-#     b_star_init <- utils::tail(inits[i,], npstar)
-#
-#     mu.withlink_init <- X %*% b_init
-#     phi.withlink_init <- X_star %*% b_star_init
-#     mu_init <- switch(link, "logit" = invlogit(mu.withlink_init))
-#     phi_init <- switch(phi.link, "fishZ" = invfishZ(phi.withlink_init), "logit" = invlogit(phi.withlink_init))
-#
-#     val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
-#     if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
-#       stop("Cannot generate initializations! \n\n You are likely overparameterizing phi.formula \n without enough signal in the data. \n\n Consider setting phi.link = \"logit\",\n removing covariates in phi.formula,\n or setting your own initializations. \n\n If none of the above works, you probably \n have underdispersion in your data. \n This cannot be modeled with a beta-binomial. \n Consider using a binomial GLM, or use \n a quasibinomial GLM to explicitly \n model underdispersion.")
-#     }
-# }
+  if (nstart > 1) {
+    for (i in 2:nstart) {
+      inits <- rbind(inits, stats::rnorm(length(init_start), init_start, .5))
+    }
+  }
 
   return(inits)
 }

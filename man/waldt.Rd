@@ -7,16 +7,23 @@
 waldt(mod)
 }
 \arguments{
-\item{mod}{model fit from \code{bbdml}}
+\item{mod}{an object of class \code{bbdml}}
 }
 \value{
-Matrix with wald test statistics and p-values. Only performs univariate tests
+Matrix with wald test statistics and p-values. Only performs univariate tests.
 }
 \description{
 Wald-type t test
 }
 \examples{
 \dontrun{
-TODO
+data(soil_phylo)
+soil <- soil_phylo \%>\%
+phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
+tax_glom("Phylum")
+mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil)
+waldt(mod1)
 }
 }

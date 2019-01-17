@@ -7,12 +7,12 @@
 convert_phylo(data, select)
 }
 \arguments{
-\item{data}{\code{phyloseq} object}
+\item{data}{a \code{phyloseq} object}
 
 \item{select}{Name of OTU or taxa to select, must match taxa name in \code{data}}
 }
 \value{
-A data.frame object
+A \code{data.frame} object, with elements \code{W} as the observed counts, \code{M} as the sequencing depth, and the sample data with their original names.
 }
 \description{
 Function to subset and convert phyloseq data

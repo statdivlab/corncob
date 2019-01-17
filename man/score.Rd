@@ -7,21 +7,28 @@
 score(mod, numerical = FALSE, forHess = FALSE)
 }
 \arguments{
-\item{mod}{model fit from bbdml}
+\item{mod}{an object of class \code{bbdml}}
 
-\item{numerical}{Boolean numerical score. Not as stable. Defaults to FALSE}
+\item{numerical}{Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).}
 
-\item{forHess}{Boolean for whether to use to approximate Hessian. Defaults to FALSE.}
+\item{forHess}{Boolean. Defaults to \code{FALSE}. Indicator of whether to put in vector form. Defaults to FALSE. This parameter is not intended for users.}
 }
 \value{
-Analytic score
+Score
 }
 \description{
 Compute score
 }
 \examples{
 \dontrun{
-TODO
+data(soil_phylo)
+soil <- soil_phylo \%>\%
+phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
+phyloseq::tax_glom("Phylum")
+mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil)
+score(mod)
 }
 
 }

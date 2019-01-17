@@ -2,22 +2,22 @@
 % Please edit documentation in R/simulate.R
 \name{simulate.bbdml}
 \alias{simulate.bbdml}
-\title{Simulate from BBD model fit}
+\title{Simulate from beta-binomial model}
 \usage{
 \method{simulate}{bbdml}(object, nsim, seed = NULL, ...)
 }
 \arguments{
-\item{object}{model output from \code{\link{bbdml}}}
+\item{nsim}{Integer. Number of simulations}
 
-\item{nsim}{number of simulations}
+\item{seed}{Optional integer to set a random seed}
 
-\item{seed}{object specifying random seed if desired}
+\item{...}{There are no additional parameters at this time.}
 
-\item{...}{optional additional arguments}
+\item{mod}{an object of class \code{bbdml}}
 }
 \value{
-nsim simulations from mod
+\code{nsim} simulations from \code{mod}
 }
 \description{
-Simulate from BBD model fit
+Simulate from beta-binomial model
 }

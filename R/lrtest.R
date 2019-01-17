@@ -1,13 +1,24 @@
 #' Likelihood ratio test
 #'
-#' @param mod model fit from bbdml
-#' @param mod_null model fit from bbdml, nested within \code{mod}
+#' @param mod an object of class \code{bbdml}
+#' @param mod_null an object of class \code{bbdml}, should be nested within \code{mod}
 #'
-#' @return P-value.
+#' @return P-value from likelihood ratio test.
 #'
 #' @examples
 #' \dontrun{
-#' TODO
+#' data(soil_phylo)
+#' soil <- soil_phylo %>%
+#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+#' tax_glom("Phylum")
+#' mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = soil)
+#'
+#' mod2 <- bbdml(formula = OTU.1 ~ 1,
+#' phi.formula = ~ 1,
+#' data = soil)
+#' lrtest(mod1, mod2)
 #' }
 #' @export
 lrtest <- function(mod, mod_null) {

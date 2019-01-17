@@ -1,9 +1,9 @@
 #' Function to subset and convert phyloseq data
 #'
-#' @param data \code{phyloseq} object
+#' @param data a \code{phyloseq} object
 #' @param select Name of OTU or taxa to select, must match taxa name in \code{data}
 #'
-#' @return A data.frame object
+#' @return A \code{data.frame} object, with elements \code{W} as the observed counts, \code{M} as the sequencing depth, and the sample data with their original names.
 #' @examples
 #' \dontrun{
 #' data(soil_phylo)

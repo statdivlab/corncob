@@ -10,7 +10,9 @@ colnames(my_covariate) <- c("X1")
 test_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
 
 my_counts_bad <- my_counts
-my_counts_bad[1:10] <- 0
+my_counts_bad[1:19] <- 0
+my_covariate <- cbind(rep(c(0,1), each = 10), c(rep(0,5), rep(1,15)))
+colnames(my_covariate) <- c("X1", "X2")
 test_data_bad <- data.frame("W" = my_counts_bad, "M" = seq_depth, my_covariate)
 
 out <- bbdml(formula = cbind(W, M - W) ~ X1,
@@ -39,22 +41,30 @@ out_nullboth <- bbdml(formula = cbind(W, M - W) ~ 1,
                       phi.link = "logit",
                       nstart = 1)
 
-out_bad <- bbdml(formula = cbind(W, M - W) ~ X1,
-             phi.formula = ~ X1,
-             data = test_data_bad,
-             link = "logit",
-             phi.link = "logit",
-             nstart = 1)
+out_bad <- bbdml(formula = cbind(W, M - W) ~ X1+X2,
+                 phi.formula = ~ X1+X2,
+                 data = test_data_bad,
+                 link = "logit",
+                 phi.link = "fishZ",
+                 nstart = 1)
 
 test_that("waldt works", {
   expect_is(waldt(out), "matrix")
 })
 
 test_that("waldchisq works", {
-  expect_is(waldchisq(out, restrictions = 2, restrictions.phi = 2), "numeric")
   expect_is(waldchisq(out, out_nullmu), "numeric")
   expect_is(waldchisq(out, out_nullphi), "numeric")
-  expect_equal(waldchisq(out, restrictions = 2, restrictions.phi = 2), waldchisq(out, out_nullboth))
+  tmp1 <- waldchisq(mod = out, restrictions = 2, restrictions.phi = 2)
+  tmp2 <- waldchisq(mod = out, mod_null = out_nullboth)
+  tmp3 <- waldchisq(mod = out, restrictions = "X1", restrictions.phi = "X1")
+  tmp4 <- waldchisq(mod = out, restrictions = "X1", restrictions.phi = 2)
+  tmp5 <- waldchisq(mod = out, restrictions = 2, restrictions.phi = "X1")
+  expect_is(tmp1, "numeric")
+  expect_equal(tmp1, tmp2)
+  expect_equal(tmp1, tmp3)
+  expect_equal(tmp1, tmp4)
+  expect_equal(tmp1, tmp5)
   expect_true(is.na(waldchisq(out, restrictions = 5)))
 })
 

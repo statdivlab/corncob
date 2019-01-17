@@ -1,14 +1,25 @@
 #' Parametric bootstrap Wald test
 #'
-#' @param mod Unrestricted model fit from \code{bbdml}.
-#' @param mod_null Restricted model fit from \code{bbdml}.
+#' @param mod an object of class \code{bbdml}
+#' @param mod_null an object of class \code{bbdml}, should be nested within \code{mod}
 #' @param B Integer. Defaults to \code{1000}. Number of bootstrap iterations.
 #'
-#' @return P-value.
+#' @return P-value from parametric bootstrap Wald test.
 #'
 #' @examples
 #' \dontrun{
-#' TODO
+#' data(soil_phylo)
+#' soil <- soil_phylo %>%
+#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+#' tax_glom("Phylum")
+#' mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = soil)
+#'
+#' mod2 <- bbdml(formula = OTU.1 ~ 1,
+#' phi.formula = ~ 1,
+#' data = soil)
+#' pbWald(mod1, mod2, B = 100)
 #' }
 #' @export
 pbWald <- function(mod, mod_null, B = 1000) {

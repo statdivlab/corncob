@@ -7,9 +7,9 @@
 sandSE(mod, numerical = FALSE)
 }
 \arguments{
-\item{mod}{model fit from bbdml}
+\item{mod}{an object of class \code{bbdml}}
 
-\item{numerical}{Boolean indicator for numerical score and hessian. Not as stable. Defaults to FALSE}
+\item{numerical}{Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).}
 }
 \value{
 Sandwich variance-covariance matrix
@@ -19,7 +19,14 @@ Compute sandwich standard error
 }
 \examples{
 \dontrun{
-TODO
+data(soil_phylo)
+soil <- soil_phylo \%>\%
+phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
+phyloseq::tax_glom("Phylum")
+mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil)
+sandSE(mod)
 }
 
 }

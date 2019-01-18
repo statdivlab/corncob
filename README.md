@@ -30,7 +30,7 @@ utils::browseVignettes(package = "corncob")
 ```
 ## Status
 
-Documentation is complete, but not finalized, and most examples are still in progress. However, you can see examples of most functions intended for users in the package vignette.
+Documentation is now complete and includes examples. We are currently working on expanding vignettes and tutorials. Please leave an issue if you have any requests for a tutorial.
 
 Manuscript is in preparation.
 

@@ -12,13 +12,20 @@
 \item{...}{No optional arguments are accepted at this time.}
 }
 \value{
-Model summary
+Object of class \code{summary.bbdml}. Displays printed model summary.
 }
 \description{
 Summary function
 }
 \examples{
 \dontrun{
-TODO
+data(soil_phylo)
+soil <- soil_phylo \%>\%
+phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
+phyloseq::tax_glom("Phylum")
+mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil)
+summary(mod)
 }
 }

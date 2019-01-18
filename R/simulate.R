@@ -1,11 +1,11 @@
-#' Simulate from BBD model fit
+#' Simulate from beta-binomial model
 #'
-#' @param object model output from \code{\link{bbdml}}
-#' @param nsim number of simulations
-#' @param seed object specifying random seed if desired
-#' @param ... optional additional arguments
+#' @param object an object of class \code{bbdml}
+#' @param nsim Integer. Number of simulations
+#' @param seed Optional integer to set a random seed
+#' @param ... There are no additional parameters at this time.
 #'
-#' @return nsim simulations from mod
+#' @return \code{nsim} simulations from \code{object}
 #'
 #' @importFrom stats simulate
 #' @export

@@ -42,22 +42,42 @@ out_noint <-  bbdml(formula = cbind(W, M - W) ~ X1,
                     phi.link = "logit",
                     nstart = 1)
 
+data(soil_phylo)
+soil <- soil_phylo %>%
+  phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+  phyloseq::tax_glom("Phylum")
+mod1 <-  bbdml(formula = OTU.1 ~ Day*Plants,
+               phi.formula = ~ Plants,
+               data = soil)
+
+mod2 <-  bbdml(formula = OTU.1 ~Day - 1,
+               phi.formula = ~ Plants - 1,
+               data = soil)
+
 test_that("getRestrictionTerms works", {
-  tmp <- getRestrictionTerms(out,out_nullmu)
-  expect_equal(tmp$mu, 2)
+  tmp <- corncob:::getRestrictionTerms(out,out_nullmu)
+  expect_true(tmp$mu == 2)
   expect_null(tmp$phi)
-  tmp <- getRestrictionTerms(out,out_nullphi)
+  tmp <- corncob:::getRestrictionTerms(out,out_nullphi)
   expect_true(tmp$phi == 4)
   expect_null(tmp$mu)
   expect_true(attr(tmp$phi, "added"))
-  expect_error(getRestrictionTerms(out_nullmu, out_nullphi))
-  expect_error(getRestrictionTerms(out_nullphi, out_nullmu))
-  expect_error(getRestrictionTerms(out, restrictions = TRUE))
-  tmp <- getRestrictionTerms(out, restrictions.phi = 1)
+  expect_error(corncob:::getRestrictionTerms(out_nullmu, out_nullphi))
+  expect_error(corncob:::getRestrictionTerms(out_nullphi, out_nullmu))
+  expect_error(corncob:::getRestrictionTerms(out, restrictions = TRUE))
+  tmp <- corncob:::getRestrictionTerms(out, restrictions.phi = 1)
   expect_true(tmp$phi == 3)
-  expect_error(getRestrictionTerms(out, restrictions.phi = TRUE))
-  tmp <- getRestrictionTerms(out_interact, out_noint)
+  expect_error(corncob:::getRestrictionTerms(out, restrictions.phi = TRUE))
+  tmp <- corncob:::getRestrictionTerms(out_interact, out_noint)
   expect_equal(tmp$mu, c(2,4))
   expect_true(tmp$phi == 5)
+  tmp <- corncob:::getRestrictionTerms(out, restrictions = 1)
+  expect_equal(tmp$mu, 1)
+  tmp <- corncob:::getRestrictionTerms(mod1,mod2)
+  expect_equal(tmp$mu, c(1,3,4))
+  expect_true(tmp$phi == 5)
+  tmp <- corncob:::getRestrictionTerms(out, restrictions = "(Intercept)", restrictions.phi = "(Intercept)")
+  expect_equal(tmp$mu, 1)
+  expect_true(tmp$phi == 3)
 })
 

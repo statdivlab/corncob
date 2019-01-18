@@ -4,24 +4,29 @@
 \alias{genInits}
 \title{Generate initialization for optimization}
 \usage{
-genInits(W, M, X, X_star, np, npstar, link, phi.link)
+genInits(W, M, X, X_star, np, npstar, link, phi.link, nstart = 1,
+  use = TRUE)
 }
 \arguments{
-\item{W}{absolute abundance}
+\item{W}{Numeric vector of counts}
 
-\item{M}{sample size}
+\item{M}{Numeric vector of sequencing depth}
 
-\item{X}{mean covariates}
+\item{X}{Matrix of covariates associated with abundance (including intercept)}
 
-\item{X_star}{overdispersion covariates}
+\item{X_star}{Matrix of covariates associated with dispersion (including intercept)}
 
-\item{np}{number of mean parameters}
+\item{np}{Number of covariates associated with abundance (including intercept)}
 
-\item{npstar}{number of overdisperion parameters}
+\item{npstar}{Number of covariates associated with dispersion (including intercept)}
 
-\item{link}{Link function for mean}
+\item{link}{ink function for abundance covariates}
 
-\item{phi.link}{Link function for overdispersion}
+\item{phi.link}{ink function for dispersion covariates}
+
+\item{nstart}{Integer. Defaults to \code{1}. Number of starts for optimization.}
+
+\item{use}{Boolean. Defaults to \code{TRUE}. Indicator of whether to use deterministic intialization.}
 }
 \value{
 Matrix of initializations
@@ -31,6 +36,16 @@ Generate initialization for optimization
 }
 \examples{
 \dontrun{
-TODO
+set.seed(1)
+seq_depth <- rpois(20, lambda = 10000)
+my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
+my_covariate <- cbind(rep(c(0,1), each = 10))
+colnames(my_covariate) <- c("X1")
+
+genInits(W = my_counts, M = seq_depth,
+       X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
+       np = 2, npstar = 2,
+       link = "logit",
+       phi.link = "logit", nstart = 2, use = TRUE)
 }
 }

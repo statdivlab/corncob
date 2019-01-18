@@ -1,18 +1,40 @@
 #' Maximum Likelihood for the Beta-binomial Distribution
 #'
-#' @param formula Formula for mean
-#' @param phi.formula Formula for overdispersion
-#' @param data Data frame or \code{phyloseq} object
-#' @param link Link function for mean, defaults to "logit"
-#' @param phi.link Link function for overdispersion, defaults to "logit"
-#' @param method Method for optimization (see \code{\link{optimr}})
-#' @param control Optimization control parameters (see \code{\link{optimr}})
-#' @param numerical Indicator to use numerical derivative, useful for testing
-#' @param nstart Number of starts for optimization, defaults to 1
-#' @param inits Optional argument to specify initializations, defaults to NULL
+#' @param formula an object of class \code{formula}: a symbolic description of the model to be fitted to the abundance
+#' @param phi.formula an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the dispersion
+#' @param data a data frame or \code{phyloseq} object containing the variables in the models
+#' @param link link function for abundance covariates, defaults to \code{"logit"}
+#' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
+#' @param method optimization method, defaults to \code{"trust"}, or see \code{\link{optimr}} for other options
+#' @param control optimization control parameters (see \code{\link{trust}} and \code{\link{optimr}})
+#' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
+#' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
+#' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
 #' @param ... Additional arguments for \code{\link{optimr}}
 #'
-#' @return BBD Model fit
+#' @return An object of class \code{bbdml}.
+#'
+#' @examples
+#' \dontrun{
+#' # phyloseq example
+#' data(soil_phylo)
+#' soil <- soil_phylo %>%
+#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+#' phyloseq::tax_glom("Phylum")
+#' bbdml(formula = OTU.1 ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = soil)
+#'
+#' # data frame example
+#' seq_depth <- rpois(20, lambda = 10000)
+#' my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
+#' my_covariate <- cbind(rep(c(0,1), each = 10))
+#' colnames(my_covariate) <- c("X1")
+#' example_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
+#' bbdml(formula = cbind(W, M - W) ~ X1,
+#' phi.formula = ~ X1,
+#' data = example_data)
+#' }
 #'
 #' @export
 bbdml <- function(formula, phi.formula, data,
@@ -73,6 +95,49 @@ bbdml <- function(formula, phi.formula, data,
   # Sample Size
   M <- rowSums(resp)
 
+  # Check for separation
+  sep <- FALSE
+  if (length(attr(terms.mu, "term.labels") != 0)) {
+    if (ncol(X.b) == 1) {
+      if (brglm2::detect_separation(y = cbind(W, M - W), x = cbind(1, X.b), family = stats::binomial("logit"))$separation) {
+        warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
+                      "there are all zero counts within a group. Consider identifying and removing",
+                      "this covariate from your model. The results of this model are not to be",
+                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
+        sep <- TRUE
+      }
+    } else {
+      if (brglm2::detect_separation(y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"))$separation) {
+        warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
+                      "there are all zero counts within a group. Consider identifying and removing",
+                      "this covariate from your model. The results of this model are not to be",
+                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
+        sep <- TRUE
+      }
+    }
+  }
+
+  if (length(attr(terms.phi, "term.labels") != 0)) {
+    if (ncol(X.bstar) == 1) {
+      if (brglm2::detect_separation(y = cbind(W, M - W), x = cbind(1, X.bstar), family = stats::binomial("logit"))$separation) {
+        warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
+                      "there are all zero counts within a group. Consider identifying and removing",
+                      "this covariate from your model. The results of this model are not to be",
+                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
+        sep <- TRUE
+      }
+    } else {
+      if (brglm2::detect_separation(y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"))$separation) {
+        warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
+                      "there are all zero counts within a group. Consider identifying and removing",
+                      "this covariate from your model. The results of this model are not to be",
+                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
+        sep <- TRUE
+      }
+    }
+  }
+
+
   # Generate inits
   if (is.null(inits)) {
     inits <- suppressWarnings(genInits(W = W,
@@ -82,7 +147,9 @@ bbdml <- function(formula, phi.formula, data,
                                        np = np,
                                        npstar = npstar,
                                        link = link,
-                                       phi.link = phi.link))
+                                       phi.link = phi.link,
+                                       nstart = nstart,
+                                       use = TRUE))
   } else {
     nstart <- nrow(inits)
     # Or test feasibility of given inits. Same check as in objfun
@@ -107,7 +174,9 @@ bbdml <- function(formula, phi.formula, data,
                                                np = np,
                                                npstar = npstar,
                                                link = link,
-                                               phi.link = phi.link))
+                                               phi.link = phi.link,
+                                               nstart = 1,
+                                               use = FALSE))
       } else {
         val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
         if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
@@ -119,7 +188,9 @@ bbdml <- function(formula, phi.formula, data,
                                                  np = np,
                                                  npstar = npstar,
                                                  link = link,
-                                                 phi.link = phi.link))
+                                                 phi.link = phi.link,
+                                                 nstart = 1,
+                                                 use = FALSE))
         }
       }
 
@@ -131,7 +202,7 @@ bbdml <- function(formula, phi.formula, data,
   if (method == "BFGS") {
     starttime <- proc.time()[1]
     mlout <- optimr::optimr(par = theta.init,
-                            fn = dbetabin,
+                            fn = dbetabin_neg,
                             gr = gr_full,
                             method = method,
                             control = control,
@@ -179,7 +250,7 @@ bbdml <- function(formula, phi.formula, data,
       if (method == "BFGS") {
         starttime <- proc.time()[1]
         mlout <- optimr::optimr(par = theta.init,
-                                fn = dbetabin,
+                                fn = dbetabin_neg,
                                 gr = gr_full,
                                 method = method,
                                 control = control,
@@ -279,7 +350,7 @@ bbdml <- function(formula, phi.formula, data,
       mu.resp = mu.resp, phi.resp = phi.resp,
       np.total = nppar, np.mu = np, np.phi = npstar,
       df.model = df.model, df.residual = df.residual,
-      logL = logL, inits = inits,
+      logL = logL, inits = inits, sep = sep,
       iterations = iterations, code = code, msg = msg, time = time),
     class = "bbdml")
 }

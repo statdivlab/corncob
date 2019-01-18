@@ -13,17 +13,9 @@ test_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
 out <- genInits(W = my_counts, M = seq_depth,
          X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
          np = 2, npstar = 2,
-         link = "logit", phi.link = "logit")
+         link = "logit", phi.link = "logit",
+         nstart = 3)
 
 test_that("genInits works", {
   expect_is(out, "matrix")
 })
-
-
-# test_that("genInits breaks properly", {
-#   expect_error(suppressWarnings(genInits(W = rep(c(1000,0), each = 10), M = seq_depth,
-#                         X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
-#                         np = 2, npstar = 2,
-#                         link = "logit", phi.link = "fishZ")))
-# })
-

@@ -2,24 +2,31 @@
 % Please edit documentation in R/hessian.R
 \name{hessian}
 \alias{hessian}
-\title{Compute Hessian}
+\title{Compute Hessian matrix}
 \usage{
 hessian(mod, numerical = FALSE)
 }
 \arguments{
-\item{mod}{model fit from bbdml}
+\item{mod}{an object of class \code{bbdml}}
 
-\item{numerical}{Boolean numerical Hessian. Not as stable. Defaults to FALSE}
+\item{numerical}{Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).}
 }
 \value{
-Analytic Hessian
+Hessian matrix
 }
 \description{
-Compute Hessian
+Compute Hessian matrix
 }
 \examples{
 \dontrun{
-TODO
+data(soil_phylo)
+soil <- soil_phylo \%>\%
+phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
+phyloseq::tax_glom("Phylum")
+mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil)
+hessian(mod)
 }
 
 }

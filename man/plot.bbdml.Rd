@@ -8,7 +8,7 @@
   facet = NULL, title = NULL, large = FALSE, ...)
 }
 \arguments{
-\item{x}{Output from \code{\link{bbdml}} of class \code{bbdml}.}
+\item{x}{Object of class \code{bbdml}.}
 
 \item{AA}{(Optional). Default \code{FALSE}. Boolean indicator for whether to plot on absolute abundance scale}
 
@@ -25,13 +25,20 @@
 \item{...}{There are no optional parameters at this time.}
 }
 \value{
-Model plot
+Object of class \code{ggplot}
 }
 \description{
 Plotting function
 }
 \examples{
 \dontrun{
-TODO
+data(soil_phylo)
+soil <- soil_phylo \%>\%
+phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
+phyloseq::tax_glom("Phylum")
+mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil)
+plot(mod, color = "DayAmdmt")
 }
 }

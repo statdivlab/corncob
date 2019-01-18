@@ -5,10 +5,10 @@
 \alias{corncob}
 \title{Corncob package documentation.}
 \description{
-Corncob provides methods for estimating, projecting, and plotting spatio-temporal under-five mortality rates.
+Corncob provides methods for estimating and plotting count data. Specifically, corncob is designed to account for the challenges of modeling sequencing data from microbial abundance studies.
 }
 \details{
-For details on the model implemented in this package, see ...
+For details on the model implemented in this package, see the package vignette.
 
-The development version of the package will be maintained on \url{https://github.com/bryandmartin/CORNCOB}.
+The development version of the package will be maintained on \url{https://github.com/bryandmartin/corncob}.
 }

@@ -1,18 +1,32 @@
 #' Objective function
 #'
-#' @param theta parameters
-#' @param W absolute abundance
-#' @param M sample size
-#' @param X mean covariates
-#' @param X_star overdispersion covariates
-#' @param np number of mean parameters
-#' @param npstar number of overdisperion parameters
-#' @param link Link function for mean, defaults to "logit"
-#' @param phi.link Link function for overdispersion, defaults to "fishZ"
+#' Used for internal optimization. Not intended for users.
+#'
+#' @param theta Numeric vector. Parameters associated with \code{X} and \code{X_star}
+#' @param W Numeric vector of counts
+#' @param M Numeric vector of sequencing depth
+#' @param X Matrix of covariates associated with abundance (including intercept)
+#' @param X_star Matrix of covariates associated with dispersion (including intercept)
+#' @param np Number of covariates associated with abundance (including intercept)
+#' @param npstar Number of covariates associated with dispersion (including intercept)
+#' @param link ink function for abundance covariates
+#' @param phi.link ink function for dispersion covariates
 #'
 #' @return List of negative log-likelihood, gradient, and hessian
 #'
-#' @export
+#' @examples
+#' \dontrun{
+#' set.seed(1)
+#' seq_depth <- rpois(20, lambda = 10000)
+#' my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
+#' my_covariate <- cbind(rep(c(0,1), each = 10))
+#' colnames(my_covariate) <- c("X1")
+#' corncob:::objfun(theta = rep(-4, 4), W = my_counts, M = seq_depth,
+#'   X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
+#'   np = 2, npstar = 2,
+#'   link = "logit",
+#'   phi.link = "logit")
+#' }
 objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
 
   ### STEP 1 - Negative Log-likelihood
@@ -95,8 +109,5 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
   hessian <- cbind(rbind(term1 - term4, t(term2)),rbind(term2, term3 - term5))
 
   return(list(value = value, gradient = gradient, hessian = hessian))
-
-
-
 
 }

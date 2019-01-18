@@ -7,18 +7,29 @@
 lrtest(mod, mod_null)
 }
 \arguments{
-\item{mod}{model fit from bbdml}
+\item{mod}{an object of class \code{bbdml}}
 
-\item{mod_null}{model fit from bbdml, nested within \code{mod}}
+\item{mod_null}{an object of class \code{bbdml}, should be nested within \code{mod}}
 }
 \value{
-P-value.
+P-value from likelihood ratio test.
 }
 \description{
 Likelihood ratio test
 }
 \examples{
 \dontrun{
-TODO
+data(soil_phylo)
+soil <- soil_phylo \%>\%
+phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
+tax_glom("Phylum")
+mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil)
+
+mod2 <- bbdml(formula = OTU.1 ~ 1,
+phi.formula = ~ 1,
+data = soil)
+lrtest(mod1, mod2)
 }
 }

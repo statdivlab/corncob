@@ -7,15 +7,20 @@
 doBoot(mod, mod_null, test)
 }
 \arguments{
-\item{mod}{Unrestricted model fit from \code{bbdml}.}
+\item{mod}{an object of class \code{bbdml}}
 
-\item{mod_null}{Restricted model fit from \code{bbdml}.}
+\item{mod_null}{an object of class \code{bbdml}}
 
-\item{test}{Character string. Type of test, either "LRT" or "Wald".}
+\item{test}{Character. Hypothesis testing procedure to use. One of \code{"Wald"} or \code{"LRT"} (likelihood ratio test).}
 }
 \value{
 test statistic from one bootstrap iteration
 }
 \description{
-Function to run a bootstrap iteration
+Internal function. Not intended for users.
+}
+\examples{
+\dontrun{
+corncob:::doBoot(mod1, mod2, "LRT")
+}
 }

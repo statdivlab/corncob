@@ -8,22 +8,29 @@
   3L), signif.stars = getOption("show.signif.stars"), ...)
 }
 \arguments{
-\item{x}{Model summary output from \code{\link{summary.bbdml}}}
+\item{x}{Object of class \code{bbdml}}
 
-\item{digits}{the nnumber of significant digits to use when printing.}
+\item{digits}{the number of significant digits to use when printing.}
 
 \item{signif.stars}{logical. If \code{TRUE}, `significance stars' are printed for each coefficient.}
 
 \item{...}{No optional arguments are accepted at this time.}
 }
 \value{
-Model summary print
+\code{NULL}. Displays printed model summary.
 }
 \description{
 Print summary function
 }
 \examples{
 \dontrun{
-TODO
+data(soil_phylo)
+soil <- soil_phylo \%>\%
+phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
+phyloseq::tax_glom("Phylum")
+mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil)
+print(summary(mod))
 }
 }

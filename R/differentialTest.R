@@ -1,37 +1,54 @@
 #' Identify differentially-abundant and differentially-variable taxa
 #'
-#' @param formula Formula for mean, without response
-#' @param phi.formula Formula for overdispersion, without response
+#' @param formula an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the abundance
+#' @param phi.formula an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the dispersion
 #' @param formula_null Formula for mean under null, without response
 #' @param phi.formula_null Formula for overdispersion under null, without response
-#' @param data Data frame or matrix of count data.  Alternatively, a \code{phyloseq} object
-#' @param test Character. Type of test. One of \code{"Wald"}, \code{"LRT"}
-#' @param boot Boolean. Defaults to \code{FALSE}. Indicator of whether or not to use parametric bootstrap algorithm.
-#' @param B Integer. Optional. Defaults to \code{NULL}. Number of bootstrap iterations. Ignored if \code{boot} is \code{FALSE}. Otherwise, if \code{NULL}, uses 1000.
-#' @param sample_data Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates.
+#' @param data a data frame containing the OTU table, or \code{phyloseq} object containing the variables in the models
+#' @param link link function for abundance covariates, defaults to \code{"logit"}
+#' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
+#' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"} or \code{"LRT"} (likelihood ratio test).
+#' @param boot Boolean. Defaults to \code{FALSE}. Indicator of whether or not to use parametric bootstrap algorithm. (See \code{\link{pbWald}} and \code{\link{pbLRT}}).
+#' @param B Optional integer. Number of bootstrap iterations. Ignored if \code{boot} is \code{FALSE}. Otherwise, defaults to \code{1000}.
+#' @param sample_data Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates/sample data.
 #' @param taxa_are_rows Boolean. Optional. If \code{data} is a data frame or matrix, this indicates whether taxa are rows. Defaults to \code{TRUE}.
-#' @param link Link function for mean, defaults to "logit"
-#' @param phi.link Link function for overdispersion, defaults to "logit"
-#' @param fdr_cutoff Desired type 1 error rate
-#' @param fdr False discovery rate control method, defaults to "fdr"
-#' @param inits Initializations for the unrestricted model to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.
-#' @param inits_null Initializations for model restricted under the null to be passed to \code{\link{bbdml}}. Defaults to \code{NULL}.
-#' @param ... Additional arguments for \code{\link{bbdml}}
+#' @param fdr_cutoff Integer. Defaults to \code{0.05}. Desired type 1 error rate
+#' @param fdr Character. Defaults to \code{"fdr"}. False discovery rate control method, see \code{\link{p.adjust}} for more options.
+#' @param inits Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.
+#' @param inits_null Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.
+#' @param ... Optional additional arguments for \code{\link{bbdml}}
 #'
-#' @details Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null_mu} or \code{inits_null_phi}.
+#' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}.
 #'
-#' @return List of p-values and taxa names for test specified by contrast between formulas and formulas under the null.
+#' @return List with elements \code{p} containg the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant taxa} containing the taxa names of the statistically significant taxa, and \code{discriminant_taxa} containing the taxa for which at least one covariate was perfectly discriminant.
+#'
+#' @examples
+#' \dontrun{
+#' # phyloseq example
+#' data(soil_phylo)
+#' soil <- soil_phylo %>%
+#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+#' phyloseq::tax_glom("Phylum")
+#' da_analysis <- differentialTest(formula = ~ DayAmdmt,
+#'                                 phi.formula = ~ DayAmdmt,
+#'                                 formula_null = ~ 1,
+#'                                 phi.formula_null = ~ DayAmdmt,
+#'                                 test = "Wald", boot = FALSE,
+#'                                 data = soil,
+#'                                 fdr_cutoff = 0.05)
+#' }
+#'
 #' @export
 differentialTest <- function(formula, phi.formula,
                              formula_null, phi.formula_null,
                              data,
+                             link = "logit",
+                             phi.link = "logit",
                              test,
                              boot,
                              B = 1000,
                              sample_data = NULL,
                              taxa_are_rows = TRUE,
-                             link = "logit",
-                             phi.link = "logit",
                              fdr_cutoff = 0.05,
                              fdr = "fdr",
                              inits = NULL,
@@ -49,7 +66,7 @@ differentialTest <- function(formula, phi.formula,
   if ("phyloseq" %in% class(data)) {
     # Set up response
     taxanames <- phyloseq::taxa_names(data)
-    pvals <- rep(NA, length(taxanames))
+    pvals <- perfDisc <- rep(NA, length(taxanames))
   } else if (is.matrix(data) || is.data.frame(data)) {
 
     # use phyloseq
@@ -65,7 +82,7 @@ differentialTest <- function(formula, phi.formula,
     data <- phyloseq::phyloseq(OTU, sampledata)
     # Set up response
     taxanames <- phyloseq::taxa_names(data)
-    pvals <- rep(NA, length(taxanames))
+    pvals <- perfDisc <- rep(NA, length(taxanames))
 
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")
@@ -136,6 +153,7 @@ differentialTest <- function(formula, phi.formula,
             }
           }
         }
+        perfDisc[i] <- mod$sep
       }
     }
 
@@ -143,7 +161,9 @@ differentialTest <- function(formula, phi.formula,
     names(pvals) <- names(post_fdr) <- taxanames
     # Record significant taxa
     signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
+    disc_vec <- taxanames[which(perfDisc == TRUE)]
 
     return(list("p" = pvals, "p_fdr" = post_fdr,
-                "significant_taxa" = signif_vec))
+                "significant_taxa" = signif_vec,
+                "discriminant_taxa" = disc_vec))
 }

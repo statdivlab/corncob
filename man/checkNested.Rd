@@ -7,18 +7,30 @@
 checkNested(mod, mod_null)
 }
 \arguments{
-\item{mod}{model fit from bbdml}
+\item{mod}{an object of class \code{bbdml}}
 
-\item{mod_null}{model fit from bbdml}
+\item{mod_null}{an object of class \code{bbdml}}
 }
 \value{
-Boolean. \code{TRUE} if \code{mod_null} is nested within \code{mod}.
+\code{TRUE} if \code{mod_null} is nested within \code{mod}, otherwise it throws an error.
 }
 \description{
 Check for nested models
 }
 \examples{
 \dontrun{
-TODO
+data(soil_phylo)
+soil <- soil_phylo \%>\%
+phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
+tax_glom("Phylum")
+mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil)
+
+mod2 <- bbdml(formula = OTU.1 ~ 1,
+phi.formula = ~ 1,
+data = soil)
+
+checkNested(mod1, mod2)
 }
 }

@@ -8,35 +8,46 @@ gr_full(theta, W, M, X, X_star, np, npstar, link, phi.link,
   logpar = TRUE)
 }
 \arguments{
-\item{theta}{parameters}
+\item{theta}{Numeric vector. Parameters associated with \code{X} and \code{X_star}}
 
-\item{W}{absolute abundance}
+\item{W}{Numeric vector of counts}
 
-\item{M}{sample size}
+\item{M}{Numeric vector of sequencing depth}
 
-\item{X}{mean covariates}
+\item{X}{Matrix of covariates associated with abundance (including intercept)}
 
-\item{X_star}{overdispersion covariates}
+\item{X_star}{Matrix of covariates associated with dispersion (including intercept)}
 
-\item{np}{number of mean parameters}
+\item{np}{Number of covariates associated with abundance (including intercept)}
 
-\item{npstar}{number of overdisperion parameters}
+\item{npstar}{Number of covariates associated with dispersion (including intercept)}
 
-\item{link}{Link function for mean, defaults to "logit"}
+\item{link}{ink function for abundance covariates}
 
-\item{phi.link}{Link function for overdispersion, defaults to "fishZ"}
+\item{phi.link}{ink function for dispersion covariates}
 
-\item{logpar}{Indicator of log-likelihood, defaults to TRUE}
+\item{logpar}{Boolean. Defaults to \code{TRUE}. Indicator of whether to return log-likelihood.}
 }
 \value{
 Gradient of likelihood with respect to parameters
 }
 \description{
-Parameter Gradient Vector
+Used for internal optimization. Not intended for users.
 }
 \examples{
 \dontrun{
-TODO
-}
+set.seed(1)
+seq_depth <- rpois(20, lambda = 10000)
+my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
+my_covariate <- cbind(rep(c(0,1), each = 10))
+colnames(my_covariate) <- c("X1")
 
+example_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
+
+gr_full(theta = rep(-4, 4), W = my_counts, M = seq_depth,
+       X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
+       np = 2, npstar = 2,
+       link = "logit",
+       phi.link = "logit")
+}
 }

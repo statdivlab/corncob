@@ -1,17 +1,23 @@
 #' Print summary function
 #'
-#' @param x Model summary output from \code{\link{summary.bbdml}}
-#' @param digits the nnumber of significant digits to use when printing.
+#' @param x Object of class \code{bbdml}
+#' @param digits the number of significant digits to use when printing.
 #' @param signif.stars logical. If \code{TRUE}, `significance stars' are printed for each coefficient.
 #' @param ... No optional arguments are accepted at this time.
 #'
-# #' @details ... TODO
 #'
-#' @return Model summary print
+#' @return \code{NULL}. Displays printed model summary.
 #'
 #' @examples
 #' \dontrun{
-#' TODO
+#' data(soil_phylo)
+#' soil <- soil_phylo %>%
+#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+#' phyloseq::tax_glom("Phylum")
+#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = soil)
+#' print(summary(mod))
 #' }
 #' @export
 print.summary.bbdml <- function(x, digits = max(3L, getOption("digits") - 3L),

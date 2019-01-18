@@ -1,13 +1,19 @@
-#' Compute Hessian
+#' Compute Hessian matrix
 #'
-#' @param mod model fit from bbdml
-#' @param numerical Boolean numerical Hessian. Not as stable. Defaults to FALSE
-#'
-#' @return Analytic Hessian
+#' @param mod an object of class \code{bbdml}
+#' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
+#' @return Hessian matrix
 #'
 #' @examples
 #' \dontrun{
-#' TODO
+#' data(soil_phylo)
+#' soil <- soil_phylo %>%
+#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+#' phyloseq::tax_glom("Phylum")
+#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = soil)
+#' hessian(mod)
 #' }
 #'
 #' @export
@@ -26,7 +32,7 @@ hessian <- function(mod, numerical = FALSE) {
   npw <- ncol(X_star)
 
   if (numerical) {
-    return(numDeriv::hessian(func = dbetabin, x = mod$param, W = W, M = M,
+    return(numDeriv::hessian(func = dbetabin_neg, x = mod$param, W = W, M = M,
                              X = X, X_star = X_star, np = npx, npstar = npw,
                              link = mod$link, phi.link = mod$phi.link))
   }

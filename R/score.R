@@ -1,14 +1,21 @@
 #' Compute score
 #'
-#' @param mod model fit from bbdml
-#' @param numerical Boolean numerical score. Not as stable. Defaults to FALSE
-#' @param forHess Boolean for whether to use to approximate Hessian. Defaults to FALSE.
+#' @param mod an object of class \code{bbdml}
+#' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).
+#' @param forHess Boolean. Defaults to \code{FALSE}. Indicator of whether to put in vector form. Defaults to FALSE. This parameter is not intended for users.
 #'
-#' @return Analytic score
+#' @return Score
 #'
 #' @examples
 #' \dontrun{
-#' TODO
+#' data(soil_phylo)
+#' soil <- soil_phylo %>%
+#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+#' phyloseq::tax_glom("Phylum")
+#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = soil)
+#' score(mod)
 #' }
 #'
 #' @export
@@ -28,7 +35,7 @@ score <- function(mod, numerical = FALSE, forHess = FALSE) {
 
 
   if (numerical) {
-    return(numDeriv::grad(func = dbetabin_pos, x = mod$param, W = W, M = M,
+    return(numDeriv::grad(func = dbetabin, x = mod$param, W = W, M = M,
                           X = X, X_star = X_star, np = npx, npstar = npw,
                           link = mod$link, phi.link = mod$phi.link))
   }

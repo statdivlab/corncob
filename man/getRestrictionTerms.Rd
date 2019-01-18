@@ -8,17 +8,17 @@ getRestrictionTerms(mod, mod_null = NULL, restrictions = NULL,
   restrictions.phi = NULL)
 }
 \arguments{
-\item{mod}{unrestricted model fit from \code{bbdml}}
+\item{mod}{an object of class \code{bbdml}}
 
-\item{mod_null}{restricted model fit from \code{bbdml}. Defaults to \code{NULL}.}
+\item{mod_null}{Optional. An object of class \code{bbdml}. Defaults to \code{NULL}}
 
 \item{restrictions}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the abundance to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the abundance.}
 
 \item{restrictions.phi}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the dispersion to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the dispersion.}
 }
 \value{
-A numeric vector of index of restricted terms.
+A list with \code{mu} representing the index of the restricted covariates associated with abundance and \code{phi} representing the index of the restricted covarates associated with the dispersion
 }
 \description{
-Get index of restricted terms for Wald test
+Created as a convenient helper function. Not intended for users.
 }

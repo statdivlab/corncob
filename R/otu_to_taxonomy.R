@@ -9,7 +9,18 @@
 #'
 #' @examples
 #' \dontrun{
-#' TODO
+#' data(soil_phylo)
+#' soil <- soil_phylo %>%
+#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+#' phyloseq::tax_glom("Phylum")
+#' da_analysis <- differentialTest(formula = ~ DayAmdmt,
+#'                                 phi.formula = ~ DayAmdmt,
+#'                                 formula_null = ~ 1,
+#'                                 phi.formula_null = ~ DayAmdmt,
+#'                                 test = "Wald", boot = FALSE,
+#'                                 data = soil,
+#'                                 fdr_cutoff = 0.05)
+#' otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil)
 #' }
 #'
 #' @export

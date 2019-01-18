@@ -27,8 +27,6 @@ genInits(W, M, X, X_star, np, npstar, link, phi.link, nstart = 1,
 \item{nstart}{Integer. Defaults to \code{1}. Number of starts for optimization.}
 
 \item{use}{Boolean. Defaults to \code{TRUE}. Indicator of whether to use deterministic intialization.}
-
-\item{logpar}{Boolean. Defaults to \code{TRUE}. Indicator of whether to return log-likelihood.}
 }
 \value{
 Matrix of initializations

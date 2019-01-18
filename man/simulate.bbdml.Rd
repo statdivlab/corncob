@@ -7,16 +7,16 @@
 \method{simulate}{bbdml}(object, nsim, seed = NULL, ...)
 }
 \arguments{
+\item{object}{an object of class \code{bbdml}}
+
 \item{nsim}{Integer. Number of simulations}
 
 \item{seed}{Optional integer to set a random seed}
 
 \item{...}{There are no additional parameters at this time.}
-
-\item{mod}{an object of class \code{bbdml}}
 }
 \value{
-\code{nsim} simulations from \code{mod}
+\code{nsim} simulations from \code{object}
 }
 \description{
 Simulate from beta-binomial model

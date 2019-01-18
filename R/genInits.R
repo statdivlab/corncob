@@ -8,7 +8,6 @@
 #' @param npstar Number of covariates associated with dispersion (including intercept)
 #' @param link ink function for abundance covariates
 #' @param phi.link ink function for dispersion covariates
-#' @param logpar Boolean. Defaults to \code{TRUE}. Indicator of whether to return log-likelihood.
 #' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param use Boolean. Defaults to \code{TRUE}. Indicator of whether to use deterministic intialization.
 #'

@@ -58,6 +58,39 @@ test_that("bad init gives warning", {
                        inits = cbind(1,-1000,1,1000)))
 })
 
+test_that("checking for perfectly discriminant", {
+  expect_warning(bbdml(formula = cbind(W, M - W) ~ X1,
+                       phi.formula = ~ X1,
+                       data = test_data_bad,
+                       link = "logit",
+                       phi.link = "logit",
+                       nstart = 1))
+  expect_warning(bbdml(formula = cbind(W, M - W) ~ 1,
+                       phi.formula = ~ X1,
+                       data = test_data_bad,
+                       link = "logit",
+                       phi.link = "logit",
+                       nstart = 1))
+  expect_warning(bbdml(formula = cbind(W, M - W) ~ X1,
+                       phi.formula = ~ 1,
+                       data = test_data_bad,
+                       link = "logit",
+                       phi.link = "logit",
+                       nstart = 1))
+  expect_warning(bbdml(formula = cbind(W, M - W) ~ X1-1,
+                       phi.formula = ~ 1,
+                       data = test_data_bad,
+                       link = "logit",
+                       phi.link = "logit",
+                       nstart = 1))
+  expect_warning(bbdml(formula = cbind(W, M - W) ~ 1,
+                       phi.formula = ~ X1-1,
+                       data = test_data_bad,
+                       link = "logit",
+                       phi.link = "logit",
+                       nstart = 1))
+})
+
 data(soil_phylo)
 soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
 
@@ -70,11 +103,3 @@ test_that("bbdml works with phyloseq object", {
   expect_is(out_phylo, "bbdml")
 })
 
-test_that("warning with discriminant taxa", {
-  expect_warning(bbdml(formula = cbind(W, M - W) ~ X1,
-                                  phi.formula = ~ X1,
-                                  data = test_data_bad,
-                                  link = "logit",
-                                  phi.link = "logit",
-                                  nstart = 1))
-})

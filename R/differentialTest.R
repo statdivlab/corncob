@@ -66,7 +66,7 @@ differentialTest <- function(formula, phi.formula,
   if ("phyloseq" %in% class(data)) {
     # Set up response
     taxanames <- phyloseq::taxa_names(data)
-    pvals <- rep(NA, length(taxanames))
+    pvals <- perfDisc <- rep(NA, length(taxanames))
   } else if (is.matrix(data) || is.data.frame(data)) {
 
     # use phyloseq

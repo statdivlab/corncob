@@ -74,7 +74,10 @@ test_that("getRestrictionTerms works", {
   tmp <- getRestrictionTerms(out, restrictions = 1)
   expect_equal(tmp$mu, 1)
   tmp <- getRestrictionTerms(mod1,mod2)
-  expect_equal(tmp$mu, c(1, 3,4))
+  expect_equal(tmp$mu, c(1,3,4))
   expect_true(tmp$phi == 5)
+  tmp <- getRestrictionTerms(out, restrictions = "(Intercept)", restrictions.phi = "(Intercept)")
+  expect_equal(tmp$mu, 1)
+  expect_true(tmp$phi == 3)
 })
 

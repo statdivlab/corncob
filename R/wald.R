@@ -20,7 +20,7 @@ waldt <- function(mod) {
   # Covariance matrix
   covMat <- try(chol2inv(chol(hessian(mod))), silent = TRUE)
   if (class(covMat) == "try-error") {
-    warning("Singular Hessian! Cannot calculate p-values in this setting.", .immediate = TRUE)
+    warning("Singular Hessian! Cannot calculate p-values in this setting.", immediate. = TRUE)
     np <- length(mod$param)
     se <- tvalue <- pvalue <- rep(NA, np)
   } else {

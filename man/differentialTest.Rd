@@ -45,7 +45,7 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null,
 \item{...}{Optional additional arguments for \code{\link{bbdml}}}
 }
 \value{
-List with elements \code{p} containg the p-values, \code{p_fdr} containing the p-values after false discovery rate control, and \code{significant taxa} containing the taxa names of the statistically significant taxa.
+List with elements \code{p} containg the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant taxa} containing the taxa names of the statistically significant taxa, and \code{discriminant_taxa} containing the taxa for which at least one covariate was perfectly discriminant.
 }
 \description{
 Identify differentially-abundant and differentially-variable taxa

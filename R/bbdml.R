@@ -95,6 +95,16 @@ bbdml <- function(formula, phi.formula, data,
   # Sample Size
   M <- rowSums(resp)
 
+  # Check for separation
+  sep <- FALSE
+  if (brglm2::detect_separation(y = cbind(W, M - W), x = X.b, family = binomial("logit"))$separation) {
+    warning(paste("Separation detected!", "Likely, one of your covariates/experimental conditions is such that",
+                 "there are all zero counts within a group. Consider identifying and removing",
+                 "this covariate from your model. The results of this model are not to be",
+                 "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
+    sep <- TRUE
+  }
+
   # Generate inits
   if (is.null(inits)) {
     inits <- suppressWarnings(genInits(W = W,
@@ -307,7 +317,7 @@ bbdml <- function(formula, phi.formula, data,
       mu.resp = mu.resp, phi.resp = phi.resp,
       np.total = nppar, np.mu = np, np.phi = npstar,
       df.model = df.model, df.residual = df.residual,
-      logL = logL, inits = inits,
+      logL = logL, inits = inits, sep = sep,
       iterations = iterations, code = code, msg = msg, time = time),
     class = "bbdml")
 }

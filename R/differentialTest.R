@@ -20,7 +20,7 @@
 #'
 #' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}.
 #'
-#' @return List with elements \code{p} containg the p-values, \code{p_fdr} containing the p-values after false discovery rate control, and \code{significant taxa} containing the taxa names of the statistically significant taxa.
+#' @return List with elements \code{p} containg the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant taxa} containing the taxa names of the statistically significant taxa, and \code{discriminant_taxa} containing the taxa for which at least one covariate was perfectly discriminant.
 #'
 #' @examples
 #' \dontrun{
@@ -82,7 +82,7 @@ differentialTest <- function(formula, phi.formula,
     data <- phyloseq::phyloseq(OTU, sampledata)
     # Set up response
     taxanames <- phyloseq::taxa_names(data)
-    pvals <- rep(NA, length(taxanames))
+    pvals <- perfDisc <- rep(NA, length(taxanames))
 
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")
@@ -153,6 +153,7 @@ differentialTest <- function(formula, phi.formula,
             }
           }
         }
+        perfDisc[i] <- mod$sep
       }
     }
 
@@ -160,7 +161,9 @@ differentialTest <- function(formula, phi.formula,
     names(pvals) <- names(post_fdr) <- taxanames
     # Record significant taxa
     signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
+    disc_vec <- taxanames[which(perfDisc == TRUE)]
 
     return(list("p" = pvals, "p_fdr" = post_fdr,
-                "significant_taxa" = signif_vec))
+                "significant_taxa" = signif_vec,
+                "discriminant_taxa" = disc_vec))
 }

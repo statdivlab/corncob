@@ -10,6 +10,14 @@ colnames(my_covariate) <- c("X1")
 
 test_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
 
+
+my_counts_bad <- my_counts
+my_counts_bad[1:19] <- 0
+my_covariate <- cbind(rep(c(0,1), each = 10), c(rep(0,5), rep(1,15)), c(rep(0,4), rep(1,16)))
+colnames(my_covariate) <- c("X1", "X2", "X3")
+test_data_bad <- data.frame("W" = my_counts_bad, "M" = seq_depth, my_covariate)
+
+
 out_bfgs_inits_num <- bbdml(formula = cbind(W, M - W) ~ X1,
              phi.formula = ~ X1,
              data = test_data,
@@ -60,4 +68,13 @@ out_phylo <- bbdml(formula = OTU.4 ~ 1,
 
 test_that("bbdml works with phyloseq object", {
   expect_is(out_phylo, "bbdml")
+})
+
+test_that("warning with discriminant taxa", {
+  expect_warning(bbdml(formula = cbind(W, M - W) ~ X1,
+                                  phi.formula = ~ X1,
+                                  data = test_data_bad,
+                                  link = "logit",
+                                  phi.link = "logit",
+                                  nstart = 1))
 })

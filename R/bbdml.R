@@ -98,22 +98,42 @@ bbdml <- function(formula, phi.formula, data,
   # Check for separation
   sep <- FALSE
   if (length(attr(terms.mu, "term.labels") != 0)) {
-    if (brglm2::detect_separation(y = cbind(W, M - W), x = X.b, family = binomial("logit"))$separation) {
-      warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
-                    "there are all zero counts within a group. Consider identifying and removing",
-                    "this covariate from your model. The results of this model are not to be",
-                    "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
-      sep <- TRUE
+    if (ncol(X.b) == 1) {
+      if (brglm2::detect_separation(y = cbind(W, M - W), x = cbind(1, X.b), family = stats::binomial("logit"))$separation) {
+        warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
+                      "there are all zero counts within a group. Consider identifying and removing",
+                      "this covariate from your model. The results of this model are not to be",
+                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
+        sep <- TRUE
+      }
+    } else {
+      if (brglm2::detect_separation(y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"))$separation) {
+        warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
+                      "there are all zero counts within a group. Consider identifying and removing",
+                      "this covariate from your model. The results of this model are not to be",
+                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
+        sep <- TRUE
+      }
     }
   }
 
   if (length(attr(terms.phi, "term.labels") != 0)) {
-    if (brglm2::detect_separation(y = cbind(W, M - W), x = X.bstar, family = binomial("logit"))$separation) {
-      warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
-                    "there are all zero counts within a group. Consider identifying and removing",
-                    "this covariate from your model. The results of this model are not to be",
-                    "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
-      sep <- TRUE
+    if (ncol(X.bstar) == 1) {
+      if (brglm2::detect_separation(y = cbind(W, M - W), x = cbind(1, X.bstar), family = stats::binomial("logit"))$separation) {
+        warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
+                      "there are all zero counts within a group. Consider identifying and removing",
+                      "this covariate from your model. The results of this model are not to be",
+                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
+        sep <- TRUE
+      }
+    } else {
+      if (brglm2::detect_separation(y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"))$separation) {
+        warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
+                      "there are all zero counts within a group. Consider identifying and removing",
+                      "this covariate from your model. The results of this model are not to be",
+                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
+        sep <- TRUE
+      }
     }
   }
 

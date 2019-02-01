@@ -93,7 +93,7 @@ temp_pbwald <- differentialTest(formula = ~ Plants + DayAmdmt,
                                inits_null = rbind(rep(0.01, 2)))
 
 
-test_that("differentialTest S3 works", {
+test_that("differentialTest works", {
   expect_is(temp, "differentialTest")
   expect_is(temp_wald, "differentialTest")
   expect_is(temp_pbwald, "differentialTest")
@@ -106,6 +106,12 @@ test_that("differentialTest S3 works", {
   expect_is(temp_badinits1, "differentialTest")
   expect_is(temp_badinits2, "differentialTest")
   expect_is(temp_badinits3, "differentialTest")
+})
+
+
+test_that("differentialTest S3 methods", {
+  expect_is(plot(temp), "ggplot")
+  expect_null(print(temp))
 })
 
 test_that("differentialTest works without phyloseq", {

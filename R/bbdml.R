@@ -55,7 +55,7 @@ bbdml <- function(formula, phi.formula, data,
     select <- all.vars(formula)[1]
     data <- convert_phylo(data, select = select)
     # Update formula to match convert_phylo specification
-    formula <- stats::update(formula, cbind(W, M) ~ .)
+    formula <- stats::update(formula, cbind(W, M - W) ~ .)
   }
 
   # Record call
@@ -96,23 +96,23 @@ bbdml <- function(formula, phi.formula, data,
   M <- rowSums(resp)
 
   # Check for separation
-  sep <- FALSE
+  sep_da <- sep_dv <- FALSE
   if (length(attr(terms.mu, "term.labels") != 0)) {
     if (ncol(X.b) == 1) {
       if (brglm2::detect_separation(y = cbind(W, M - W), x = cbind(1, X.b), family = stats::binomial("logit"))$separation) {
         warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
                       "there are all zero counts within a group. Consider identifying and removing",
                       "this covariate from your model. The results of this model are not to be",
-                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
-        sep <- TRUE
+                      "trusted because there is not enough data. \n", sep = "\n"), immediate. = TRUE)
+        sep_da <- TRUE
       }
     } else {
       if (brglm2::detect_separation(y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"))$separation) {
         warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
                       "there are all zero counts within a group. Consider identifying and removing",
                       "this covariate from your model. The results of this model are not to be",
-                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
-        sep <- TRUE
+                      "trusted because there is not enough data. \n", sep = "\n"), immediate. = TRUE)
+        sep_da <- TRUE
       }
     }
   }
@@ -123,16 +123,16 @@ bbdml <- function(formula, phi.formula, data,
         warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
                       "there are all zero counts within a group. Consider identifying and removing",
                       "this covariate from your model. The results of this model are not to be",
-                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
-        sep <- TRUE
+                      "trusted because there is not enough data. \n", sep = "\n"), immediate. = TRUE)
+        sep_dv <- TRUE
       }
     } else {
       if (brglm2::detect_separation(y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"))$separation) {
         warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
                       "there are all zero counts within a group. Consider identifying and removing",
                       "this covariate from your model. The results of this model are not to be",
-                      "trusted because there is not enough data.", sep = "\n"), immediate. = TRUE)
-        sep <- TRUE
+                      "trusted because there is not enough data. \n", sep = "\n"), immediate. = TRUE)
+        sep_dv <- TRUE
       }
     }
   }
@@ -350,7 +350,7 @@ bbdml <- function(formula, phi.formula, data,
       mu.resp = mu.resp, phi.resp = phi.resp,
       np.total = nppar, np.mu = np, np.phi = npstar,
       df.model = df.model, df.residual = df.residual,
-      logL = logL, inits = inits, sep = sep,
+      logL = logL, inits = inits, sep_da = sep_da, sep_dv = sep_dv,
       iterations = iterations, code = code, msg = msg, time = time),
     class = "bbdml")
 }

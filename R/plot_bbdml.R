@@ -5,11 +5,11 @@
 #' @param color (Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples. Use a character vector to have \code{ggplot2} default.
 #' @param shape (Optional). Default \code{NULL}. The sample variable to map to different shapes. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.
 #' @param facet (Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.
-#' @param title (Optional). Default NULL. Character string. The main title for the graphic.
-#' @param large (Optional). Default \code{FALSE}. Plotting may encounter problems data sets with very large sequencing depths (on the order of 10^7). In this case, setting \code{large = TRUE} should fix the problem.
+#' @param title (Optional). Default \code{NULL}. Character string. The main title for the graphic.
+#' @param B (Optional). Default \code{1000}. Integer. Number of bootstrap simulations for prediction intervals.
 #' @param ... There are no optional parameters at this time.
 #'
-#' @return Object of class \code{ggplot}
+#' @return Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% prediction intervals.
 #'
 #' @examples
 #' \dontrun{
@@ -23,28 +23,31 @@
 #' plot(mod, color = "DayAmdmt")
 #' }
 #' @export
-plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, large = FALSE, ...) {
+plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, B = 1000, ...) {
   # input <- match.call(expand.dots = TRUE)
   mod <- x
 
-  mu_est <- mod$mu.resp
-  phi_est <- mod$phi.resp
   M <- mod$M
   W <- mod$W
 
   ymin <- ymax <- rep(NA, length(M))
 
-  if (large) {
-    ymin <- rmutil::qbetabinom(0.025, size = M, m = mu_est, s = (1 - phi_est)/phi_est)
-    ymax <- rmutil::qbetabinom(0.975, size = M, m = mu_est, s = (1 - phi_est)/phi_est)
-  } else {
-      for (i in 1:length(M)) {
-        HDI <- HDIbetabinom(percent = 0.95, M = M[i], mu = mu_est[i], phi = phi_est[i])
-        ymin[i] <- HDI$lower
-        ymax[i] <- HDI$upper
-      }
+
+  sims <- matrix(NA, nrow = B, ncol = length(W))
+  newdat <- mod$dat
+  for (i in 1:B) {
+    sim <- simulate(mod, nsim = length(W))
+    newdat$W <- sim
+    refit <- suppressWarnings(bbdml(mod$formula, phi.formula = mod$phi.formula,
+                                    link = mod$link, phi.link = mod$phi.link,
+                                    inits = mod$inits,
+                                    data = newdat))
+    sims[i,] <- simulate(refit, nsim = length(W))
   }
 
+  predint <- apply(sims, 2, stats::quantile, c(.025, .975))
+  ymin <- predint[1,]
+  ymax <- predint[2,]
   resp <- W
   if (!AA) {
     ymin <- ymin/M

@@ -94,22 +94,28 @@ temp_pbwald <- differentialTest(formula = ~ Plants + DayAmdmt,
 
 
 test_that("differentialTest works", {
-  expect_is(temp, "list")
-  expect_is(temp_wald, "list")
-  expect_is(temp_pbwald, "list")
-  expect_is(temp_pblrt, "list")
-  expect_is(temp, "list")
-  expect_is(temp_sing, "list")
-  expect_is(temp_nonphylo, "list")
-  expect_is(temp_noinit, "list")
-  expect_is(temp_noinit_sing, "list")
-  expect_is(temp_badinits1, "list")
-  expect_is(temp_badinits2, "list")
-  expect_is(temp_badinits3, "list")
+  expect_is(temp, "differentialTest")
+  expect_is(temp_wald, "differentialTest")
+  expect_is(temp_pbwald, "differentialTest")
+  expect_is(temp_pblrt, "differentialTest")
+  expect_is(temp, "differentialTest")
+  expect_is(temp_sing, "differentialTest")
+  expect_is(temp_nonphylo, "differentialTest")
+  expect_is(temp_noinit, "differentialTest")
+  expect_is(temp_noinit_sing, "differentialTest")
+  expect_is(temp_badinits1, "differentialTest")
+  expect_is(temp_badinits2, "differentialTest")
+  expect_is(temp_badinits3, "differentialTest")
+})
+
+
+test_that("differentialTest S3 methods", {
+  expect_is(plot(temp), "ggplot")
+  expect_null(print(temp))
 })
 
 test_that("differentialTest works without phyloseq", {
-  expect_true(all.equal(temp_sing, temp_nonphylo))
+  expect_true(all.equal(temp_sing$p, temp_nonphylo$p))
 })
 
 

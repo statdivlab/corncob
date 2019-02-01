@@ -20,8 +20,9 @@
 #'                                 test = "Wald", boot = FALSE,
 #'                                 data = soil,
 #'                                 fdr_cutoff = 0.05)
-#' }
 #' plot(da_analysis)
+#' }
+#'
 #' @export
 plot.differentialTest <- function(x, ...) {
   signif_taxa <- x$significant_taxa
@@ -60,6 +61,8 @@ plot.differentialTest <- function(x, ...) {
         count <- count + 1
       }
     }
+    # global variables warning suppression
+    taxa <- xmin <- xmax <- NULL
 
     ggplot2::ggplot(df, ggplot2::aes(x = x, y = taxa)) +
       ggplot2::geom_vline(xintercept = 0, color = "gray50", lty = "dashed",

@@ -31,6 +31,7 @@ da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                 test = "Wald", boot = FALSE,
                                 data = soil,
                                 fdr_cutoff = 0.05)
-}
 plot(da_analysis)
+}
+
 }

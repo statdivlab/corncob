@@ -20,8 +20,9 @@
 #'                                 test = "Wald", boot = FALSE,
 #'                                 data = soil,
 #'                                 fdr_cutoff = 0.05)
-#' }
 #' print(da_analysis)
+#' }
+#'
 #' @export
 print.differentialTest <- function(x, ...) {
   cat("Object of class differentialTest \n\n")

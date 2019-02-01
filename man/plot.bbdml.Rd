@@ -5,7 +5,7 @@
 \title{Plotting function}
 \usage{
 \method{plot}{bbdml}(x, AA = FALSE, color = NULL, shape = NULL,
-  facet = NULL, title = NULL, large = FALSE, ...)
+  facet = NULL, title = NULL, B = 1000, ...)
 }
 \arguments{
 \item{x}{Object of class \code{bbdml}.}
@@ -18,14 +18,14 @@
 
 \item{facet}{(Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.}
 
-\item{title}{(Optional). Default NULL. Character string. The main title for the graphic.}
+\item{title}{(Optional). Default \code{NULL}. Character string. The main title for the graphic.}
 
-\item{large}{(Optional). Default \code{FALSE}. Plotting may encounter problems data sets with very large sequencing depths (on the order of 10^7). In this case, setting \code{large = TRUE} should fix the problem.}
+\item{B}{(Optional). Default \code{1000}. Integer. Number of bootstrap simulations for prediction intervals.}
 
 \item{...}{There are no optional parameters at this time.}
 }
 \value{
-Object of class \code{ggplot}
+Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% prediction intervals.
 }
 \description{
 Plotting function

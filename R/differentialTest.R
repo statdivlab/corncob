@@ -20,7 +20,7 @@
 #'
 #' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}.
 #'
-#' @return List with elements \code{p} containg the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant taxa} containing the taxa names of the statistically significant taxa, and \code{discriminant_taxa} containing the taxa for which at least one covariate was perfectly discriminant.
+#' @return An object of class \code{differentialTest}. List with elements \code{p} containg the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa, \code{significant_models} containing a list of the model fits for the significant taxa, \code{all_models} containing a list of the model fits for all taxa, \code{restrictions_DA} containing a list of covariates that were tested for differential abundance, \code{restrictions_DV} containing a list of covariates that were tested for differential variability, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, and \code{data} containing the data used to fit the models.
 #'
 #' @examples
 #' \dontrun{
@@ -66,7 +66,6 @@ differentialTest <- function(formula, phi.formula,
   if ("phyloseq" %in% class(data)) {
     # Set up response
     taxanames <- phyloseq::taxa_names(data)
-    pvals <- perfDisc <- rep(NA, length(taxanames))
   } else if (is.matrix(data) || is.data.frame(data)) {
 
     # use phyloseq
@@ -82,12 +81,13 @@ differentialTest <- function(formula, phi.formula,
     data <- phyloseq::phyloseq(OTU, sampledata)
     # Set up response
     taxanames <- phyloseq::taxa_names(data)
-    pvals <- perfDisc <- rep(NA, length(taxanames))
-
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")
   }
 
+  # Set up output
+  pvals <- perfDisc_DA <- perfDisc_DV <- rep(NA, length(taxanames))
+  model_summaries <- rep(list(NA), length(taxanames))
   # check to make sure inits is of the same length
   if (!is.null(inits)) {
     ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
@@ -113,21 +113,22 @@ differentialTest <- function(formula, phi.formula,
       data_i <- convert_phylo(data, select = taxanames[i])
 
       # Update formula to match
-      formula_i <- stats::update(formula, cbind(W, M) ~ .)
-      formula_null_i <- stats::update(formula_null, cbind(W, M) ~ .)
+      formula_i <- stats::update(formula, cbind(W, M - W) ~ .)
+      formula_null_i <- stats::update(formula_null, cbind(W, M - W) ~ .)
 
       # Fit unrestricted model
-      mod <- try(bbdml(formula = formula_i, phi.formula = phi.formula,
+      mod <- suppressWarnings(try(bbdml(formula = formula_i, phi.formula = phi.formula,
                     data = data_i, link = link, phi.link = phi.link,
-                    inits = inits, ...), silent = TRUE)
+                    inits = inits, ...), silent = TRUE))
 
       # Fit restricted model
-      mod_null <- try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
+      mod_null <- suppressWarnings(try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
                        data = data_i, link = link, phi.link = phi.link,
-                       inits = inits_null, ...), silent = TRUE)
+                       inits = inits_null, ...), silent = TRUE))
 
       if (!("try-error" %in% c(class(mod), class(mod_null)))) {
         # If both models fit, otherwise keep as NA
+        model_summaries[[i]] <- suppressWarnings(summary(mod))
         if (test == "Wald") {
           if (boot) {
             tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
@@ -153,7 +154,8 @@ differentialTest <- function(formula, phi.formula,
             }
           }
         }
-        perfDisc[i] <- mod$sep
+        perfDisc_DA[i] <- mod$sep_da
+        perfDisc_DV[i] <- mod$sep_dv
       }
     }
 
@@ -161,9 +163,36 @@ differentialTest <- function(formula, phi.formula,
     names(pvals) <- names(post_fdr) <- taxanames
     # Record significant taxa
     signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
-    disc_vec <- taxanames[which(perfDisc == TRUE)]
+    signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
+    disc_vec_da <- taxanames[which(perfDisc_DA == TRUE)]
+    disc_vec_dv <- taxanames[which(perfDisc_DV == TRUE)]
 
-    return(list("p" = pvals, "p_fdr" = post_fdr,
-                "significant_taxa" = signif_vec,
-                "discriminant_taxa" = disc_vec))
+
+
+    restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+
+    tmp <- model_summaries[[1]]
+    coefs <- tmp$coefficients
+    rownames(coefs)[1:tmp$np.mu] <- substring(rownames(coefs)[1:tmp$np.mu], 4)
+    rownames(coefs)[(tmp$np.mu + 1):nrow(coefs)] <- substring(rownames(coefs)[(tmp$np.mu + 1):nrow(coefs)], 5)
+
+    restricts_mu <- rownames(coefs)[restricts$mu]
+    restricts_phi <- rownames(coefs)[restricts$phi]
+
+    attr(restricts_mu, "index") <- restricts$mu
+    attr(restricts_phi, "index") <- restricts$phi
+
+
+  structure(
+    list("p" = pvals, "p_fdr" = post_fdr,
+         "significant_taxa" = signif_vec,
+         "significant_models" = signif_models,
+         "all_models" =  model_summaries,
+         "restrictions_DA" = restricts_mu,
+         "restrictions_DV" = restricts_phi,
+         "discriminant_taxa_DA" = disc_vec_da,
+         "discriminant_taxa_DV" = disc_vec_dv,
+         "data" = data),
+    class = "differentialTest"
+  )
 }

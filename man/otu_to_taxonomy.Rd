@@ -4,12 +4,14 @@
 \alias{otu_to_taxonomy}
 \title{Transform OTUs to their taxonomic label}
 \usage{
-otu_to_taxonomy(OTU, data)
+otu_to_taxonomy(OTU, data, level = NULL)
 }
 \arguments{
 \item{OTU}{String vector. Names of OTU labels in \code{data}}
 
 \item{data}{\code{phyloseq} object with a taxonomy table}
+
+\item{level}{(Optional). Character vector. Desired taxonomic levels for output.}
 }
 \value{
 String vector. Names of taxonomic labels matching labels of \code{OTU}.
@@ -30,7 +32,7 @@ da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                 test = "Wald", boot = FALSE,
                                 data = soil,
                                 fdr_cutoff = 0.05)
-otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil)
+otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil, level = "Phylum")
 }
 
 }

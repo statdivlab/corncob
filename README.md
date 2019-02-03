@@ -21,7 +21,7 @@ This vignette demonstrates example usage of all main functions. You can see the 
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("bryandmartin/corncob", build_vignettes = TRUE)
+devtools::install_github("bryandmartin/corncob", build = TRUE)
 library(corncob)
 # Use this to view the vignette in the corncob HTML help
 help(package = "corncob", help_type = "html")

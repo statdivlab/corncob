@@ -1,6 +1,7 @@
 #' differentialTest plot function
 #'
 #' @param x Object of class \code{differentialTest}
+#' @param level (Optional). Character vector. Desired taxonomic levels for taxa labels.
 #' @param ... No optional arguments are accepted at this time.
 #'
 #'
@@ -20,15 +21,15 @@
 #'                                 test = "Wald", boot = FALSE,
 #'                                 data = soil,
 #'                                 fdr_cutoff = 0.05)
-#' plot(da_analysis)
+#' plot(da_analysis, level = "Phylum")
 #' }
 #'
 #' @export
-plot.differentialTest <- function(x, ...) {
+plot.differentialTest <- function(x, level = NULL, ...) {
   signif_taxa <- x$significant_taxa
   if ("phyloseq" %in% class(x$data)) {
     if (!is.null(x$data@tax_table)) {
-      signif_taxa <- otu_to_taxonomy(signif_taxa, x$data)
+      signif_taxa <- otu_to_taxonomy(signif_taxa, x$data, level = level)
     }
   }
   if (length(x$significant_models) != 0) {

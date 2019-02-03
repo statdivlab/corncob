@@ -4,10 +4,12 @@
 \alias{plot.differentialTest}
 \title{differentialTest plot function}
 \usage{
-\method{plot}{differentialTest}(x, ...)
+\method{plot}{differentialTest}(x, level = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{differentialTest}}
+
+\item{level}{(Optional). Character vector. Desired taxonomic levels for taxa labels.}
 
 \item{...}{No optional arguments are accepted at this time.}
 }
@@ -31,7 +33,7 @@ da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                 test = "Wald", boot = FALSE,
                                 data = soil,
                                 fdr_cutoff = 0.05)
-plot(da_analysis)
+plot(da_analysis, level = "Phylum")
 }
 
 }

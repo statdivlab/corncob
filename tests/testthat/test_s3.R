@@ -29,12 +29,12 @@ test_that("bbdml is S3", {
 })
 
 test_that("bbdml S3 plotting works", {
-  expect_is(plot(out, large = TRUE), "ggplot")
-  expect_is(plot(out, facet = "X1"), "ggplot")
-  expect_is(plot(out, color = "X1", shape = "X1", facet = "X1", AA = TRUE), "ggplot")
-  expect_is(plot(out, color = as.character(1:20), shape = 1:20), "ggplot")
-  expect_error(plot(out, color = c(1,2)))
-  expect_error(plot(out, shape = c(1,2)))
+  expect_is(plot(out, B = 10, facet = "X1"), "ggplot")
+  expect_is(plot(out, B = 0), "ggplot")
+  expect_is(plot(out, B = 10, color = "X1", shape = "X1", facet = "X1", AA = TRUE), "ggplot")
+  expect_is(plot(out, B = 10, color = as.character(1:20), shape = 1:20), "ggplot")
+  expect_error(plot(out, B = 10, color = c(1,2)))
+  expect_error(plot(out, B = 10, shape = c(1,2)))
 })
 
 test_that("bbdml print generic works", {

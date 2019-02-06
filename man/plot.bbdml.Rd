@@ -20,7 +20,7 @@
 
 \item{title}{(Optional). Default \code{NULL}. Character string. The main title for the graphic.}
 
-\item{B}{(Optional). Default \code{1000}. Integer. Number of bootstrap simulations for prediction intervals.}
+\item{B}{(Optional). Default \code{1000}. Integer. Number of bootstrap simulations for prediction intervals. Use \code{B = 0} for no prediction intervals.}
 
 \item{...}{There are no optional parameters at this time.}
 }

@@ -43,7 +43,7 @@ checkNested <- function(mod, mod_null) {
     stop("Models for dispersion are not nested!")
   }
 
-  if (!all(mod$dat == mod_null$dat)) {
+  if (!identical(mod$dat, mod_null$dat)) {
     stop("Models are not fit to the same data!")
   }
 

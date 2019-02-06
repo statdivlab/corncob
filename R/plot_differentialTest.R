@@ -30,6 +30,10 @@ plot.differentialTest <- function(x, level = NULL, ...) {
   if ("phyloseq" %in% class(x$data)) {
     if (!is.null(x$data@tax_table)) {
       signif_taxa <- otu_to_taxonomy(signif_taxa, x$data, level = level)
+      if (length(unique(signif_taxa)) != length(unique(x$significant_taxa))) {
+        # Make sure if repeated taxa add unique otu identifiers
+        signif_taxa <- paste0(signif_taxa, " (", x$significant_taxa, ")")
+      }
     }
   }
   if (length(x$significant_models) != 0) {
@@ -73,7 +77,7 @@ plot.differentialTest <- function(x, level = NULL, ...) {
       ggplot2::theme_bw() +
       ggplot2::facet_wrap(~variable, scales = "free_x", nrow = 1) +
       ggplot2::labs(title = "", x = "", y = "Taxa") +
-      ggplot2::scale_y_discrete(limits = rev(levels(as.factor(df$taxa)))) +
+      ggplot2::scale_y_discrete(limits = rev(df$taxa)) +
       ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
   }

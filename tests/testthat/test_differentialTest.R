@@ -112,6 +112,7 @@ test_that("differentialTest works", {
 test_that("differentialTest S3 methods", {
   expect_is(plot(temp), "ggplot")
   expect_is(plot(temp, level = c("Order", "Class")), "ggplot")
+  expect_is(plot(temp, level = "Kingdom"), "ggplot")
   expect_null(print(temp))
 })
 

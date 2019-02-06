@@ -6,7 +6,7 @@
 #' @param shape (Optional). Default \code{NULL}. The sample variable to map to different shapes. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.
 #' @param facet (Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.
 #' @param title (Optional). Default \code{NULL}. Character string. The main title for the graphic.
-#' @param B (Optional). Default \code{1000}. Integer. Number of bootstrap simulations for prediction intervals.
+#' @param B (Optional). Default \code{1000}. Integer. Number of bootstrap simulations for prediction intervals. Use \code{B = 0} for no prediction intervals.
 #' @param ... There are no optional parameters at this time.
 #'
 #' @return Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% prediction intervals.
@@ -30,24 +30,30 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
   M <- mod$M
   W <- mod$W
 
-  ymin <- ymax <- rep(NA, length(M))
+
+  if (B != 0) {
+    ymin <- ymax <- rep(NA, length(M))
 
 
-  sims <- matrix(NA, nrow = B, ncol = length(W))
-  newdat <- mod$dat
-  for (i in 1:B) {
-    sim <- simulate(mod, nsim = length(W))
-    newdat$W <- sim
-    refit <- suppressWarnings(bbdml(mod$formula, phi.formula = mod$phi.formula,
-                                    link = mod$link, phi.link = mod$phi.link,
-                                    inits = mod$inits,
-                                    data = newdat))
-    sims[i,] <- simulate(refit, nsim = length(W))
+    sims <- matrix(NA, nrow = B, ncol = length(W))
+    newdat <- mod$dat
+    for (i in 1:B) {
+      sim <- simulate(mod, nsim = length(W))
+      newdat$W <- sim
+      refit <- suppressWarnings(bbdml(mod$formula, phi.formula = mod$phi.formula,
+                                      link = mod$link, phi.link = mod$phi.link,
+                                      inits = mod$inits,
+                                      data = newdat))
+      sims[i,] <- simulate(refit, nsim = length(W))
+    }
+
+    predint <- apply(sims, 2, stats::quantile, c(.025, .975))
+    ymin <- predint[1,]
+    ymax <- predint[2,]
+  } else {
+    ymin <- ymax <- W
   }
 
-  predint <- apply(sims, 2, stats::quantile, c(.025, .975))
-  ymin <- predint[1,]
-  ymax <- predint[2,]
   resp <- W
   if (!AA) {
     ymin <- ymin/M

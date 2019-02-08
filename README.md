@@ -30,9 +30,7 @@ utils::browseVignettes(package = "corncob")
 ```
 ## Status
 
-Documentation is now complete and includes examples. We are currently working on expanding vignettes and tutorials. Please leave an issue if you have any requests for a tutorial.
-
-Manuscript is in preparation.
+The preprint describing the corncob methodology is available [here](https://arxiv.org/abs/1902.02776).
 
 ## Bug Reports / Change Requests
 

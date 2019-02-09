@@ -12,6 +12,7 @@
 #' @param B Optional integer. Number of bootstrap iterations. Ignored if \code{boot} is \code{FALSE}. Otherwise, defaults to \code{1000}.
 #' @param sample_data Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates/sample data.
 #' @param taxa_are_rows Boolean. Optional. If \code{data} is a data frame or matrix, this indicates whether taxa are rows. Defaults to \code{TRUE}.
+#' @param filter_discriminant Boolean. Defaults to \code{TRUE}. If \code{FALSE}, discriminant taxa will not be filtered out.
 #' @param fdr_cutoff Integer. Defaults to \code{0.05}. Desired type 1 error rate
 #' @param fdr Character. Defaults to \code{"fdr"}. False discovery rate control method, see \code{\link{p.adjust}} for more options.
 #' @param inits Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.
@@ -49,6 +50,7 @@ differentialTest <- function(formula, phi.formula,
                              B = 1000,
                              sample_data = NULL,
                              taxa_are_rows = TRUE,
+                             filter_discriminant = TRUE,
                              fdr_cutoff = 0.05,
                              fdr = "fdr",
                              inits = NULL,
@@ -105,7 +107,7 @@ differentialTest <- function(formula, phi.formula,
     }
   }
 
-
+    restrict_ind <- 0
     # Loop through OTU/taxa
     for (i in 1:length(taxanames)) {
 
@@ -127,6 +129,10 @@ differentialTest <- function(formula, phi.formula,
                        inits = inits_null, ...), silent = TRUE))
 
       if (!("try-error" %in% c(class(mod), class(mod_null)))) {
+        if (restrict_ind == 0) {
+          restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+          restrict_ind <- 1
+        }
         # If both models fit, otherwise keep as NA
         model_summaries[[i]] <- suppressWarnings(summary(mod))
         if (test == "Wald") {
@@ -159,17 +165,30 @@ differentialTest <- function(formula, phi.formula,
       }
     }
 
-    post_fdr <- stats::p.adjust(pvals, method = fdr)
-    names(pvals) <- names(post_fdr) <- taxanames
-    # Record significant taxa
-    signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
-    signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
-    disc_vec_da <- taxanames[which(perfDisc_DA == TRUE)]
-    disc_vec_dv <- taxanames[which(perfDisc_DV == TRUE)]
+    ind_disc_da <- which(perfDisc_DA == TRUE)
+    ind_disc_dv <- which(perfDisc_DV == TRUE)
+    disc_vec_da <- taxanames[ind_disc_da]
+    disc_vec_dv <- taxanames[ind_disc_dv]
+
+    ind_disc <- union(ind_disc_da, ind_disc_dv)
+
+    if (filter_discriminant && length(ind_disc) > 0) {
+      pvals <- pvals[-ind_disc]
+      post_fdr <- stats::p.adjust(pvals, method = fdr)
+      signif_vec <- taxanames[-ind_disc][which(post_fdr < fdr_cutoff)]
+      signif_models <- model_summaries[-ind_disc][which(post_fdr < fdr_cutoff)]
+    } else {
+      post_fdr <- stats::p.adjust(pvals, method = fdr)
+      names(pvals) <- names(post_fdr) <- taxanames
+      # Record significant taxa
+      signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
+      signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
+    }
 
 
 
-    restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+
+
 
     tmp <- model_summaries[[1]]
     coefs <- tmp$coefficients

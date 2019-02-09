@@ -17,6 +17,17 @@ my_covariate <- cbind(rep(c(0,1), each = 10), c(rep(0,5), rep(1,15)), c(rep(0,4)
 colnames(my_covariate) <- c("X1", "X2", "X3")
 test_data_bad <- data.frame("W" = my_counts_bad, "M" = seq_depth, my_covariate)
 
+test_small <- test_data[c(1,11),]
+
+test_that("overspecified model fails", {
+  expect_error(bbdml(formula = cbind(W, M - W) ~ X1,
+                     phi.formula = ~ X1,
+                     data = test_small,
+                     link = "logit",
+                     phi.link = "logit",
+                     method = "trust",
+                     inits = rbind(c(1,1,1,1), c(2,2,2,2))))
+})
 
 out_bfgs_inits_num <- bbdml(formula = cbind(W, M - W) ~ X1,
              phi.formula = ~ X1,
@@ -59,12 +70,14 @@ test_that("bad init gives warning", {
 })
 
 test_that("checking for perfectly discriminant", {
-  expect_warning(bbdml(formula = cbind(W, M - W) ~ X1,
+  expect_warning(tmp <- bbdml(formula = cbind(W, M - W) ~ X1,
                        phi.formula = ~ X1,
                        data = test_data_bad,
                        link = "logit",
                        phi.link = "logit",
                        nstart = 1))
+  expect_warning(print(tmp))
+  expect_warning(print(summary(tmp)))
   expect_warning(bbdml(formula = cbind(W, M - W) ~ 1,
                        phi.formula = ~ X1,
                        data = test_data_bad,

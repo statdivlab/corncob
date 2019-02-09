@@ -6,8 +6,9 @@
 \usage{
 differentialTest(formula, phi.formula, formula_null, phi.formula_null,
   data, link = "logit", phi.link = "logit", test, boot, B = 1000,
-  sample_data = NULL, taxa_are_rows = TRUE, fdr_cutoff = 0.05,
-  fdr = "fdr", inits = NULL, inits_null = NULL, ...)
+  sample_data = NULL, taxa_are_rows = TRUE,
+  filter_discriminant = TRUE, fdr_cutoff = 0.05, fdr = "fdr",
+  inits = NULL, inits_null = NULL, ...)
 }
 \arguments{
 \item{formula}{an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the abundance}
@@ -33,6 +34,8 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null,
 \item{sample_data}{Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates/sample data.}
 
 \item{taxa_are_rows}{Boolean. Optional. If \code{data} is a data frame or matrix, this indicates whether taxa are rows. Defaults to \code{TRUE}.}
+
+\item{filter_discriminant}{Boolean. Defaults to \code{TRUE}. If \code{FALSE}, discriminant taxa will not be filtered out.}
 
 \item{fdr_cutoff}{Integer. Defaults to \code{0.05}. Desired type 1 error rate}
 

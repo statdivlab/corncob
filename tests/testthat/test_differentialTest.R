@@ -6,11 +6,29 @@ set.seed(1)
 data(soil_phylo)
 soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
 subsoil <- prune_taxa(x = soil, taxa = rownames(otu_table(soil))[301:325])
+subsoil_disc <- prune_taxa(x = soil, taxa = rownames(otu_table(soil))[3001:3025])
 temp <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,
                          formula_null = ~ 1,
                          phi.formula_null = ~ 1,
                          data = subsoil, boot = FALSE, test = "LRT",
+                         inits = rbind(rep(.01, 6)),
+                         inits_null = rbind(rep(0.01, 2)))
+
+temp2 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                         phi.formula = ~ Plants + DayAmdmt,
+                         formula_null = ~ 1,
+                         phi.formula_null = ~ 1,
+                         data = subsoil, boot = FALSE, test = "LRT",
+                         filter_discriminant = FALSE,
+                         inits = rbind(rep(.01, 6)),
+                         inits_null = rbind(rep(0.01, 2)))
+
+temp3 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                         phi.formula = ~ Plants + DayAmdmt,
+                         formula_null = ~ 1,
+                         phi.formula_null = ~ 1,
+                         data = subsoil_disc, boot = FALSE, test = "LRT",
                          inits = rbind(rep(.01, 6)),
                          inits_null = rbind(rep(0.01, 2)))
 
@@ -95,6 +113,8 @@ temp_pbwald <- differentialTest(formula = ~ Plants + DayAmdmt,
 
 test_that("differentialTest works", {
   expect_is(temp, "differentialTest")
+  expect_is(temp2, "differentialTest")
+  expect_is(temp3, "differentialTest")
   expect_is(temp_wald, "differentialTest")
   expect_is(temp_pbwald, "differentialTest")
   expect_is(temp_pblrt, "differentialTest")

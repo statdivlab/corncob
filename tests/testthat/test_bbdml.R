@@ -70,12 +70,13 @@ test_that("bad init gives warning", {
 })
 
 test_that("checking for perfectly discriminant", {
-  expect_warning(bbdml(formula = cbind(W, M - W) ~ X1,
+  expect_warning(tmp <- bbdml(formula = cbind(W, M - W) ~ X1,
                        phi.formula = ~ X1,
                        data = test_data_bad,
                        link = "logit",
                        phi.link = "logit",
                        nstart = 1))
+  expect_warning(print(summary(tmp)))
   expect_warning(bbdml(formula = cbind(W, M - W) ~ 1,
                        phi.formula = ~ X1,
                        data = test_data_bad,

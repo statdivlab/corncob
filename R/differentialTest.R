@@ -165,14 +165,14 @@ differentialTest <- function(formula, phi.formula,
       }
     }
 
-    if (filter_discriminant) {
-      ind_disc_da <- which(perfDisc_DA == TRUE)
-      ind_disc_dv <- which(perfDisc_DV == TRUE)
-      disc_vec_da <- taxanames[ind_disc_da]
-      disc_vec_dv <- taxanames[ind_disc_dv]
+    ind_disc_da <- which(perfDisc_DA == TRUE)
+    ind_disc_dv <- which(perfDisc_DV == TRUE)
+    disc_vec_da <- taxanames[ind_disc_da]
+    disc_vec_dv <- taxanames[ind_disc_dv]
 
-      ind_disc <- union(ind_disc_da, ind_disc_dv)
+    ind_disc <- union(ind_disc_da, ind_disc_dv)
 
+    if (filter_discriminant && length(ind_disc) > 0) {
       pvals <- pvals[-ind_disc]
       post_fdr <- stats::p.adjust(pvals, method = fdr)
       signif_vec <- taxanames[-ind_disc][which(post_fdr < fdr_cutoff)]
@@ -183,8 +183,6 @@ differentialTest <- function(formula, phi.formula,
       # Record significant taxa
       signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
       signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
-      disc_vec_da <- taxanames[which(perfDisc_DA == TRUE)]
-      disc_vec_dv <- taxanames[which(perfDisc_DV == TRUE)]
     }
 
 

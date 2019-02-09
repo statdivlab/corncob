@@ -90,6 +90,15 @@ bbdml <- function(formula, phi.formula, data,
   npstar <- ncol(X.bstar)
   nppar <- np + npstar
 
+  df.model <- nppar
+  df.residual <- nrow(resp) - df.model
+
+  if (df.residual <= 0) {
+    stop("Model overspecified! \n
+Trying to fit more parameters than sample size. Model cannot be estimated.")
+  }
+
+
   # Counts
   W <- resp[, 1]
   # Sample Size
@@ -333,9 +342,7 @@ bbdml <- function(formula, phi.formula, data,
 
   # other results
   # if fixpar is not null, df.model is lower than nbpar
-  df.model <- length(theta)
 
-  df.residual <- length(M) - df.model
 
   msg <- if (!is.null(mlout$message)) mlout$message else character(0)
 

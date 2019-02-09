@@ -14,6 +14,15 @@ temp <- differentialTest(formula = ~ Plants + DayAmdmt,
                          inits = rbind(rep(.01, 6)),
                          inits_null = rbind(rep(0.01, 2)))
 
+temp2 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                         phi.formula = ~ Plants + DayAmdmt,
+                         formula_null = ~ 1,
+                         phi.formula_null = ~ 1,
+                         data = subsoil, boot = FALSE, test = "LRT",
+                         filter_discriminant = FALSE,
+                         inits = rbind(rep(.01, 6)),
+                         inits_null = rbind(rep(0.01, 2)))
+
 temp_badinits1 <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,
                          formula_null = ~ 1,
@@ -95,6 +104,7 @@ temp_pbwald <- differentialTest(formula = ~ Plants + DayAmdmt,
 
 test_that("differentialTest works", {
   expect_is(temp, "differentialTest")
+  expect_is(temp2, "differentialTest")
   expect_is(temp_wald, "differentialTest")
   expect_is(temp_pbwald, "differentialTest")
   expect_is(temp_pblrt, "differentialTest")

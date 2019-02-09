@@ -40,4 +40,11 @@ print.summary.bbdml <- function(x, digits = max(3L, getOption("digits") - 3L),
                       na.print = "NA", ...)
 
   cat("\n\nLog-likelihood: ", format(x$logL, digits = max(4L, digits + 1L)), sep = "")
+
+  if (x$sep_da || x$sep_dv) {
+    warning("This model is based on a discriminant taxa.
+            You may see NAs in the model summary because Wald testing is invalid.
+            Likelihood ratio testing can be used, but standard errors cannot be calculated.",
+            immediate. = TRUE)
+  }
 }

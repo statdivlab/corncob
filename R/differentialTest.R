@@ -114,54 +114,59 @@ differentialTest <- function(formula, phi.formula,
       # Subset data to only select that taxa
       data_i <- convert_phylo(data, select = taxanames[i])
 
-      # Update formula to match
-      formula_i <- stats::update(formula, cbind(W, M - W) ~ .)
-      formula_null_i <- stats::update(formula_null, cbind(W, M - W) ~ .)
+      if (sum(data_i$W) == 0) {
+        perfDisc_DA[i] <- TRUE
+        perfDisc_DV[i] <- TRUE
+      } else {
+        # Update formula to match
+        formula_i <- stats::update(formula, cbind(W, M - W) ~ .)
+        formula_null_i <- stats::update(formula_null, cbind(W, M - W) ~ .)
 
-      # Fit unrestricted model
-      mod <- suppressWarnings(try(bbdml(formula = formula_i, phi.formula = phi.formula,
-                    data = data_i, link = link, phi.link = phi.link,
-                    inits = inits, ...), silent = TRUE))
+        # Fit unrestricted model
+        mod <- suppressWarnings(try(bbdml(formula = formula_i, phi.formula = phi.formula,
+                                          data = data_i, link = link, phi.link = phi.link,
+                                          inits = inits, ...), silent = TRUE))
 
-      # Fit restricted model
-      mod_null <- suppressWarnings(try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
-                       data = data_i, link = link, phi.link = phi.link,
-                       inits = inits_null, ...), silent = TRUE))
+        # Fit restricted model
+        mod_null <- suppressWarnings(try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
+                                               data = data_i, link = link, phi.link = phi.link,
+                                               inits = inits_null, ...), silent = TRUE))
 
-      if (!("try-error" %in% c(class(mod), class(mod_null)))) {
-        if (restrict_ind == 0) {
-          restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
-          restrict_ind <- 1
-        }
-        # If both models fit, otherwise keep as NA
-        model_summaries[[i]] <- suppressWarnings(summary(mod))
-        if (test == "Wald") {
-          if (boot) {
-            tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
-            if (class(tmp) != "try-error") {
-              pvals[i] <- tmp
+        if (!("try-error" %in% c(class(mod), class(mod_null)))) {
+          if (restrict_ind == 0) {
+            restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+            restrict_ind <- 1
+          }
+          # If both models fit, otherwise keep as NA
+          model_summaries[[i]] <- suppressWarnings(summary(mod))
+          if (test == "Wald") {
+            if (boot) {
+              tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
+              if (class(tmp) != "try-error") {
+                pvals[i] <- tmp
+              }
+            } else {
+              tmp <- try(waldchisq(mod = mod, mod_null = mod_null), silent = TRUE)
+              if (class(tmp) != "try-error") {
+                pvals[i] <- tmp
+              }
             }
-          } else {
-            tmp <- try(waldchisq(mod = mod, mod_null = mod_null), silent = TRUE)
-            if (class(tmp) != "try-error") {
-              pvals[i] <- tmp
+          } else if (test == "LRT") {
+            if (boot) {
+              tmp <- try(pbLRT(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
+              if (class(tmp) != "try-error") {
+                pvals[i] <- tmp
+              }
+            } else {
+              tmp <- try(lrtest(mod = mod, mod_null = mod_null), silent = TRUE)
+              if (class(tmp) != "try-error") {
+                pvals[i] <- tmp
+              }
             }
           }
-        } else if (test == "LRT") {
-          if (boot) {
-            tmp <- try(pbLRT(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
-            if (class(tmp) != "try-error") {
-              pvals[i] <- tmp
-            }
-          } else {
-            tmp <- try(lrtest(mod = mod, mod_null = mod_null), silent = TRUE)
-            if (class(tmp) != "try-error") {
-              pvals[i] <- tmp
-            }
-          }
+          perfDisc_DA[i] <- mod$sep_da
+          perfDisc_DV[i] <- mod$sep_dv
         }
-        perfDisc_DA[i] <- mod$sep_da
-        perfDisc_DV[i] <- mod$sep_dv
       }
     }
 
@@ -173,22 +178,14 @@ differentialTest <- function(formula, phi.formula,
     ind_disc <- union(ind_disc_da, ind_disc_dv)
 
     if (filter_discriminant && length(ind_disc) > 0) {
-      pvals <- pvals[-ind_disc]
-      post_fdr <- stats::p.adjust(pvals, method = fdr)
-      signif_vec <- taxanames[-ind_disc][which(post_fdr < fdr_cutoff)]
-      signif_models <- model_summaries[-ind_disc][which(post_fdr < fdr_cutoff)]
-    } else {
-      post_fdr <- stats::p.adjust(pvals, method = fdr)
-      names(pvals) <- names(post_fdr) <- taxanames
-      # Record significant taxa
-      signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
-      signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
+      # Want to keep same length, rest will ignore NAs
+      pvals[ind_disc] <- NA
     }
-
-
-
-
-
+    post_fdr <- stats::p.adjust(pvals, method = fdr)
+    names(pvals) <- names(post_fdr) <- taxanames
+    # Record significant taxa
+    signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
+    signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
 
     tmp <- model_summaries[[1]]
     coefs <- tmp$coefficients

@@ -6,7 +6,8 @@ set.seed(1)
 data(soil_phylo)
 soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
 subsoil <- prune_taxa(x = soil, taxa = rownames(otu_table(soil))[301:325])
-subsoil_disc <- prune_taxa(x = soil, taxa = rownames(otu_table(soil))[3001:3025])
+# including 7027 for all zeros
+subsoil_disc <- prune_taxa(x = soil, taxa = rownames(otu_table(soil))[c(3001:3024, 7027)])
 temp <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,
                          formula_null = ~ 1,
@@ -167,4 +168,11 @@ test_that("inits require correct length", {
                                 phi.formula_null = ~ 1,
                                 data = subsoil, boot = FALSE, test = "LRT",
                                 inits_null = rbind(rep(.01, 4))))
+})
+
+test_that("differentialTest does NAs correctly", {
+  expect_equal(length(temp$p), 25)
+  expect_equal(length(temp$p_fdr), 25)
+  expect_equal(length(temp3$p), 25)
+  expect_equal(length(temp3$p_fdr), 25)
 })

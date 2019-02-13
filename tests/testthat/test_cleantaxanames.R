@@ -1,0 +1,17 @@
+library(corncob)
+context("Test clean_taxa_names")
+
+data(soil_phylo)
+soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
+
+tmp1 <- phyloseq::taxa_names(clean_taxa_names(soil))
+tmp2 <- phyloseq::taxa_names(clean_taxa_names(soil, name = "Seq"))
+
+test_that("clean_taxa_names works", {
+  expect_equal(length(tmp1), 7770)
+  expect_equal(tmp1[1], "OTU1")
+  expect_equal(tmp1[1234], "OTU1234")
+  expect_equal(tmp2[2543], "Seq2543")
+  expect_error(clean(taxa_names(c(1,2,3))))
+})
+

@@ -13,7 +13,7 @@
 #' @import phyloseq
 #' @export
 convert_phylo <- function(data, select) {
-  subsamp <- phyloseq::prune_taxa(select, data)
+  subsamp <- suppressWarnings(phyloseq::prune_taxa(select, data))
   W_tmp <- matrix(phyloseq::otu_table(subsamp)@.Data, ncol = 1)
 
 

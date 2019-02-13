@@ -12,8 +12,19 @@ clean_taxa_names(x, name = "OTU")
 \item{name}{Character, defaults to \code{"OTU"}. Optional. String to use in every taxa name.}
 }
 \value{
-Object of class \code{phyloseq}, with taxa renamed (defaults to OTU1, OTU2, ...)
+Object of class \code{phyloseq}, with taxa renamed (defaults to OTU1, OTU2, ...), with the original taxa names saved as an attribute.
 }
 \description{
 Renames taxa to have short human-readable names
+}
+\details{
+The original taxa names are saved as the \code{original_names} attribute. See the example for an example of how to access the original names.
+}
+\examples{
+\dontrun{
+data(soil_phylo)
+x <- clean_taxa_names(soil_phylo)
+# Use this line to see the original taxa names
+attr(x, "original_names")
+}
 }

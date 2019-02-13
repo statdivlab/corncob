@@ -12,6 +12,6 @@ test_that("clean_taxa_names works", {
   expect_equal(tmp1[1], "OTU1")
   expect_equal(tmp1[1234], "OTU1234")
   expect_equal(tmp2[2543], "Seq2543")
-  expect_error(clean(taxa_names(c(1,2,3))))
+  expect_error(clean_taxa_names(c(1,2,3)))
 })
 

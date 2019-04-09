@@ -20,7 +20,7 @@ There is currently a vignette that shows examples of all major corncob functions
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("bryandmartin/corncob", build = TRUE)
+devtools::install_github("bryandmartin/corncob", build = TRUE, build_opts = c())
 library(corncob)
 # Use this to view the vignette in the corncob HTML help
 help(package = "corncob", help_type = "html")

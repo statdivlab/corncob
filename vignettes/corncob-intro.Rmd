@@ -21,6 +21,8 @@ urlcolor: blue
 
 We thank Dr. Thea Whitman for kindly providing us with the example data set we use for this vignette. You can read more about this data in Whitman, Thea, et al. "Dynamics of microbial community composition and soil organic carbon mineralization in soil following addition of pyrogenic and fresh organic matter." \textit{The ISME Journal} 10.12 (2016): 2918.
 
+We also use IBD microbiome data from Duvallet, Claire, et al. "Meta-analysis of gut microbiome studies identifies disease-specific and shared responses." \textit{Nature communications} 8(1), 1784. We thank the authors for making their data open source and easily accessible.
+
 
 # Introduction
 
@@ -320,7 +322,7 @@ While the model fits, we should be skeptical of **any** statistical model fit on
 
 We will now walk through several scientific questions of interest and show how they can be answered using hypothesis testing with \texttt{corncob}. Note that Day and Amdmt are both factor covariates with levels 0, 1, and 2.
 
-Note that some of these are rather strange tests, and shown for demonstration of the flexibility of the model only. Normally, when testing for differential variability across a covariate, we recommend always controlling for the effect of that covariate on the abundance.
+Note that some of these are rather strange tests, and shown for demonstration of the flexibility of the model only. Normally, when testing for differential variability across a covariate, we recommend always controlling for the effect of that covariate on the abundance. We first demonstrate examples with the soil dataset.
 
 ```{r}
 soil_full <- soil_phylo %>% 
@@ -403,4 +405,45 @@ ex6 <- differentialTest(formula = ~ Day,
                                  test = "Wald", boot = FALSE,
                                  fdr_cutoff = 0.05)
 plot(ex6)
+```
+
+We now demonstrate examples with the IBD data set. We again begin by agglomerating for purposes of demonstration. We agglomerate to the genus level.
+
+```{r}
+data(ibd_phylo)
+ibd <- ibd_phylo %>% 
+            tax_glom("Genus") 
+```
+
+
+Testing for differential abundance across IBD status, without controlling for anything else:
+
+```{r}
+ex7 <- differentialTest(formula = ~ ibd,
+                                 phi.formula = ~ 1,
+                                 formula_null = ~ 1,
+                                 phi.formula_null = ~ 1,
+                                 data = ibd,
+                                 test = "Wald", boot = FALSE,
+                                 fdr_cutoff = 0.05)
+plot(ex7)
+```
+
+We can make the plot cleaner using the \texttt{level} parameter. Here we will display both the family and genus information.
+
+```{r}
+plot(ex7, level = c("Family", "Genus"))
+```
+
+Jointly testing for differential abundance and differential variability across IBD status, without controlling for anything else:
+
+```{r}
+ex8 <- differentialTest(formula = ~ ibd,
+                                 phi.formula = ~ ibd,
+                                 formula_null = ~ 1,
+                                 phi.formula_null = ~ 1,
+                                 data = ibd,
+                                 test = "Wald", boot = FALSE,
+                                 fdr_cutoff = 0.05)
+plot(ex8, level = "Genus")
 ```

@@ -1,7 +1,11 @@
 Package: corncob
 Title: Count Regression for Correlated Observations with the Beta-Binomial
 Version: 0.1.0
-Authors@R: person("Bryan D", "Martin", email = "bmartin6@uw.edu", role = c("aut", "cre"))
+Authors@R: c(
+    person("Bryan D", "Martin", email = "bmartin6@uw.edu", role = c("aut", "cre")),
+    person("Daniela", "Witten", email = "dwitten@uw.edu", role = "aut"),
+    person("Amy D", "Willis", email = "adwillis@uw.edu", role = "aut")
+  )
 Description: This packages models correlated count data using the beta-binomial distribution. It allows for both mean and overdispersion covariates.
 Depends: R (>= 3.2)
 License: GPL (>= 2)

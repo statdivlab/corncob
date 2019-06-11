@@ -16,8 +16,7 @@ library(corncob)
 
 ## Use
 
-There is currently a vignette created as a tutorial for the STAMPS 2018 workshop. 
-This vignette demonstrates example usage of all main functions. You can see the vignette by using the following code:
+The vignette demonstrates example usage of all main functions. You can see the vignette by using the following code:
 
 ``` r
 # install.packages("devtools")
@@ -30,9 +29,7 @@ utils::browseVignettes(package = "corncob")
 ```
 ## Status
 
-Documentation is complete, but not finalized, and most examples are still in progress. However, you can see examples of most functions intended for users in the package vignette.
-
-Manuscript is in preparation.
+The preprint describing the methodology implemented in corncob is available [here](https://arxiv.org/abs/1902.02776).
 
 ## Bug Reports / Change Requests
 

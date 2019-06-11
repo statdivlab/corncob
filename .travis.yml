@@ -6,6 +6,9 @@ warnings_are_errors: true
 sudo: false
 cache: packages
 
+before_install:
+  - Rscript -e 'if (!requireNamespace("BiocManager", quietly = TRUE)){install.packages("BiocManager")}; BiocManager::install(version = "devel", ask = FALSE)'
+
 after_success:
   - Rscript -e 'covr::codecov()'
 

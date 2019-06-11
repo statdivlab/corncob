@@ -16,7 +16,8 @@ library(corncob)
 
 ## Use
 
-There is currently a vignette that shows examples of all major corncob functions. Please [file an issue](https://github.com/bryandmartin/corncob/issues) if you have a request for a tutorial that is not currently included. You can see the vignette by using the following code:
+The vignette demonstrates example usage of all main functions. Please [file an issue](https://github.com/bryandmartin/corncob/issues) if you have a request for a tutorial that is not currently included. You can see the vignette by using the following code:
+
 
 ``` r
 # install.packages("devtools")

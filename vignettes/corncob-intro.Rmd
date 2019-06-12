@@ -21,7 +21,7 @@ urlcolor: blue
 
 We thank Dr. Thea Whitman for kindly providing us with the example data set we use for this vignette. You can read more about this data in Whitman, Thea, et al. "Dynamics of microbial community composition and soil organic carbon mineralization in soil following addition of pyrogenic and fresh organic matter." \textit{The ISME Journal} 10.12 (2016): 2918.
 
-We also use IBD microbiome data from Duvallet, Claire, et al. "Meta-analysis of gut microbiome studies identifies disease-specific and shared responses." \textit{Nature communications} 8(1), 1784. We thank the authors for making their data open source and easily accessible.
+We also use IBD microbiome data from Papa, Eliseo, et al. "Non-Invasive Mapping of the Gastrointestinal Microbiota Identifies Children with Inflammatory Bowel Disease." \textit{PLoS One} 7(6), e39242 and provided by Duvallet, Claire, et al. (2017). "MicrobiomeHD: the human gut microbiome in health and disease" [Data set]. Zenodo. We thank the authors for making their data open source and easily accessible.
 
 
 # Introduction

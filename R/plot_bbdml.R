@@ -1,7 +1,7 @@
 #' Plotting function
 #'
 #' @param x Object of class \code{bbdml}.
-#' @param AA (Optional). Default \code{FALSE}. Boolean indicator for whether to plot on absolute abundance scale
+#' @param total (Optional). Default \code{FALSE}. Boolean indicator for whether to plot on total counts scale
 #' @param color (Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples. Use a character vector to have \code{ggplot2} default.
 #' @param shape (Optional). Default \code{NULL}. The sample variable to map to different shapes. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples.
 #' @param facet (Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.
@@ -23,7 +23,7 @@
 #' plot(mod, color = "DayAmdmt")
 #' }
 #' @export
-plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, B = 1000, ...) {
+plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, B = 1000, ...) {
   # input <- match.call(expand.dots = TRUE)
   mod <- x
 
@@ -55,7 +55,7 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
   }
 
   resp <- W
-  if (!AA) {
+  if (!total) {
     ymin <- ymin/M
     ymax <- ymax/M
     resp <- W/M
@@ -110,7 +110,7 @@ plot.bbdml <- function(x, AA = FALSE, color = NULL, shape = NULL, facet = NULL, 
   my_ord_str <- paste(my_ord_str, df$samples, sep = "_")
   df$order <- factor(df$samples, levels = df$samples[order(my_ord_str)])
 
-  ylab_tmp <- ifelse(!AA, "Relative Abundance", "Absolute Abundance")
+  ylab_tmp <- ifelse(!total, "Relative Abundance", "Total Counts")
 
   aes_map <- ggplot2::aes_string(x = "order", y = "RA", colour = color, shape = shape, labs = "samples")
   my_gg <- ggplot2::ggplot(df, aes_map) +

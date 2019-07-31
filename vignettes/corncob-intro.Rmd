@@ -76,7 +76,7 @@ sample_data(soil_phylo)[1:3, ]
 Our covariates are as follows:
 \begin{itemize}
 \item  \texttt{Plants}: Indicator of whether plants are in the soil for this sample.
-\item \texttt{Amdmt}: Categoircal variable representing one of three soil additives; none, biochar, and freshbiomass, respectively.
+\item \texttt{Amdmt}: Categorical variable representing one of three soil additives; none, biochar, and freshbiomass, respectively.
 \item \texttt{ID}: Categorical variable representing different plots of soil.
 \item \texttt{Day}: Categorical variable representing one of three days of measurement; day 1, day 21, and day 81, respectively.
 \item \texttt{DayAmdmt}: Categorical variable combining the \texttt{Day} and \texttt{Amdmt} variables into a single variable.
@@ -135,16 +135,16 @@ plot(corncob)
 
 The points represent the relative abundances. The bars represent the 95\% prediction intervals for the observed relative abundance by sample. 
 
-Now let's look at the same plot, but on the absolute abundance scale with 95\% prediction intervals (since absolute abundance is not a parameter). To do this, we add the option \texttt{AA = TRUE} to our plotting code.
+Now let's look at the same plot, but on the counts scale with 95\% prediction intervals (since counts is not a parameter). To do this, we add the option \texttt{total = TRUE} to our plotting code.
 
 ```{r}
-plot(corncob, AA = TRUE)
+plot(corncob, total = TRUE)
 ```
 
 Finally, let's color the plot by the \texttt{DayAmdmt} covariate. To do this, we add the option \texttt{color = "DayAmdmt"} to our plotting code. 
 
 ```{r}
-plot(corncob, AA = TRUE, color = "DayAmdmt")
+plot(corncob, total = TRUE, color = "DayAmdmt")
 ```
 
 ```{r}
@@ -158,7 +158,7 @@ We can observe on this plot that it might be of interest to distinguish between 
 
 # Adding covariates
 
-Let's try modeling the expected relative abundance and the variability of the absolute abundance with \texttt{DayAmdmt} as a covariate. We do this by modifying \texttt{formula} and \texttt{phi.formula} as:
+Let's try modeling the expected relative abundance and the variability of the counts with \texttt{DayAmdmt} as a covariate. We do this by modifying \texttt{formula} and \texttt{phi.formula} as:
 
 ```{r}
 corncob_da <- bbdml(formula = OTU.1 ~ DayAmdmt,
@@ -166,10 +166,10 @@ corncob_da <- bbdml(formula = OTU.1 ~ DayAmdmt,
              data = soil)
 ```
 
-Let's also plot this data on both the absolute abudance and relative abundance scale.
+Let's also plot this data on both the total count and relative abundance scales.
 
 ```{r}
-plot(corncob_da, color = "DayAmdmt", AA = TRUE)
+plot(corncob_da, color = "DayAmdmt", total = TRUE)
 ```
 
 ```{r}
@@ -194,7 +194,7 @@ Now that we have chosen our model, let's interpret our model output. To see a su
 ```{r}
 summary(corncob_da)
 ```
-This output will look familiar if you have done regression analysis in R in the past. Covariates associated with the expected relative abundance are presented separately from covariates associated with the variance of the absolute abundances are preceded by.
+This output will look familiar if you have done regression analysis in R in the past. Covariates associated with the expected relative abundance are presented separately from covariates associated with the variance of the counts are preceded by.
 
 From this model summary, we can see that the \texttt{DayAmdmt21} abundance coefficient is negative and statistically significant. This suggests that this taxon is differentially-abundant across \texttt{DayAmdmt}, and that samples with \texttt{DayAmdmt = 21} are expected to have a lower relative abundance. This matches what we saw from the observed abundances.
 

@@ -32,7 +32,7 @@ print.differentialTest <- function(x, ...) {
   cat("$significant_models: model summaries of the statistically significant taxa \n")
   cat("$all_models: all model summaries \n")
   cat("$restrictions_DA: covariates tested for differential abundance \n")
-  cat("$restrictions_DA: covariates tested for differential variability \n")
+  cat("$restrictions_DV: covariates tested for differential variability \n")
   cat("$discriminant_taxa_DA: taxa for which at least one covariate associated with the abundance was perfectly discriminant \n")
   cat("$discriminant_taxa_DV: taxa for which at least one covariate associated with the dispersion was perfectly discriminant \n\n")
   cat("plot( ) to see a plot of tested coefficients from significant taxa \n")

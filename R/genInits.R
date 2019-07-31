@@ -41,7 +41,8 @@ genInits <- function(W, M,
   disp_init <- sum((tmp$weights*tmp$residuals^2)[tmp$weights > 0])/tmp$df.r
   phi_init <- disp_init/(stats::median(M) - 1)
   bstar_int_init <- switch(phi.link, "fishZ" = fishZ(phi_init), "logit" = logit(phi_init))
-  bstar_init <- c(bstar_int_init, rep(bstar_int_init*.2, npstar - 1))
+  bstar_init <- c(bstar_int_init, rep(1e-6, npstar - 1))
+
   init_start <- rbind(c(b_init, bstar_init))
   if (use) {
     inits <- init_start

@@ -4,13 +4,13 @@
 \alias{plot.bbdml}
 \title{Plotting function}
 \usage{
-\method{plot}{bbdml}(x, AA = FALSE, color = NULL, shape = NULL,
+\method{plot}{bbdml}(x, total = FALSE, color = NULL, shape = NULL,
   facet = NULL, title = NULL, B = 1000, ...)
 }
 \arguments{
 \item{x}{Object of class \code{bbdml}.}
 
-\item{AA}{(Optional). Default \code{FALSE}. Boolean indicator for whether to plot on absolute abundance scale}
+\item{total}{(Optional). Default \code{FALSE}. Boolean indicator for whether to plot on total counts scale}
 
 \item{color}{(Optional). Default \code{NULL}. The sample variable to map to different colors. Can be a single character string of the variable name in \code{sample_data} or a custom supplied vector with length equal to the number of samples. Use a character vector to have \code{ggplot2} default.}
 

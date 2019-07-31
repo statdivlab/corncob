@@ -187,7 +187,7 @@ differentialTest <- function(formula, phi.formula,
     signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
     signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
 
-    tmp <- model_summaries[[1]]
+    tmp <- model_summaries[[setdiff(1:length(taxanames), ind_disc)[1]]]
     coefs <- tmp$coefficients
     rownames(coefs)[1:tmp$np.mu] <- substring(rownames(coefs)[1:tmp$np.mu], 4)
     rownames(coefs)[(tmp$np.mu + 1):nrow(coefs)] <- substring(rownames(coefs)[(tmp$np.mu + 1):nrow(coefs)], 5)

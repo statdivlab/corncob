@@ -7,6 +7,7 @@
 #' @param facet (Optional). Default \code{NULL}. The sample variable to map to different panels in a facet grid. Must be a single character string of a variable name in \code{sample_data}.
 #' @param title (Optional). Default \code{NULL}. Character string. The main title for the graphic.
 #' @param B (Optional). Default \code{1000}. Integer. Number of bootstrap simulations for prediction intervals. Use \code{B = 0} for no prediction intervals.
+#' @param sample_names (Optional). Default \code{TRUE}. Boolean. If \code{FALSE}, remove sample names from the plot.
 #' @param ... There are no optional parameters at this time.
 #'
 #' @return Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% prediction intervals.
@@ -23,7 +24,7 @@
 #' plot(mod, color = "DayAmdmt")
 #' }
 #' @export
-plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, B = 1000, ...) {
+plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, B = 1000, sample_names = TRUE, ...) {
   # input <- match.call(expand.dots = TRUE)
   mod <- x
 
@@ -130,6 +131,10 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
 
   if (!is.null(facet)) {
     my_gg <- my_gg + ggplot2::facet_grid(paste0("~", facet), scales = "free_x", space = "free_x", labeller = ggplot2::label_both)
+  }
+
+  if (!(sample_names)) {
+    my_gg <- my_gg + ggplot2::theme(axis.text.x = ggplot2::element_blank())
   }
   my_gg
 }

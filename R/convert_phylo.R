@@ -10,7 +10,6 @@
 #' convert_phylo(soil_phylo, "OTU1")
 #' }
 #'
-#' @import phyloseq
 #' @export
 convert_phylo <- function(data, select) {
   subsamp <- suppressWarnings(phyloseq::prune_taxa(select, data))

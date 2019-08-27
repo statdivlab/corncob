@@ -3,6 +3,7 @@ Count Regression for Correlated Observations with the Beta-binomial
 
 [![Build Status](https://travis-ci.org/bryandmartin/corncob.svg?branch=master)](https://travis-ci.org/bryandmartin/corncob)
 [![codecov](https://codecov.io/gh/bryandmartin/CORNCOB/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/CORNCOB)
+[![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)
 
 ## Installation
 
@@ -13,6 +14,11 @@ To download the corncob package, use the code below.
 devtools::install_github("bryandmartin/corncob")
 library(corncob)
 ```
+
+## Docker
+
+Instead of installing corncob to your local system, you can use corncob via the pre-compiled Docker image: `quay.io/fhcrc-microbiome/corncob`. 
+
 
 ## Use
 

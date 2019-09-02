@@ -5,9 +5,9 @@ context("Test differentialTest")
 set.seed(1)
 data(soil_phylo)
 soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
-subsoil <- prune_taxa(x = soil, taxa = rownames(otu_table(soil))[301:325])
+subsoil <- phyloseq::prune_taxa(x = soil, taxa = rownames(otu_table(soil))[301:325])
 # including 7027 for all zeros
-subsoil_disc <- prune_taxa(x = soil, taxa = rownames(otu_table(soil))[c(3001:3024, 7027)])
+subsoil_disc <- phyloseq::prune_taxa(x = soil, taxa = rownames(otu_table(soil))[c(3001:3024, 7027)])
 temp <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,
                          formula_null = ~ 1,
@@ -168,6 +168,24 @@ test_that("inits require correct length", {
                                 phi.formula_null = ~ 1,
                                 data = subsoil, boot = FALSE, test = "LRT",
                                 inits_null = rbind(rep(.01, 4))))
+})
+
+test_that("try_only works", {
+  expect_is(differentialTest(formula = ~ DayAmdmt,
+                                phi.formula = ~ DayAmdmt,
+                                formula_null = ~ 1,
+                                phi.formula_null = ~ 1,
+                                data = subsoil, boot = FALSE, test = "LRT",
+                                try_only = 2), "differentialTest")
+})
+
+test_that("overspecification error message", {
+  expect_error(differentialTest(formula = ~ Plants*Day*Amdmt,
+                                phi.formula = ~ Plants*Day*Amdmt,
+                                formula_null = ~ 1,
+                                phi.formula_null = ~ 1,
+                                data = subsoil, boot = FALSE, test = "LRT",
+                                try_only = 2))
 })
 
 test_that("differentialTest does NAs correctly", {

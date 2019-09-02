@@ -8,7 +8,7 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null,
   data, link = "logit", phi.link = "logit", test, boot, B = 1000,
   sample_data = NULL, taxa_are_rows = TRUE,
   filter_discriminant = TRUE, fdr_cutoff = 0.05, fdr = "fdr",
-  inits = NULL, inits_null = NULL, ...)
+  inits = NULL, inits_null = NULL, try_only = NULL, ...)
 }
 \arguments{
 \item{formula}{an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the abundance}
@@ -44,6 +44,8 @@ differentialTest(formula, phi.formula, formula_null, phi.formula_null,
 \item{inits}{Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.}
 
 \item{inits_null}{Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.}
+
+\item{try_only}{Optional integer. Set if you wish to try only the first \code{try_only} taxa, useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.}
 
 \item{...}{Optional additional arguments for \code{\link{bbdml}}}
 }

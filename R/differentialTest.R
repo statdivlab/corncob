@@ -17,6 +17,7 @@
 #' @param fdr Character. Defaults to \code{"fdr"}. False discovery rate control method, see \code{\link{p.adjust}} for more options.
 #' @param inits Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.
 #' @param inits_null Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.
+#' @param try_only Optional integer. Set if you wish to try only the first \code{try_only} taxa, useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
 #' @param ... Optional additional arguments for \code{\link{bbdml}}
 #'
 #' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}.
@@ -55,6 +56,7 @@ differentialTest <- function(formula, phi.formula,
                              fdr = "fdr",
                              inits = NULL,
                              inits_null = NULL,
+                             try_only = NULL,
                              ...) {
 
   # Record call
@@ -76,7 +78,7 @@ differentialTest <- function(formula, phi.formula,
     # Make sample data
     sampledata <- phyloseq::sample_data(data.frame(
       sample_data,
-      row.names = sample_names(OTU)
+      row.names = phyloseq::sample_names(OTU)
     ))
 
     # Make phyloseq object
@@ -108,8 +110,12 @@ differentialTest <- function(formula, phi.formula,
   }
 
     restrict_ind <- 0
+
+    if (is.null(try_only)) {
+      try_only <- length(taxanames)
+    }
     # Loop through OTU/taxa
-    for (i in 1:length(taxanames)) {
+    for (i in 1:try_only) {
 
       # Subset data to only select that taxa
       data_i <- convert_phylo(data, select = taxanames[i])
@@ -180,6 +186,11 @@ differentialTest <- function(formula, phi.formula,
     if (filter_discriminant && length(ind_disc) > 0) {
       # Want to keep same length, rest will ignore NAs
       pvals[ind_disc] <- NA
+    }
+
+    if (all(is.na(pvals))) {
+      stop("All models failed to converge! \n
+           If you are seeing this, it is likely that your model is overspecified. This occurs when your sample size is not large enough to estimate all the parameters of your model. This is most commonly due to categorical variables that include many categories. To confirm this, try running a model for a single taxon with bbdml.")
     }
     post_fdr <- stats::p.adjust(pvals, method = fdr)
     names(pvals) <- names(post_fdr) <- taxanames

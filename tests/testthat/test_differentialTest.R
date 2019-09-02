@@ -144,6 +144,7 @@ test_that("differentialTest works without phyloseq", {
 
 test_that("otu_to_taxonomy works", {
   expect_is(otu_to_taxonomy(temp$significant_taxa, soil_phylo), "character")
+  expect_error(otu_to_taxonomy(temp$significant_taxa, mysampdat))
 })
 
 test_that("requires data frame, matrix, or phyloseq", {

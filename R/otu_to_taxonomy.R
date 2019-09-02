@@ -26,9 +26,13 @@
 #'
 #' @export
 otu_to_taxonomy <- function(OTU, data, level = NULL) {
-  if (is.null(level)) {
-    return(apply(tax_table(data)[OTU,], 1, function(x) {paste(stats::na.omit(x), collapse = '_')}))
+  if ("phyloseq" %in% class(data)) {
+    if (is.null(level)) {
+      return(apply(phyloseq::tax_table(data)[OTU,], 1, function(x) {paste(stats::na.omit(x), collapse = '_')}))
+    } else {
+      return(apply(phyloseq::tax_table(data)[OTU, level], 1, function(x) {paste(stats::na.omit(x), collapse = '_')}))
+    }
   } else {
-    return(apply(tax_table(data)[OTU, level], 1, function(x) {paste(stats::na.omit(x), collapse = '_')}))
+    stop("This function currently only works for phyloseq objects.")
   }
 }

@@ -78,7 +78,7 @@ differentialTest <- function(formula, phi.formula,
     # Make sample data
     sampledata <- phyloseq::sample_data(data.frame(
       sample_data,
-      row.names = sample_names(OTU)
+      row.names = phyloseq::sample_names(OTU)
     ))
 
     # Make phyloseq object

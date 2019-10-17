@@ -149,16 +149,18 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
 
   # Generate inits
   if (is.null(inits)) {
-    inits <- suppressWarnings(genInits(W = W,
-                                       M = M,
-                                       X = X.b,
-                                       X_star = X.bstar,
-                                       np = np,
-                                       npstar = npstar,
-                                       link = link,
-                                       phi.link = phi.link,
-                                       nstart = nstart,
-                                       use = TRUE))
+    # Begin deprecation of genInits, init to mu = phi = 0.5 with logit, or 0 fishZ
+    # inits <- suppressWarnings(genInits(W = W,
+    #                                    M = M,
+    #                                    X = X.b,
+    #                                    X_star = X.bstar,
+    #                                    np = np,
+    #                                    npstar = npstar,
+    #                                    link = link,
+    #                                    phi.link = phi.link,
+    #                                    nstart = nstart,
+    #                                    use = TRUE))
+    inits <- rbind(rep(0, np + npstar))
   } else {
     nstart <- nrow(inits)
     # Or test feasibility of given inits. Same check as in objfun
@@ -176,30 +178,32 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
 
       if (any(is.nan(mu_init)) || any(is.nan(phi_init))) {
         warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
-        inits[i,] <- suppressWarnings(genInits(W = W,
-                                               M = M,
-                                               X = X.b,
-                                               X_star = X.bstar,
-                                               np = np,
-                                               npstar = npstar,
-                                               link = link,
-                                               phi.link = phi.link,
-                                               nstart = 1,
-                                               use = FALSE))
+        # inits[i,] <- suppressWarnings(genInits(W = W,
+        #                                        M = M,
+        #                                        X = X.b,
+        #                                        X_star = X.bstar,
+        #                                        np = np,
+        #                                        npstar = npstar,
+        #                                        link = link,
+        #                                        phi.link = phi.link,
+        #                                        nstart = 1,
+        #                                        use = FALSE))
+        inits <- rbind(rep(0, np + npstar))
       } else {
         val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
         if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
           warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
-          inits[i,] <- suppressWarnings(genInits(W = W,
-                                                 M = M,
-                                                 X = X.b,
-                                                 X_star = X.bstar,
-                                                 np = np,
-                                                 npstar = npstar,
-                                                 link = link,
-                                                 phi.link = phi.link,
-                                                 nstart = 1,
-                                                 use = FALSE))
+          # inits[i,] <- suppressWarnings(genInits(W = W,
+          #                                        M = M,
+          #                                        X = X.b,
+          #                                        X_star = X.bstar,
+          #                                        np = np,
+          #                                        npstar = npstar,
+          #                                        link = link,
+          #                                        phi.link = phi.link,
+          #                                        nstart = 1,
+          #                                        use = FALSE))
+          inits <- rbind(rep(0, np + npstar))
         }
       }
 

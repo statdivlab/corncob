@@ -281,6 +281,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
         #theta.orig <- theta.init
         #curtime <- proc.time()[1] - starttime
 
+        if (!exists("bestOut")) bestOut <- mlout
         # if the model is improved
         if (mlout$value < bestOut$value) {
           bestOut <- mlout

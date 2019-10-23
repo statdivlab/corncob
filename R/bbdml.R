@@ -149,18 +149,16 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
 
   # Generate inits
   if (is.null(inits)) {
-    # Begin deprecation of genInits, init to mu = phi = 0.5 with logit, or 0 fishZ
-    # inits <- suppressWarnings(genInits(W = W,
-    #                                    M = M,
-    #                                    X = X.b,
-    #                                    X_star = X.bstar,
-    #                                    np = np,
-    #                                    npstar = npstar,
-    #                                    link = link,
-    #                                    phi.link = phi.link,
-    #                                    nstart = nstart,
-    #                                    use = TRUE))
-    inits <- rbind(rep(0, np + npstar))
+    inits <- suppressWarnings(genInits(W = W,
+                                       M = M,
+                                       X = X.b,
+                                       X_star = X.bstar,
+                                       np = np,
+                                       npstar = npstar,
+                                       link = link,
+                                       phi.link = phi.link,
+                                       nstart = nstart,
+                                       use = TRUE))
   } else {
     nstart <- nrow(inits)
     # Or test feasibility of given inits. Same check as in objfun
@@ -178,32 +176,30 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
 
       if (any(is.nan(mu_init)) || any(is.nan(phi_init))) {
         warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
-        # inits[i,] <- suppressWarnings(genInits(W = W,
-        #                                        M = M,
-        #                                        X = X.b,
-        #                                        X_star = X.bstar,
-        #                                        np = np,
-        #                                        npstar = npstar,
-        #                                        link = link,
-        #                                        phi.link = phi.link,
-        #                                        nstart = 1,
-        #                                        use = FALSE))
-        inits <- rbind(rep(0, np + npstar))
+        inits[i,] <- suppressWarnings(genInits(W = W,
+                                               M = M,
+                                               X = X.b,
+                                               X_star = X.bstar,
+                                               np = np,
+                                               npstar = npstar,
+                                               link = link,
+                                               phi.link = phi.link,
+                                               nstart = 1,
+                                               use = FALSE))
       } else {
         val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
         if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
           warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
-          # inits[i,] <- suppressWarnings(genInits(W = W,
-          #                                        M = M,
-          #                                        X = X.b,
-          #                                        X_star = X.bstar,
-          #                                        np = np,
-          #                                        npstar = npstar,
-          #                                        link = link,
-          #                                        phi.link = phi.link,
-          #                                        nstart = 1,
-          #                                        use = FALSE))
-          inits <- rbind(rep(0, np + npstar))
+          inits[i,] <- suppressWarnings(genInits(W = W,
+                                                 M = M,
+                                                 X = X.b,
+                                                 X_star = X.bstar,
+                                                 np = np,
+                                                 npstar = npstar,
+                                                 link = link,
+                                                 phi.link = phi.link,
+                                                 nstart = 1,
+                                                 use = FALSE))
         }
       }
 
@@ -213,7 +209,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
 
   theta.init <- inits[1,]
   if (method == "BFGS") {
-    starttime <- proc.time()[1]
+    #starttime <- proc.time()[1]
     mlout <- optimr::optimr(par = theta.init,
                             fn = dbetabin_neg,
                             gr = gr_full,
@@ -229,7 +225,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                             phi.link = phi.link,
                             logpar = TRUE)
     theta.orig <- theta.init
-    curtime <- proc.time()[1] - starttime
+    #curtime <- proc.time()[1] - starttime
   }
   if (method == "trust") {
     if (!exists("rinit")) {
@@ -238,7 +234,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
     if (!exists("rmax")) {
       rmax <- 100
     }
-    starttime <- proc.time()[1]
+    #starttime <- proc.time()[1]
     mlout <- trust::trust(objfun, parinit = theta.init,
                           W = W,
                           M = M,
@@ -250,18 +246,18 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                           phi.link = phi.link,
                           rinit = rinit,
                           rmax = rmax)
-    curtime <- proc.time()[1] - starttime
+    #curtime <- proc.time()[1] - starttime
   }
   # Save the best model
   bestOut <- mlout
-  time <- curtime
+  #time <- curtime
 
   if (nstart >= 2) {
     for (i in 2:nstart) {
       ### BEGIN FOR
       theta.init <- inits[i,]
       if (method == "BFGS") {
-        starttime <- proc.time()[1]
+        #starttime <- proc.time()[1]
         mlout <- optimr::optimr(par = theta.init,
                                 fn = dbetabin_neg,
                                 gr = gr_full,
@@ -277,16 +273,16 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                 phi.link = phi.link,
                                 logpar = TRUE)
         theta.orig <- theta.init
-        curtime <- proc.time()[1] - starttime
+        #curtime <- proc.time()[1] - starttime
 
         # if the model is improved
         if (mlout$value < bestOut$value) {
           bestOut <- mlout
-          time <- curtime
+          #time <- curtime
         }
       } ### END IF bfgs
       if (method == "trust") {
-        starttime <- proc.time()[1]
+        #starttime <- proc.time()[1]
         mlout <- trust::trust(objfun, parinit = theta.init,
                               W = W,
                               M = M,
@@ -298,12 +294,12 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                               phi.link = phi.link,
                               rinit = rinit,
                               rmax = rmax)
-        curtime <- proc.time()[1] - starttime
+        #curtime <- proc.time()[1] - starttime
 
         # if the model is improved
         if (mlout$value < bestOut$value) {
           bestOut <- mlout
-          time <- curtime
+          #time <- curtime
         }
       } ### END IF trust
     } ### END FOR - inits
@@ -362,7 +358,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
       np.total = nppar, np.mu = np, np.phi = npstar,
       df.model = df.model, df.residual = df.residual,
       logL = logL, inits = inits, sep_da = sep_da, sep_dv = sep_dv,
-      iterations = iterations, code = code, msg = msg, time = time),
+      iterations = iterations, code = code, msg = msg),
     class = "bbdml")
 }
 

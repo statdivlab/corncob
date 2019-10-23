@@ -38,21 +38,24 @@ genInits <- function(W, M,
   init.glm <- eval(parse(text = paste("quasibinomial(link =", link,")")))
   tmp <- stats::glm.fit(x = X, y = cbind(W, M - W), family = init.glm)
   b_init <- stats::coef(tmp)
-  disp_init <- sum((tmp$weights*tmp$residuals^2)[tmp$weights > 0])/tmp$df.r
-  phi_init <- disp_init/(stats::median(M) - 1)
+  # Just use 0.5 for phi_init
+  # disp_init <- sum((tmp$weights*tmp$residuals^2)[tmp$weights > 0])/tmp$df.r
+  # phi_init <- disp_init/(stats::median(M) - 1)
+
+  phi_init <- 0.5
   bstar_int_init <- switch(phi.link, "fishZ" = fishZ(phi_init), "logit" = logit(phi_init))
-  bstar_init <- c(bstar_int_init, rep(1e-6, npstar - 1))
+  bstar_init <- c(bstar_int_init, rep(0, npstar - 1))
 
   init_start <- rbind(c(b_init, bstar_init))
   if (use) {
     inits <- init_start
   } else {
-    inits <- stats::rnorm(length(init_start), init_start, .5)
+    inits <- stats::rnorm(length(init_start), init_start, .25)
   }
 
   if (nstart > 1) {
     for (i in 2:nstart) {
-      inits <- rbind(inits, stats::rnorm(length(init_start), init_start, .5))
+      inits <- rbind(inits, stats::rnorm(length(init_start), init_start, .25))
     }
   }
 

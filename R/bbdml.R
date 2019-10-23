@@ -207,58 +207,63 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
   }
 
 
-  theta.init <- inits[1,]
-  if (method == "BFGS") {
-    #starttime <- proc.time()[1]
-    mlout <- optimr::optimr(par = theta.init,
-                            fn = dbetabin_neg,
-                            gr = gr_full,
-                            method = method,
-                            control = control,
-                            W = W,
-                            M = M,
-                            X = X.b,
-                            X_star = X.bstar,
-                            np = np,
-                            npstar = npstar,
-                            link = link,
-                            phi.link = phi.link,
-                            logpar = TRUE)
-    theta.orig <- theta.init
-    #curtime <- proc.time()[1] - starttime
-  }
-  if (method == "trust") {
-    if (!exists("rinit")) {
-      rinit <- 1
-    }
-    if (!exists("rmax")) {
-      rmax <- 100
-    }
-    #starttime <- proc.time()[1]
-    mlout <- trust::trust(objfun, parinit = theta.init,
-                          W = W,
-                          M = M,
-                          X = X.b,
-                          X_star = X.bstar,
-                          np = np,
-                          npstar = npstar,
-                          link = link,
-                          phi.link = phi.link,
-                          rinit = rinit,
-                          rmax = rmax)
-    #curtime <- proc.time()[1] - starttime
-  }
-  # Save the best model
-  bestOut <- mlout
+
+  # theta.init <- inits[1,]
+  # # replace any NA inits with 0
+  # theta.init[which(is.na(theta.init))] <- 0
+  # if (method == "BFGS") {
+  #   #starttime <- proc.time()[1]
+  #   mlout <- optimr::optimr(par = theta.init,
+  #                           fn = dbetabin_neg,
+  #                           gr = gr_full,
+  #                           method = method,
+  #                           control = control,
+  #                           W = W,
+  #                           M = M,
+  #                           X = X.b,
+  #                           X_star = X.bstar,
+  #                           np = np,
+  #                           npstar = npstar,
+  #                           link = link,
+  #                           phi.link = phi.link,
+  #                           logpar = TRUE)
+  #   theta.orig <- theta.init
+  #   #curtime <- proc.time()[1] - starttime
+  # }
+  # if (method == "trust") {
+  #   if (!exists("rinit")) {
+  #     rinit <- 1
+  #   }
+  #   if (!exists("rmax")) {
+  #     rmax <- 100
+  #   }
+  #   #starttime <- proc.time()[1]
+  #   mlout <- trust::trust(objfun, parinit = theta.init,
+  #                         W = W,
+  #                         M = M,
+  #                         X = X.b,
+  #                         X_star = X.bstar,
+  #                         np = np,
+  #                         npstar = npstar,
+  #                         link = link,
+  #                         phi.link = phi.link,
+  #                         rinit = rinit,
+  #                         rmax = rmax)
+  #   #curtime <- proc.time()[1] - starttime
+  # }
+  # # Save the best model
+  # bestOut <- mlout
   #time <- curtime
 
-  if (nstart >= 2) {
-    for (i in 2:nstart) {
+  # if (nstart >= 2) {
+    for (i in 1:nstart) {
       ### BEGIN FOR
       theta.init <- inits[i,]
+      # replace any NA inits with 0
+      theta.init[which(is.na(theta.init))] <- 0
       if (method == "BFGS") {
         #starttime <- proc.time()[1]
-        mlout <- optimr::optimr(par = theta.init,
+        mlout <- try(optimr::optimr(par = theta.init,
                                 fn = dbetabin_neg,
                                 gr = gr_full,
                                 method = method,
@@ -271,8 +276,9 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                 npstar = npstar,
                                 link = link,
                                 phi.link = phi.link,
-                                logpar = TRUE)
-        theta.orig <- theta.init
+                                logpar = TRUE), silent = TRUE)
+        if (class(mlout) == "try-error") next
+        #theta.orig <- theta.init
         #curtime <- proc.time()[1] - starttime
 
         # if the model is improved
@@ -283,7 +289,13 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
       } ### END IF bfgs
       if (method == "trust") {
         #starttime <- proc.time()[1]
-        mlout <- trust::trust(objfun, parinit = theta.init,
+          if (!exists("rinit")) {
+            rinit <- 1
+          }
+          if (!exists("rmax")) {
+            rmax <- 100
+          }
+        mlout <- try(trust::trust(objfun, parinit = theta.init,
                               W = W,
                               M = M,
                               X = X.b,
@@ -293,9 +305,11 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                               link = link,
                               phi.link = phi.link,
                               rinit = rinit,
-                              rmax = rmax)
+                              rmax = rmax), silent = TRUE)
+        if (class(mlout) == "try-error") next
         #curtime <- proc.time()[1] - starttime
 
+        if (!exists("bestOut")) bestOut <- mlout
         # if the model is improved
         if (mlout$value < bestOut$value) {
           bestOut <- mlout
@@ -303,9 +317,11 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
         }
       } ### END IF trust
     } ### END FOR - inits
-  } ### END IF - nstarts
+  # } ### END IF - nstarts
 
-
+  if (!exists("bestOut")) {
+    stop("Model could not be optimized! Try changing initializations or simplifying your model.")
+  }
 
   # change back for name
   mlout <- bestOut

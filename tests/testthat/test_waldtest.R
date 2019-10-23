@@ -11,7 +11,7 @@ test_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
 
 my_counts_bad <- my_counts
 my_counts_bad[1:19] <- 0
-my_covariate <- cbind(rep(c(0,1), each = 10), c(rep(0,5), rep(1,15)), c(rep(0,4), rep(1,16)))
+my_covariate <- cbind(rep(c(0,1), each = 10), rep(c(1,0), each = 10))
 colnames(my_covariate) <- c("X1", "X2", "X3")
 test_data_bad <- data.frame("W" = my_counts_bad, "M" = seq_depth, my_covariate)
 

@@ -291,10 +291,10 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
       } ### END IF bfgs
       if (method == "trust") {
         #starttime <- proc.time()[1]
-          if (missing("rinit")) {
+          if (missing(rinit)) {
             rinit <- 1
           }
-          if (missing("rmax")) {
+          if (missing(rmax)) {
             rmax <- 100
           }
         mlout <- try(trust::trust(objfun, parinit = theta.init,

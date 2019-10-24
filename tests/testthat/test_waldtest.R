@@ -11,8 +11,8 @@ test_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
 
 my_counts_bad <- my_counts
 my_counts_bad[1:19] <- 0
-my_covariate <- cbind(rep(c(0,1), each = 10), c(rep(0,5), rep(1,15)), c(rep(0,4), rep(1,16)))
-colnames(my_covariate) <- c("X1", "X2", "X3")
+my_covariate <- cbind(rep(c(0,1), each = 10), rep(c(1,0), each = 10))
+colnames(my_covariate) <- c("X1", "X2")
 test_data_bad <- data.frame("W" = my_counts_bad, "M" = seq_depth, my_covariate)
 
 out <- bbdml(formula = cbind(W, M - W) ~ X1,
@@ -41,8 +41,8 @@ out_nullboth <- bbdml(formula = cbind(W, M - W) ~ 1,
                       phi.link = "logit",
                       nstart = 1)
 
-out_bad <- bbdml(formula = cbind(W, M - W) ~ X1+X2+X3,
-                 phi.formula = ~ X1+X2+X3,
+out_bad <- bbdml(formula = cbind(W, M - W) ~ X1+X2,
+                 phi.formula = ~ X1+X2,
                  data = test_data_bad,
                  link = "logit",
                  phi.link = "fishZ",

@@ -6,11 +6,11 @@
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
 #' @param method optimization method, defaults to \code{"trust"}, or see \code{\link{optimr}} for other options
-#' @param control optimization control parameters (see \code{\link{trust}} and \code{\link{optimr}})
+#' @param control optimization control parameters (see \code{\link{optimr}})
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
 #' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
-#' @param ... Additional arguments for \code{\link{optimr}}
+#' @param ... Additional arguments for \code{\link{optimr}} or \code{\link{trust}}
 #'
 #' @return An object of class \code{bbdml}.
 #'
@@ -255,6 +255,8 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
   # bestOut <- mlout
   #time <- curtime
 
+  bestOut <- NULL
+
   # if (nstart >= 2) {
     for (i in 1:nstart) {
       ### BEGIN FOR
@@ -275,13 +277,12 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                 np = np,
                                 npstar = npstar,
                                 link = link,
-                                phi.link = phi.link,
-                                logpar = TRUE), silent = TRUE)
-        if (class(mlout) == "try-error") next
+                                phi.link = phi.link, logpar = TRUE),
+                     silent = TRUE); if (class(mlout) == "try-error") next
         #theta.orig <- theta.init
         #curtime <- proc.time()[1] - starttime
 
-        if (!exists("bestOut")) bestOut <- mlout
+        if (is.null(bestOut)) bestOut <- mlout
         # if the model is improved
         if (mlout$value < bestOut$value) {
           bestOut <- mlout
@@ -290,10 +291,10 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
       } ### END IF bfgs
       if (method == "trust") {
         #starttime <- proc.time()[1]
-          if (!exists("rinit")) {
+          if (missing("rinit")) {
             rinit <- 1
           }
-          if (!exists("rmax")) {
+          if (missing("rmax")) {
             rmax <- 100
           }
         mlout <- try(trust::trust(objfun, parinit = theta.init,
@@ -305,12 +306,11 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                               npstar = npstar,
                               link = link,
                               phi.link = phi.link,
-                              rinit = rinit,
-                              rmax = rmax), silent = TRUE)
-        if (class(mlout) == "try-error") next
+                              rinit = rinit, rmax = rmax),
+                     silent = TRUE); if (class(mlout) == "try-error") next
         #curtime <- proc.time()[1] - starttime
 
-        if (!exists("bestOut")) bestOut <- mlout
+        if (is.null("bestOut")) bestOut <- mlout
         # if the model is improved
         if (mlout$value < bestOut$value) {
           bestOut <- mlout
@@ -320,9 +320,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
     } ### END FOR - inits
   # } ### END IF - nstarts
 
-  if (!exists("bestOut")) {
-    stop("Model could not be optimized! Try changing initializations or simplifying your model.")
-  }
+  if (is.null("bestOut")) stop("Model could not be optimized! Try changing initializations or simplifying your model.")
 
   # change back for name
   mlout <- bestOut

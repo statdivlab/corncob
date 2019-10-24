@@ -21,7 +21,7 @@ bbdml(formula, phi.formula, data, link = "logit", phi.link = "logit",
 
 \item{method}{optimization method, defaults to \code{"trust"}, or see \code{\link{optimr}} for other options}
 
-\item{control}{optimization control parameters (see \code{\link{trust}} and \code{\link{optimr}})}
+\item{control}{optimization control parameters (see \code{\link{optimr}})}
 
 \item{numerical}{Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).}
 
@@ -29,7 +29,7 @@ bbdml(formula, phi.formula, data, link = "logit", phi.link = "logit",
 
 \item{inits}{Optional initializations as rows of a matrix. Defaults to \code{NULL}.}
 
-\item{...}{Additional arguments for \code{\link{optimr}}}
+\item{...}{Additional arguments for \code{\link{optimr}} or \code{\link{trust}}}
 }
 \value{
 An object of class \code{bbdml}.

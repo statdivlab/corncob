@@ -10,7 +10,7 @@
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
 #' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
-#' @param ... Additional arguments for \code{\link{optimr}} or \code{\link{trust}}
+#' @param ... Optional additional arguments for \code{\link{optimr}} or \code{\link{trust}}
 #'
 #' @return An object of class \code{bbdml}.
 #'
@@ -49,6 +49,8 @@ bbdml <- function(formula, phi.formula, data,
   if (numerical) {
     control$usenumDeriv <- TRUE
   }
+
+  argList <- list(...)
 
   # Convert phyloseq objects
   if ("phyloseq" %in% class(data)) {
@@ -291,10 +293,10 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
       } ### END IF bfgs
       if (method == "trust") {
         #starttime <- proc.time()[1]
-          if (missing(rinit)) {
+          if (is.null(argList$rinit)) {
             rinit <- 1
           }
-          if (missing(rmax)) {
+          if (is.null(argList$rmax)) {
             rmax <- 100
           }
         mlout <- try(trust::trust(objfun, parinit = theta.init,

@@ -29,7 +29,7 @@ bbdml(formula, phi.formula, data, link = "logit", phi.link = "logit",
 
 \item{inits}{Optional initializations as rows of a matrix. Defaults to \code{NULL}.}
 
-\item{...}{Additional arguments for \code{\link{optimr}} or \code{\link{trust}}}
+\item{...}{Optional additional arguments for \code{\link{optimr}} or \code{\link{trust}}}
 }
 \value{
 An object of class \code{bbdml}.

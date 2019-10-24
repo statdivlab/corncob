@@ -312,7 +312,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                      silent = TRUE); if (class(mlout) == "try-error") next
         #curtime <- proc.time()[1] - starttime
 
-        if (is.null("bestOut")) bestOut <- mlout
+        if (is.null(bestOut)) bestOut <- mlout
         # if the model is improved
         if (mlout$value < bestOut$value) {
           bestOut <- mlout
@@ -322,7 +322,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
     } ### END FOR - inits
   # } ### END IF - nstarts
 
-  if (is.null("bestOut")) stop("Model could not be optimized! Try changing initializations or simplifying your model.")
+  if (is.null(bestOut)) stop("Model could not be optimized! Try changing initializations or simplifying your model.")
 
   # change back for name
   mlout <- bestOut

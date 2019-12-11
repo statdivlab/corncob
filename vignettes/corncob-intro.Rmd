@@ -206,7 +206,7 @@ What if we want to test all the taxa in our data to see if they are differential
 
 Next, we use the \texttt{differentialTest} command. We specify the covariates of our model using \texttt{formula} and \texttt{phi.formula} as before, except we no longer include the response term because we are testing multiple taxa. We also specify which covariates we want to test for by removing them in the \texttt{formula\_null} and \texttt{phi.formula\_null} arguments. 
 
-The difference between the formulas and the null version of the formulas will be the variables that are tested. In this case, as when we examined the single taxon, we will be testing the coefficients of \texttt{DayAmdmt} for both the expected relative abundance and the overdispersion.
+The difference between the formulas and the null version of the formulas are the variables that we test. We will go through several examples, starting with a test for differential abundance across the \texttt{DayAmdmt} coefficient.
 
 We set \texttt{fdr\_cutoff} to be our controlled false discovery rate.
 

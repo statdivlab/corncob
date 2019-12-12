@@ -21,7 +21,9 @@
 summary.bbdml <- function(object, ...) {
   # For now, Wald test
   coef.table <- waldt(object)
-  keep <- match(c("call", "df.model", "df.residual", "logL", "link", "phi.link", "formula", "phi.formula", "np.mu", "np.phi", "sep_da", "sep_dv"),
+  # keep <- match(c("call", "df.model", "df.residual", "logL", "link", "phi.link", "formula", "phi.formula", "np.mu", "np.phi", "sep_da", "sep_dv"),
+  #               names(object), 0L)
+  keep <- match(c("call", "df.model", "df.residual", "logL", "link", "phi.link", "formula", "phi.formula", "np.mu", "np.phi", "sep_da", "sep_dv", "mu.resp", "phi.resp"),
                 names(object), 0L)
   ans <- c(object[keep],
            list(coefficients = coef.table))

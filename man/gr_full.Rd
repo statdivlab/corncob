@@ -4,8 +4,7 @@
 \alias{gr_full}
 \title{Parameter Gradient Vector}
 \usage{
-gr_full(theta, W, M, X, X_star, np, npstar, link, phi.link,
-  logpar = TRUE)
+gr_full(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar = TRUE)
 }
 \arguments{
 \item{theta}{Numeric vector. Parameters associated with \code{X} and \code{X_star}}

@@ -4,8 +4,12 @@
 \alias{getRestrictionTerms}
 \title{Get index of restricted terms for Wald test}
 \usage{
-getRestrictionTerms(mod, mod_null = NULL, restrictions = NULL,
-  restrictions.phi = NULL)
+getRestrictionTerms(
+  mod,
+  mod_null = NULL,
+  restrictions = NULL,
+  restrictions.phi = NULL
+)
 }
 \arguments{
 \item{mod}{an object of class \code{bbdml}}

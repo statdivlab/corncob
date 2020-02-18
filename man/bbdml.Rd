@@ -4,9 +4,19 @@
 \alias{bbdml}
 \title{Maximum Likelihood for the Beta-binomial Distribution}
 \usage{
-bbdml(formula, phi.formula, data, link = "logit", phi.link = "logit",
-  method = "trust", control = list(maxit = 1000, reltol = 1e-14),
-  numerical = FALSE, nstart = 1, inits = NULL, ...)
+bbdml(
+  formula,
+  phi.formula,
+  data,
+  link = "logit",
+  phi.link = "logit",
+  method = "trust",
+  control = list(maxit = 1000, reltol = 1e-14),
+  numerical = FALSE,
+  nstart = 1,
+  inits = NULL,
+  ...
+)
 }
 \arguments{
 \item{formula}{an object of class \code{formula}: a symbolic description of the model to be fitted to the abundance}

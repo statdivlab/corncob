@@ -4,11 +4,27 @@
 \alias{differentialTest}
 \title{Identify differentially-abundant and differentially-variable taxa}
 \usage{
-differentialTest(formula, phi.formula, formula_null, phi.formula_null,
-  data, link = "logit", phi.link = "logit", test, boot, B = 1000,
-  sample_data = NULL, taxa_are_rows = TRUE,
-  filter_discriminant = TRUE, fdr_cutoff = 0.05, fdr = "fdr",
-  inits = NULL, inits_null = NULL, try_only = NULL, ...)
+differentialTest(
+  formula,
+  phi.formula,
+  formula_null,
+  phi.formula_null,
+  data,
+  link = "logit",
+  phi.link = "logit",
+  test,
+  boot,
+  B = 1000,
+  sample_data = NULL,
+  taxa_are_rows = TRUE,
+  filter_discriminant = TRUE,
+  fdr_cutoff = 0.05,
+  fdr = "fdr",
+  inits = NULL,
+  inits_null = NULL,
+  try_only = NULL,
+  ...
+)
 }
 \arguments{
 \item{formula}{an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the abundance}

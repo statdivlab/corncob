@@ -4,8 +4,12 @@
 \alias{print.bbdml}
 \title{Print function}
 \usage{
-\method{print}{bbdml}(x, digits = max(3L, getOption("digits") - 3L),
-  signif.stars = getOption("show.signif.stars"), ...)
+\method{print}{bbdml}(
+  x,
+  digits = max(3L, getOption("digits") - 3L),
+  signif.stars = getOption("show.signif.stars"),
+  ...
+)
 }
 \arguments{
 \item{x}{Object of class \code{bbdml}}

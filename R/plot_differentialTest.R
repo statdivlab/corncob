@@ -2,7 +2,7 @@
 #'
 #' @param x Object of class \code{differentialTest}
 #' @param level (Optional). Character vector. Desired taxonomic levels for taxa labels.
-#' @param data_only (Optional). Do not plot, only return data. Defaults to FALSE.
+#' @param data_only (Optional). Default \code{FALSE}. Boolean. If \code{TRUE}, only returns data frame.
 #' @param ... No optional arguments are accepted at this time.
 #'
 #'
@@ -67,7 +67,7 @@ plot.differentialTest <- function(x, level = NULL, data_only = FALSE, ...) {
         count <- count + 1
       }
     }
-    if (!(data_only == TRUE)) {
+    if (!(data_only)) {
     # global variables warning suppression
     taxa <- xmin <- xmax <- NULL
 
@@ -86,8 +86,6 @@ plot.differentialTest <- function(x, level = NULL, data_only = FALSE, ...) {
     return(df)
   }
   } else {
-    message("No taxa were found to be significantly different. ")
-    message("This is unusual. ")
-    stop("Please verify that your formulas are correctly specified. ")
+    message("No taxa were found to be significantly different using your model specification. \nPlease verify that your formulas are correctly specified.")
   }
 }

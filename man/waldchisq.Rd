@@ -4,8 +4,7 @@
 \alias{waldchisq}
 \title{Wald-type chi-squared test}
 \usage{
-waldchisq(mod, mod_null = NULL, restrictions = NULL,
-  restrictions.phi = NULL)
+waldchisq(mod, mod_null = NULL, restrictions = NULL, restrictions.phi = NULL)
 }
 \arguments{
 \item{mod}{an object of class \code{bbdml}}

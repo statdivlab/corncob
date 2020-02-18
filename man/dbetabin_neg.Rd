@@ -4,8 +4,7 @@
 \alias{dbetabin_neg}
 \title{Negative betabinomial density}
 \usage{
-dbetabin_neg(theta, W, M, X, X_star, np, npstar, link, phi.link,
-  logpar = TRUE)
+dbetabin_neg(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar = TRUE)
 }
 \arguments{
 \item{theta}{Numeric vector. Parameters associated with \code{X} and \code{X_star}}

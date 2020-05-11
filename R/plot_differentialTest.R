@@ -2,6 +2,7 @@
 #'
 #' @param x Object of class \code{differentialTest}
 #' @param level (Optional). Character vector. Desired taxonomic levels for taxa labels.
+#' @param data_only (Optional). Default \code{FALSE}. Boolean. If \code{TRUE}, only returns data frame.
 #' @param ... No optional arguments are accepted at this time.
 #'
 #'
@@ -25,7 +26,7 @@
 #' }
 #'
 #' @export
-plot.differentialTest <- function(x, level = NULL, ...) {
+plot.differentialTest <- function(x, level = NULL, data_only = FALSE, ...) {
   signif_taxa <- x$significant_taxa
   if ("phyloseq" %in% class(x$data)) {
     if (!is.null(x$data@tax_table)) {
@@ -66,6 +67,7 @@ plot.differentialTest <- function(x, level = NULL, ...) {
         count <- count + 1
       }
     }
+    if (!(data_only)) {
     # global variables warning suppression
     taxa <- xmin <- xmax <- NULL
 
@@ -80,5 +82,10 @@ plot.differentialTest <- function(x, level = NULL, ...) {
       ggplot2::scale_y_discrete(limits = rev(df$taxa)) +
       ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+    } else {
+    return(df)
+  }
+  } else {
+    message("No taxa were found to be significantly different using your model specification. \nPlease verify that your formulas are correctly specified.")
   }
 }

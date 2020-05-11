@@ -4,12 +4,14 @@
 \alias{plot.differentialTest}
 \title{differentialTest plot function}
 \usage{
-\method{plot}{differentialTest}(x, level = NULL, ...)
+\method{plot}{differentialTest}(x, level = NULL, data_only = FALSE, ...)
 }
 \arguments{
 \item{x}{Object of class \code{differentialTest}}
 
 \item{level}{(Optional). Character vector. Desired taxonomic levels for taxa labels.}
+
+\item{data_only}{(Optional). Default \code{FALSE}. Boolean. If \code{TRUE}, only returns data frame.}
 
 \item{...}{No optional arguments are accepted at this time.}
 }

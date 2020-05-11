@@ -13,6 +13,7 @@
   title = NULL,
   B = 1000,
   sample_names = TRUE,
+  data_only = FALSE,
   ...
 )
 }
@@ -32,6 +33,8 @@
 \item{B}{(Optional). Default \code{1000}. Integer. Number of bootstrap simulations for prediction intervals. Use \code{B = 0} for no prediction intervals.}
 
 \item{sample_names}{(Optional). Default \code{TRUE}. Boolean. If \code{FALSE}, remove sample names from the plot.}
+
+\item{data_only}{(Optional). Default \code{FALSE}. Boolean. If \code{TRUE}, only returns data frame.}
 
 \item{...}{There are no optional parameters at this time.}
 }

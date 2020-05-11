@@ -18,20 +18,21 @@
 #'
 #' @details This function uses contrast matrices to test for differential abundance and differential variability using a Wald-type chi-squared test. To use a formula implementation, see \code{\link{differentialTest}}.
 #'
-#' @return An object of class \code{differentialTest}. List with elements \code{p} containing the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa, \code{significant_models} containing a list of the model fits for the significant taxa, \code{all_models} containing a list of the model fits for all taxa, \code{contrasts_DA} containing the contrast matrix for parameters associated with the abundance, \code{contrasts_DV} containing the contrast matrix for parameters associated with the dispersion, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, and \code{data} containing the data used to fit the models.
+#' @return An object of class \code{contrastsTest}. List with elements \code{p} containing the p-values for each contrast, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa,  \code{contrasts_DA} containing the contrast matrix for parameters associated with the abundance, \code{contrasts_DV} containing the contrast matrix for parameters associated with the dispersion, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, and \code{data} containing the data used to fit the models.
 
 #' @examples
 #' \dontrun{
 #' # phyloseq example
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
-#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-#' phyloseq::tax_glom("Phylum")
+#'   phyloseq::subset_samples(DayAmdmt %in% c("01","11","21", "22")) %>%
+#'   phyloseq::tax_glom("Phylum")
 #' da_analysis <- contrastsTest(formula = ~ DayAmdmt,
-#'                             phi.formula = ~ DayAmdmt,
-#'                             contrasts_DA =
-#'                             data = soil,
-#'                             fdr_cutoff = 0.05)
+#'                              phi.formula = ~ DayAmdmt,
+#'                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
+#'                                                  "DayAmdmt22 - DayAmdmt21"),
+#'                              data = soil,
+#'                              fdr_cutoff = 0.05)
 #' }
 #'
 #' @export
@@ -47,7 +48,6 @@ contrastsTest <- function(formula, phi.formula,
                           fdr_cutoff = 0.05,
                           fdr = "fdr",
                           inits = NULL,
-                          inits_null = NULL,
                           try_only = NULL,
                           ...) {
 

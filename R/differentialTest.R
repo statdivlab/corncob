@@ -20,9 +20,9 @@
 #' @param try_only Optional integer. Set if you wish to try only the first \code{try_only} taxa, useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
 #' @param ... Optional additional arguments for \code{\link{bbdml}}
 #'
-#' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}.
+#' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}. To use a contrast matrix, see \code{\link{contrastsTest}}.
 #'
-#' @return An object of class \code{differentialTest}. List with elements \code{p} containg the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa, \code{significant_models} containing a list of the model fits for the significant taxa, \code{all_models} containing a list of the model fits for all taxa, \code{restrictions_DA} containing a list of covariates that were tested for differential abundance, \code{restrictions_DV} containing a list of covariates that were tested for differential variability, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, and \code{data} containing the data used to fit the models.
+#' @return An object of class \code{differentialTest}. List with elements \code{p} containing the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa, \code{significant_models} containing a list of the model fits for the significant taxa, \code{all_models} containing a list of the model fits for all taxa, \code{restrictions_DA} containing a list of covariates that were tested for differential abundance, \code{restrictions_DV} containing a list of covariates that were tested for differential variability, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, and \code{data} containing the data used to fit the models.
 #'
 #' @examples
 #' \dontrun{
@@ -109,7 +109,7 @@ differentialTest <- function(formula, phi.formula,
     }
   }
 
-    restrict_ind <- 0
+    # restrict_ind <- 0
 
     if (is.null(try_only)) {
       try_only <- length(taxanames)
@@ -139,10 +139,10 @@ differentialTest <- function(formula, phi.formula,
                                                inits = inits_null, ...), silent = TRUE))
 
         if (!("try-error" %in% c(class(mod), class(mod_null)))) {
-          if (restrict_ind == 0) {
-            restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
-            restrict_ind <- 1
-          }
+          # if (restrict_ind == 0) {
+          #   restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+          #   restrict_ind <- 1
+          # }
           # If both models fit, otherwise keep as NA
           model_summaries[[i]] <- suppressWarnings(summary(mod))
           if (test == "Wald") {
@@ -198,16 +198,11 @@ differentialTest <- function(formula, phi.formula,
     signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
     signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
 
-    tmp <- model_summaries[[setdiff(1:length(taxanames), ind_disc)[1]]]
-    coefs <- tmp$coefficients
-    rownames(coefs)[1:tmp$np.mu] <- substring(rownames(coefs)[1:tmp$np.mu], 4)
-    rownames(coefs)[(tmp$np.mu + 1):nrow(coefs)] <- substring(rownames(coefs)[(tmp$np.mu + 1):nrow(coefs)], 5)
 
-    restricts_mu <- rownames(coefs)[restricts$mu]
-    restricts_phi <- rownames(coefs)[restricts$phi]
-
-    attr(restricts_mu, "index") <- restricts$mu
-    attr(restricts_phi, "index") <- restricts$phi
+    restricts_mu <- setdiff(attr(terms(formula), "term.labels"),
+                            attr(terms(formula_null), "term.labels"))
+    restricts_phi <- setdiff(attr(terms(phi.formula), "term.labels"),
+                             attr(terms(phi.formula_null), "term.labels"))
 
 
   structure(

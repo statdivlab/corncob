@@ -9,10 +9,10 @@ Authors@R: c(
 Description: This packages models correlated count data using the beta-binomial distribution. It allows for both mean and overdispersion covariates.
 Depends: R (>= 3.2)
 License: GPL (>= 2)
-Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, ggplot2, trust, dplyr, magrittr, rmutil, brglm2, scales
+Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, ggplot2, trust, dplyr, magrittr, rmutil, brglm2, scales, limma
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests: knitr,
     rmarkdown,
     testthat,

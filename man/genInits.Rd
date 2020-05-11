@@ -4,8 +4,7 @@
 \alias{genInits}
 \title{Generate initialization for optimization}
 \usage{
-genInits(W, M, X, X_star, np, npstar, link, phi.link, nstart = 1,
-  use = TRUE)
+genInits(W, M, X, X_star, np, npstar, link, phi.link, nstart = 1, use = TRUE)
 }
 \arguments{
 \item{W}{Numeric vector of counts}

@@ -4,8 +4,17 @@
 \alias{plot.bbdml}
 \title{Plotting function}
 \usage{
-\method{plot}{bbdml}(x, total = FALSE, color = NULL, shape = NULL,
-  facet = NULL, title = NULL, B = 1000, sample_names = TRUE, ...)
+\method{plot}{bbdml}(
+  x,
+  total = FALSE,
+  color = NULL,
+  shape = NULL,
+  facet = NULL,
+  title = NULL,
+  B = 1000,
+  sample_names = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{Object of class \code{bbdml}.}

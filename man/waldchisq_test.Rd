@@ -4,7 +4,13 @@
 \alias{waldchisq_test}
 \title{Wald-type chi-squared test statistic}
 \usage{
-waldchisq_test(mod, restrictions = NULL, restrictions.phi = NULL)
+waldchisq_test(
+  mod,
+  restrictions = NULL,
+  restrictions.phi = NULL,
+  contrasts_DA = NULL,
+  contrasts_DV = NULL
+)
 }
 \arguments{
 \item{mod}{an object of class \code{bbdml}}
@@ -12,6 +18,10 @@ waldchisq_test(mod, restrictions = NULL, restrictions.phi = NULL)
 \item{restrictions}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the abundance to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the abundance.}
 
 \item{restrictions.phi}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the dispersion to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the dispersion.}
+
+\item{contrasts_DA}{List. Optional. Constructs a contrast matrix. List elements should be characters specifying contrasts in the parameters within \code{formula}. Note that this is only available with \code{"Wald"} value for \code{test}.}
+
+\item{contrasts_DV}{List. Optional. Constructs a contrast matrix. List elements should be characters specifying contrasts in the parameters within \code{phi.formula}. Note that this is only available with \code{"Wald"} value for \code{test}.}
 }
 \value{
 Test statistic for Wald test.

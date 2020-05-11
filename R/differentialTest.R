@@ -204,8 +204,10 @@ differentialTest <- function(formula, phi.formula,
     # restricts_phi <- setdiff(attr(terms(phi.formula), "term.labels"),
     #                          attr(terms(phi.formula_null), "term.labels"))
 
-    restricts_mu <- colnames(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
-    restricts_phi <- colnames(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data))))
+    restricts_mu <- setdiff(colnames(stats::model.matrix(object = formula, data = data.frame(sample_data(data)))),
+                            colnames(stats::model.matrix(object = formula_null, data = data.frame(sample_data(data)))))
+    restricts_phi <- setdiff(colnames(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data)))),
+                             colnames(stats::model.matrix(object = phi.formula_null, data = data.frame(sample_data(data)))))
 
     attr(restricts_mu, "index") <- restricts$mu
     attr(restricts_phi, "index") <- restricts$phi

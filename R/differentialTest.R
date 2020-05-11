@@ -109,7 +109,7 @@ differentialTest <- function(formula, phi.formula,
     }
   }
 
-    # restrict_ind <- 0
+    restrict_ind <- 0
 
     if (is.null(try_only)) {
       try_only <- length(taxanames)
@@ -139,10 +139,10 @@ differentialTest <- function(formula, phi.formula,
                                                inits = inits_null, ...), silent = TRUE))
 
         if (!("try-error" %in% c(class(mod), class(mod_null)))) {
-          # if (restrict_ind == 0) {
-          #   restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
-          #   restrict_ind <- 1
-          # }
+          if (restrict_ind == 0) {
+            restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+            restrict_ind <- 1
+          }
           # If both models fit, otherwise keep as NA
           model_summaries[[i]] <- suppressWarnings(summary(mod))
           if (test == "Wald") {
@@ -199,10 +199,16 @@ differentialTest <- function(formula, phi.formula,
     signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
 
 
-    restricts_mu <- setdiff(attr(terms(formula), "term.labels"),
-                            attr(terms(formula_null), "term.labels"))
-    restricts_phi <- setdiff(attr(terms(phi.formula), "term.labels"),
-                             attr(terms(phi.formula_null), "term.labels"))
+    # restricts_mu <- setdiff(attr(terms(formula), "term.labels"),
+    #                         attr(terms(formula_null), "term.labels"))
+    # restricts_phi <- setdiff(attr(terms(phi.formula), "term.labels"),
+    #                          attr(terms(phi.formula_null), "term.labels"))
+
+    restricts_mu <- colnames(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
+    restricts_phi <- colnames(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data))))
+
+    attr(restricts_mu, "index") <- restricts$mu
+    attr(restricts_phi, "index") <- restricts$phi
 
 
   structure(

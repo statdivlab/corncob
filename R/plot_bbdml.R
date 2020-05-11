@@ -8,6 +8,7 @@
 #' @param title (Optional). Default \code{NULL}. Character string. The main title for the graphic.
 #' @param B (Optional). Default \code{1000}. Integer. Number of bootstrap simulations for prediction intervals. Use \code{B = 0} for no prediction intervals.
 #' @param sample_names (Optional). Default \code{TRUE}. Boolean. If \code{FALSE}, remove sample names from the plot.
+#' @param data_only (Optional). Default \code{FALSE}. Boolean. If \code{TRUE}, only returns data frame.
 #' @param ... There are no optional parameters at this time.
 #'
 #' @return Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% prediction intervals.
@@ -24,7 +25,7 @@
 #' plot(mod, color = "DayAmdmt")
 #' }
 #' @export
-plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, B = 1000, sample_names = TRUE, ...) {
+plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, B = 1000, sample_names = TRUE, data_only = FALSE, ...) {
   # input <- match.call(expand.dots = TRUE)
   mod <- x
 
@@ -70,6 +71,8 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
                       ymin = ymin,
                       ymax = ymax
   )
+
+  if (!(data_only)) {
 
   my_ord_str <- ""
   custom_color <- custom_shape <- FALSE
@@ -137,4 +140,7 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
     my_gg <- my_gg + ggplot2::theme(axis.text.x = ggplot2::element_blank())
   }
   my_gg
+  } else {
+    return(df)
+  }
 }

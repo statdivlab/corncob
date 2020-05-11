@@ -3,6 +3,7 @@ Count Regression for Correlated Observations with the Beta-binomial
 
 [![Build Status](https://travis-ci.org/bryandmartin/corncob.svg?branch=master)](https://travis-ci.org/bryandmartin/corncob)
 [![codecov](https://codecov.io/gh/bryandmartin/CORNCOB/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/CORNCOB)
+[![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)
 
 ## Installation
 
@@ -14,14 +15,19 @@ devtools::install_github("bryandmartin/corncob")
 library(corncob)
 ```
 
+## Docker
+
+Instead of installing corncob to your local system, you can use corncob via the pre-compiled Docker image: `quay.io/fhcrc-microbiome/corncob`. 
+
+
 ## Use
 
-The vignette demonstrates example usage of all main functions. Please [file an issue](https://github.com/bryandmartin/corncob/issues) if you have a request for a tutorial that is not currently included. You can see the vignette by using the following code:
+The vignette demonstrates example usage of all main functions. Please [file an issue](https://github.com/bryandmartin/corncob/issues) if you have a request for a tutorial that is not currently included. You can see the vignette by using the following code (note that this requires a TeX installation to view properly):
 
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("bryandmartin/corncob", build = TRUE, build_opts = c())
+devtools::install_github("bryandmartin/corncob", build_vignette = TRUE, build_opts = c())
 library(corncob)
 # Use this to view the vignette in the corncob HTML help
 help(package = "corncob", help_type = "html")
@@ -33,7 +39,7 @@ Note that R does not allow variable names to start with numbers. Sometimes, when
 
 ## Status
 
-The preprint describing the corncob methodology is available [here](https://arxiv.org/abs/1902.02776).
+The preprint describing the corncob methodology is available [here](https://arxiv.org/abs/1902.02776). The manuscript has been accepted to appear in *Annals of Applied Statistics*.
 
 ## Bug Reports / Change Requests
 

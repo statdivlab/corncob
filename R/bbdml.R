@@ -110,7 +110,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
   sep_da <- sep_dv <- FALSE
   if (length(attr(terms.mu, "term.labels") != 0)) {
     if (ncol(X.b) == 1) {
-      if (brglm2::detect_separation(y = cbind(W, M - W), x = cbind(1, X.b), family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
+      if (detectseparation::detect_separation(y = cbind(W, M - W), x = cbind(1, X.b), family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
         warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
                       "there are all zero counts within a group. Consider identifying and removing",
                       "this covariate from your model. The results of this model are not to be",
@@ -118,7 +118,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
         sep_da <- TRUE
       }
     } else {
-      if (brglm2::detect_separation(y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
+      if (detectseparation::detect_separation(y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
         warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
                       "there are all zero counts within a group. Consider identifying and removing",
                       "this covariate from your model. The results of this model are not to be",
@@ -130,7 +130,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
 
   if (length(attr(terms.phi, "term.labels") != 0)) {
     if (ncol(X.bstar) == 1) {
-      if (brglm2::detect_separation(y = cbind(W, M - W), x = cbind(1, X.bstar), family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
+      if (detectseparation::detect_separation(y = cbind(W, M - W), x = cbind(1, X.bstar), family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
         warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
                       "there are all zero counts within a group. Consider identifying and removing",
                       "this covariate from your model. The results of this model are not to be",
@@ -138,7 +138,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
         sep_dv <- TRUE
       }
     } else {
-      if (brglm2::detect_separation(y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
+      if (detectseparation::detect_separation(y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
         warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
                       "there are all zero counts within a group. Consider identifying and removing",
                       "this covariate from your model. The results of this model are not to be",

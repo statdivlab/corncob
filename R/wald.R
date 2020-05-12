@@ -19,7 +19,7 @@
 waldt <- function(mod) {
   # Covariance matrix
   covMat <- try(chol2inv(chol(hessian(mod))), silent = TRUE)
-  if (class(covMat) == "try-error") {
+  if ("try-error" %in% class(covMat)) {
     warning("Singular Hessian! Cannot calculate p-values in this setting.", immediate. = TRUE)
     np <- length(mod$param)
     se <- tvalue <- pvalue <- rep(NA, np)
@@ -76,7 +76,7 @@ waldchisq_test <- function(mod, restrictions = NULL, restrictions.phi = NULL,
   if (is.null(contrasts_DA) && is.null(contrasts_DV)) {
     # Covariance matrix - I_n^-1
     covMat <- try(chol2inv(chol(hessian(mod))), silent = TRUE)
-    if (class(covMat) == "try-error") {
+    if ("try-error" %in% class(covMat)) {
       stop("Singular Hessian!")
     }
 
@@ -111,7 +111,7 @@ waldchisq_test <- function(mod, restrictions = NULL, restrictions.phi = NULL,
     #end restrictions if, begin contrasts
   } else {
     covMat <- try(chol2inv(chol(hessian(mod))), silent = TRUE)
-    if (class(covMat) == "try-error") {
+    if ("try-error" %in% class(covMat)) {
       stop("Singular Hessian!")
     }
     if (!is.null(contrasts_DA)) {

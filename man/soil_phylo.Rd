@@ -4,7 +4,9 @@
 \name{soil_phylo}
 \alias{soil_phylo}
 \title{Soil data.}
-\format{A phyloseq-class experiment-level object with an OTU table and sample data.}
+\format{
+A phyloseq-class experiment-level object with an OTU table and sample data.
+}
 \usage{
 soil_phylo
 }

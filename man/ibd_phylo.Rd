@@ -4,7 +4,9 @@
 \name{ibd_phylo}
 \alias{ibd_phylo}
 \title{IBD data.}
-\format{A phyloseq-class experiment-level object with an OTU table and sample data.}
+\format{
+A phyloseq-class experiment-level object with an OTU table and sample data.
+}
 \usage{
 ibd_phylo
 }

@@ -41,12 +41,12 @@ out_nullboth <- bbdml(formula = cbind(W, M - W) ~ 1,
                       phi.link = "logit",
                       nstart = 1)
 
-out_bad <- bbdml(formula = cbind(W, M - W) ~ X1+X2,
+out_bad <- suppressWarnings(bbdml(formula = cbind(W, M - W) ~ X1+X2,
                  phi.formula = ~ X1+X2,
                  data = test_data_bad,
                  link = "logit",
                  phi.link = "fishZ",
-                 nstart = 1)
+                 nstart = 1))
 
 test_that("waldt works", {
   expect_is(waldt(out), "matrix")
@@ -69,7 +69,7 @@ test_that("waldchisq works", {
 })
 
 test_that("waldtest can break", {
-  expect_error(waldt(c(1,2,3)))
+  expect_warning(expect_error(waldt(c(1,2,3))))
   expect_warning(waldt(out_bad))
 })
 

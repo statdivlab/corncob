@@ -4,7 +4,14 @@
 \alias{waldchisq}
 \title{Wald-type chi-squared test}
 \usage{
-waldchisq(mod, mod_null = NULL, restrictions = NULL, restrictions.phi = NULL)
+waldchisq(
+  mod,
+  mod_null = NULL,
+  restrictions = NULL,
+  restrictions.phi = NULL,
+  contrasts_DA = NULL,
+  contrasts_DV = NULL
+)
 }
 \arguments{
 \item{mod}{an object of class \code{bbdml}}
@@ -14,6 +21,10 @@ waldchisq(mod, mod_null = NULL, restrictions = NULL, restrictions.phi = NULL)
 \item{restrictions}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the abundance to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the abundance.}
 
 \item{restrictions.phi}{Optional. Defaults to \code{NULL}. Numeric vector indicating the parameters associated with the dispersion to test, or character vector with name of variable to test. Note that \code{1} is the intercept associated with the dispersion.}
+
+\item{contrasts_DA}{List. Optional. Constructs a contrast matrix. List elements should be characters specifying contrasts in the parameters within \code{formula}. Note that this is only available with \code{"Wald"} value for \code{test}.}
+
+\item{contrasts_DV}{List. Optional. Constructs a contrast matrix. List elements should be characters specifying contrasts in the parameters within \code{phi.formula}. Note that this is only available with \code{"Wald"} value for \code{test}.}
 }
 \value{
 P-value from Wald test.
@@ -26,7 +37,7 @@ Wald-type chi-squared test
 data(soil_phylo)
 soil <- soil_phylo \%>\%
 phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
-tax_glom("Phylum")
+phyloseq::tax_glom("Phylum")
 mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
 data = soil)

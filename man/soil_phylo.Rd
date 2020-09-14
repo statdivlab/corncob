@@ -6,6 +6,18 @@
 \title{Soil data.}
 \format{
 A phyloseq-class experiment-level object with an OTU table and sample data.
+\describe{
+\item{otu_table}{OTU table with 7,770 taxa and 119 samples}
+\item{tax_table}{taxonomy table}
+\item{sam_data}{sample data with the following covariates:
+\itemize{
+\item \code{Plants}, values \code{0} and \code{1}. Index for different plants
+\item \code{Day}, values \code{0} (initial sampling point), \code{1} (12 days after treatment additions), and \code{2} (82 days after treatment additions). Index for different days of measurement
+\item \code{Amdmt}, values \code{0} (no additions), \code{1} (biochar additions), and \code{2} (fresh biomass additions). Index for different soil additives.
+\item \code{DayAmdmt}, values \code{00}, \code{01}, \code{02}, \code{10}, \code{11}, \code{12}, \code{20}, \code{21}, and \code{22}. A single index for the combination of \code{Day} and \code{Amdmt} with \code{Day} as the first digit and \code{Amdmt} as the second digit.
+\item \code{ID}, values \code{A}, \code{B}, \code{C}, \code{D},  and \code{F}. Index for different soil plots.
+}}
+}
 }
 \usage{
 soil_phylo

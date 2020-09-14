@@ -63,11 +63,24 @@ bbdml <- function(formula, phi.formula, data,
   # Record call
   call <- match.call(expand.dots = FALSE)
   # Record mu link
-  link <- match.arg(link, choices = "logit")
+  link <- try(match.arg(link, choices = "logit"))
+  if ("try-error" %in% class(link)) {
+    stop('link currently only allows "logit"! \n
+         To request another link function, post an issue on GitHub.')
+  }
+
   # Record phi link
-  phi.link <- match.arg(phi.link, choices = c("fishZ", "logit"))
+  phi.link <- try(match.arg(phi.link, choices = c("fishZ", "logit")))
+  if ("try-error" %in% class(phi.link)) {
+    stop('phi.link currently only allows "logit" or "fishZ"! \n
+         To request another link function, post an issue on GitHub.')
+  }
+
   # Record Method
-  method <- match.arg(method, choices = c("BFGS", "trust"))
+  method <- try(match.arg(method, choices = c("BFGS", "trust")))
+  if ("try-error" %in% class(method)) {
+    stop('If method is specified, it must be either "BFGS" or "trust"!')
+  }
 
   mu.f <- formula
   phi.f <- phi.formula

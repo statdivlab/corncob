@@ -15,7 +15,7 @@
 #' @param filter_discriminant Boolean. Defaults to \code{TRUE}. If \code{FALSE}, discriminant taxa will not be filtered out.
 #' @param fdr_cutoff Integer. Defaults to \code{0.05}. Desired type 1 error rate
 #' @param fdr Character. Defaults to \code{"fdr"}. False discovery rate control method, see \code{\link{p.adjust}} for more options.
-#' @param full_output. Boolean. Opetional. Defaults to \code{FALSE}. Indicator of whether to include full \code{bbdml} model output for all taxa.
+#' @param full_output Boolean. Opetional. Defaults to \code{FALSE}. Indicator of whether to include full \code{bbdml} model output for all taxa.
 #' @param inits Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.
 #' @param inits_null Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.
 #' @param try_only Optional numeric. Will try only the \code{try_only} taxa. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
@@ -49,7 +49,7 @@ differentialTest <- function(formula, phi.formula,
                              link = "logit",
                              phi.link = "logit",
                              test,
-                             boot,
+                             boot = FALSE,
                              B = 1000,
                              sample_data = NULL,
                              taxa_are_rows = TRUE,

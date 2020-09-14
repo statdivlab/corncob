@@ -13,13 +13,14 @@ differentialTest(
   link = "logit",
   phi.link = "logit",
   test,
-  boot,
+  boot = FALSE,
   B = 1000,
   sample_data = NULL,
   taxa_are_rows = TRUE,
   filter_discriminant = TRUE,
   fdr_cutoff = 0.05,
   fdr = "fdr",
+  full_output = FALSE,
   inits = NULL,
   inits_null = NULL,
   try_only = NULL,
@@ -57,16 +58,18 @@ differentialTest(
 
 \item{fdr}{Character. Defaults to \code{"fdr"}. False discovery rate control method, see \code{\link{p.adjust}} for more options.}
 
+\item{full_output}{Boolean. Opetional. Defaults to \code{FALSE}. Indicator of whether to include full \code{bbdml} model output for all taxa.}
+
 \item{inits}{Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.}
 
 \item{inits_null}{Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.}
 
-\item{try_only}{Optional integer. Set if you wish to try only the first \code{try_only} taxa, useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.}
+\item{try_only}{Optional numeric. Will try only the \code{try_only} taxa. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.}
 
 \item{...}{Optional additional arguments for \code{\link{bbdml}}}
 }
 \value{
-An object of class \code{differentialTest}. List with elements \code{p} containing the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa, \code{significant_models} containing a list of the model fits for the significant taxa, \code{all_models} containing a list of the model fits for all taxa, \code{restrictions_DA} containing a list of covariates that were tested for differential abundance, \code{restrictions_DV} containing a list of covariates that were tested for differential variability, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, and \code{data} containing the data used to fit the models.
+An object of class \code{differentialTest}. List with elements \code{p} containing the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa, \code{significant_models} containing a list of the model fits for the significant taxa, \code{all_models} containing a list of the model fits for all taxa, \code{restrictions_DA} containing a list of covariates that were tested for differential abundance, \code{restrictions_DV} containing a list of covariates that were tested for differential variability, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, \code{data} containing the data used to fit the models. If \code{full_output = TRUE}, it will also include \code{full_output}, a list of all model output from \code{bbdml}.
 }
 \description{
 Identify differentially-abundant and differentially-variable taxa

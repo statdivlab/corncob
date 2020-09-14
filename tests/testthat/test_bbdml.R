@@ -76,8 +76,8 @@ test_that("checking for perfectly discriminant", {
                        link = "logit",
                        phi.link = "logit",
                        nstart = 1))
-  expect_warning(print(tmp))
-  expect_warning(print(summary(tmp)))
+  expect_output(expect_warning(print(tmp)))
+  expect_output(expect_warning(print(summary(tmp))))
   expect_warning(bbdml(formula = cbind(W, M - W) ~ 1,
                        phi.formula = ~ X1,
                        data = test_data_bad,

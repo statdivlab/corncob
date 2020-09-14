@@ -1,7 +1,7 @@
 # corncob <img src="docs/logo.png" align="right" width="165px"/>
 Count Regression for Correlated Observations with the Beta-binomial
 
-[![Build Status](https://travis-ci.org/bryandmartin/corncob.svg?branch=master)](https://travis-ci.org/bryandmartin/corncob)
+[![Build Status](https://travis-ci.com/bryandmartin/corncob.svg?branch=master)](https://travis-ci.com/bryandmartin/corncob)
 [![codecov](https://codecov.io/gh/bryandmartin/CORNCOB/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/CORNCOB)
 [![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)
 

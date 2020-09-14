@@ -30,12 +30,12 @@ out_nullphi <- bbdml(formula = cbind(W, M - W) ~ X1,
                      phi.link = "logit",
                      nstart = 1)
 
-out_bad <- bbdml(formula = cbind(W, M - W) ~ X1,
+out_bad <- suppressWarnings(bbdml(formula = cbind(W, M - W) ~ X1,
                  phi.formula = ~ X1,
                  data = test_data_bad,
                  link = "logit",
                  phi.link = "logit",
-                 nstart = 1)
+                 nstart = 1))
 
 
 test_that("pbWald works", {

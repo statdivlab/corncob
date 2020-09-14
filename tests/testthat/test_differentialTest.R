@@ -134,7 +134,7 @@ test_that("differentialTest S3 methods", {
   expect_is(plot(temp), "ggplot")
   expect_is(plot(temp, level = c("Order", "Class")), "ggplot")
   expect_is(plot(temp, level = "Kingdom"), "ggplot")
-  expect_null(print(temp))
+  expect_output(expect_null(print(temp)))
 })
 
 test_that("differentialTest works without phyloseq", {
@@ -177,7 +177,7 @@ test_that("try_only works", {
                                 formula_null = ~ 1,
                                 phi.formula_null = ~ 1,
                                 data = subsoil, boot = FALSE, test = "LRT",
-                                try_only = 2), "differentialTest")
+                                try_only = 1:2), "differentialTest")
 })
 
 test_that("overspecification error message", {
@@ -186,7 +186,7 @@ test_that("overspecification error message", {
                                 formula_null = ~ 1,
                                 phi.formula_null = ~ 1,
                                 data = subsoil, boot = FALSE, test = "LRT",
-                                try_only = 2))
+                                try_only = 1:2))
 })
 
 test_that("differentialTest does NAs correctly", {
@@ -195,3 +195,4 @@ test_that("differentialTest does NAs correctly", {
   expect_equal(length(temp3$p), 25)
   expect_equal(length(temp3$p_fdr), 25)
 })
+

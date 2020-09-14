@@ -15,14 +15,16 @@
 #' @param filter_discriminant Boolean. Defaults to \code{TRUE}. If \code{FALSE}, discriminant taxa will not be filtered out.
 #' @param fdr_cutoff Integer. Defaults to \code{0.05}. Desired type 1 error rate
 #' @param fdr Character. Defaults to \code{"fdr"}. False discovery rate control method, see \code{\link{p.adjust}} for more options.
+#' @param full_output. Boolean. Opetional. Defaults to \code{FALSE}. Indicator of whether to include full \code{bbdml} model output for all taxa.
 #' @param inits Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.
 #' @param inits_null Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.
-#' @param try_only Optional integer. Set if you wish to try only the first \code{try_only} taxa, useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
+#' @param try_only Optional numeric. Will try only the \code{try_only} taxa. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
 #' @param ... Optional additional arguments for \code{\link{bbdml}}
 #'
 #' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}. To use a contrast matrix, see \code{\link{contrastsTest}}.
 #'
-#' @return An object of class \code{differentialTest}. List with elements \code{p} containing the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa, \code{significant_models} containing a list of the model fits for the significant taxa, \code{all_models} containing a list of the model fits for all taxa, \code{restrictions_DA} containing a list of covariates that were tested for differential abundance, \code{restrictions_DV} containing a list of covariates that were tested for differential variability, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, and \code{data} containing the data used to fit the models.
+#' @return An object of class \code{differentialTest}. List with elements \code{p} containing the p-values, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa, \code{significant_models} containing a list of the model fits for the significant taxa, \code{all_models} containing a list of the model fits for all taxa, \code{restrictions_DA} containing a list of covariates that were tested for differential abundance, \code{restrictions_DV} containing a list of covariates that were tested for differential variability, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, \code{data} containing the data used to fit the models. If \code{full_output = TRUE}, it will also include \code{full_output}, a list of all model output from \code{bbdml}.
+#'
 #'
 #' @examples
 #' \dontrun{
@@ -54,6 +56,7 @@ differentialTest <- function(formula, phi.formula,
                              filter_discriminant = TRUE,
                              fdr_cutoff = 0.05,
                              fdr = "fdr",
+                             full_output = FALSE,
                              inits = NULL,
                              inits_null = NULL,
                              try_only = NULL,
@@ -92,6 +95,7 @@ differentialTest <- function(formula, phi.formula,
   # Set up output
   pvals <- perfDisc_DA <- perfDisc_DV <- rep(NA, length(taxanames))
   model_summaries <- rep(list(NA), length(taxanames))
+  full_outputs <- rep(list(NA), length(taxanames))
   # check to make sure inits is of the same length
   if (!is.null(inits)) {
     ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
@@ -112,10 +116,10 @@ differentialTest <- function(formula, phi.formula,
     restrict_ind <- 0
 
     if (is.null(try_only)) {
-      try_only <- length(taxanames)
+      try_only <- 1:length(taxanames)
     }
     # Loop through OTU/taxa
-    for (i in 1:try_only) {
+    for (i in try_only) {
 
       # Subset data to only select that taxa
       data_i <- convert_phylo(data, select = taxanames[i])
@@ -145,6 +149,9 @@ differentialTest <- function(formula, phi.formula,
           }
           # If both models fit, otherwise keep as NA
           model_summaries[[i]] <- suppressWarnings(summary(mod))
+          if (full_output) {
+            full_outputs[[i]] <- suppressWarnings(mod)
+          }
           if (test == "Wald") {
             if (boot) {
               tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
@@ -212,6 +219,10 @@ differentialTest <- function(formula, phi.formula,
     attr(restricts_mu, "index") <- restricts$mu
     attr(restricts_phi, "index") <- restricts$phi
 
+    if (!full_output) {
+      full_outputs <- NULL
+    }
+
 
   structure(
     list("p" = pvals, "p_fdr" = post_fdr,
@@ -222,7 +233,8 @@ differentialTest <- function(formula, phi.formula,
          "restrictions_DV" = restricts_phi,
          "discriminant_taxa_DA" = disc_vec_da,
          "discriminant_taxa_DV" = disc_vec_dv,
-         "data" = data),
+         "data" = data,
+         "full_output" = full_outputs),
     class = "differentialTest"
   )
 }

@@ -89,8 +89,11 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
     } else {
       stop("color must either match a variable or be a custom vector of correct length!")
     }
+    colvar <- tail(colnames(df), 1)
+  } else {
+    df[["color"]] <- NA
+    colvar <- "color"
   } # End if (!is.null(color))
-
 
   if (!is.null(shape)) {
     if (length(shape) == 1) {
@@ -104,6 +107,10 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
     } else {
       stop("shape must either match a variable or be a custom vector of correct length!")
     }
+    shapevar <- tail(colnames(df), 1)
+  } else {
+    df[["shape"]] <- NA
+    shapevar <- "shape"
   } # End if (!is.null(shape))
 
   if (!is.null(facet)) {
@@ -111,8 +118,9 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
   }
 
   # reorder
-  my_ord_str <- paste(my_ord_str, df$samples, sep = "_")
-  df$order <- factor(df$samples, levels = df$samples[order(my_ord_str)])
+  #my_ord_str <- paste(my_ord_str, df$samples, sep = "_")
+  df$order <- factor(df$samples, levels = arrange(df, df[[colvar]],
+                                                  df[[shapevar]], samples)$samples)
 
   ylab_tmp <- ifelse(!total, "Relative Abundance", "Total Counts")
 

@@ -119,7 +119,7 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
 
   # reorder
   #my_ord_str <- paste(my_ord_str, df$samples, sep = "_")
-  df$order <- factor(df$samples, levels = arrange(df, df[[colvar]],
+  df$order <- factor(df$samples, levels = dplyr::arrange(df, df[[colvar]],
                                                   df[[shapevar]], samples)$samples)
 
   ylab_tmp <- ifelse(!total, "Relative Abundance", "Total Counts")

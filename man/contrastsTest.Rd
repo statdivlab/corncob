@@ -49,7 +49,7 @@ contrastsTest(
 
 \item{inits}{Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.}
 
-\item{try_only}{Optional integer. Set if you wish to try only the first \code{try_only} taxa, useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.}
+\item{try_only}{Optional numeric. Will try only the \code{try_only} taxa, specified either via numeric input or character taxa names. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.}
 
 \item{...}{Optional additional arguments for \code{\link{bbdml}}}
 }

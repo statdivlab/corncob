@@ -13,7 +13,7 @@
 #' @param fdr_cutoff Integer. Defaults to \code{0.05}. Desired type 1 error rate
 #' @param fdr Character. Defaults to \code{"fdr"}. False discovery rate control method, see \code{\link{p.adjust}} for more options.
 #' @param inits Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.
-#' @param try_only Optional integer. Set if you wish to try only the first \code{try_only} taxa, useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
+#' @param try_only Optional numeric. Will try only the \code{try_only} taxa, specified either via numeric input or character taxa names. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
 #' @param ... Optional additional arguments for \code{\link{bbdml}}
 #'
 #' @details This function uses contrast matrices to test for differential abundance and differential variability using a Wald-type chi-squared test. To use a formula implementation, see \code{\link{differentialTest}}.
@@ -103,6 +103,10 @@ contrastsTest <- function(formula, phi.formula,
 
   if (is.null(try_only)) {
     try_only <- length(taxanames)
+  }
+
+  if (is.character(try_only)) {
+    try_only <- which(try_only %in% taxanames)
   }
   # Loop through OTU/taxa
   for (i in 1:try_only) {

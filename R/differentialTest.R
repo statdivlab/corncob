@@ -120,7 +120,7 @@ differentialTest <- function(formula, phi.formula,
     }
 
     if (is.character(try_only)) {
-      try_only <- which(try_only %in% taxanames)
+      try_only <- which(taxanames %in% try_only)
     }
     # Loop through OTU/taxa
     for (i in try_only) {

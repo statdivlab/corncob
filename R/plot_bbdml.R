@@ -65,6 +65,8 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
 
   samp_names <- names(W)
   dat_noNA <- mod$dat[samp_names,]
+  # remove global variable NOTE
+  utils::globalVariables("samples")
 
   df <- data.frame(RA = resp,
                       samples = samp_names,
@@ -89,7 +91,7 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
     } else {
       stop("color must either match a variable or be a custom vector of correct length!")
     }
-    colvar <- tail(colnames(df), 1)
+    colvar <- utils::tail(colnames(df), 1)
   } else {
     df[["color"]] <- NA
     colvar <- "color"
@@ -107,7 +109,7 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
     } else {
       stop("shape must either match a variable or be a custom vector of correct length!")
     }
-    shapevar <- tail(colnames(df), 1)
+    shapevar <- utils::tail(colnames(df), 1)
   } else {
     df[["shape"]] <- NA
     shapevar <- "shape"

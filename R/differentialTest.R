@@ -18,7 +18,7 @@
 #' @param full_output Boolean. Opetional. Defaults to \code{FALSE}. Indicator of whether to include full \code{bbdml} model output for all taxa.
 #' @param inits Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.
 #' @param inits_null Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.
-#' @param try_only Optional numeric. Will try only the \code{try_only} taxa. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
+#' @param try_only Optional numeric. Will try only the \code{try_only} taxa, specified either via numeric input or character taxa names. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
 #' @param ... Optional additional arguments for \code{\link{bbdml}}
 #'
 #' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}. To use a contrast matrix, see \code{\link{contrastsTest}}.
@@ -117,6 +117,10 @@ differentialTest <- function(formula, phi.formula,
 
     if (is.null(try_only)) {
       try_only <- 1:length(taxanames)
+    }
+
+    if (is.character(try_only)) {
+      try_only <- which(try_only %in% taxanames)
     }
     # Loop through OTU/taxa
     for (i in try_only) {

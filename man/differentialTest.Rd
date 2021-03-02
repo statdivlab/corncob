@@ -64,7 +64,7 @@ differentialTest(
 
 \item{inits_null}{Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.}
 
-\item{try_only}{Optional numeric. Will try only the \code{try_only} taxa. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.}
+\item{try_only}{Optional numeric. Will try only the \code{try_only} taxa, specified either via numeric input or character taxa names. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.}
 
 \item{...}{Optional additional arguments for \code{\link{bbdml}}}
 }

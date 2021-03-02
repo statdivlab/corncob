@@ -115,7 +115,7 @@ waldchisq_test <- function(mod, restrictions = NULL, restrictions.phi = NULL,
       stop("Singular Hessian!")
     }
     if (!is.null(contrasts_DA)) {
-      requireNamespace(limma)
+      requireNamespace("limma")
       contr_vec <- suppressWarnings(limma::makeContrasts(contrasts = contrasts_DA, levels = colnames(mod$X.mu)))
       contr_vec <- c(contr_vec, rep(0, mod$np.phi))
     } else if (!is.null(contrasts_DV)) {

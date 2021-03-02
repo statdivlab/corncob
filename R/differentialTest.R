@@ -98,16 +98,16 @@ differentialTest <- function(formula, phi.formula,
   full_outputs <- rep(list(NA), length(taxanames))
   # check to make sure inits is of the same length
   if (!is.null(inits)) {
-    ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
-    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data))))
+    ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(phyloseq::sample_data(data))))
+    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = data.frame(phyloseq::sample_data(data))))
     if (length(inits) != ncol1 + ncol2) {
       stop("inits must match number of regression parameters in formula and phi.formula!")
     }
   }
   # inits_null_mu
   if (!is.null(inits_null)) {
-    ncol1 <- ncol(stats::model.matrix(object = formula_null, data = data.frame(sample_data(data))))
-    ncol2 <- ncol(stats::model.matrix(object = phi.formula_null, data = data.frame(sample_data(data))))
+    ncol1 <- ncol(stats::model.matrix(object = formula_null, data = data.frame(phyloseq::sample_data(data))))
+    ncol2 <- ncol(stats::model.matrix(object = phi.formula_null, data = data.frame(phyloseq::sample_data(data))))
     if (length(inits_null) != ncol1 + ncol2) {
       stop("init_null must match number of regression parameters in formula_null and phi.formula_null!")
     }
@@ -213,10 +213,10 @@ differentialTest <- function(formula, phi.formula,
     # restricts_phi <- setdiff(attr(terms(phi.formula), "term.labels"),
     #                          attr(terms(phi.formula_null), "term.labels"))
 
-    restricts_mu <- setdiff(colnames(stats::model.matrix(object = formula, data = data.frame(sample_data(data)))),
-                            colnames(stats::model.matrix(object = formula_null, data = data.frame(sample_data(data)))))
-    restricts_phi <- setdiff(colnames(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data)))),
-                             colnames(stats::model.matrix(object = phi.formula_null, data = data.frame(sample_data(data)))))
+    restricts_mu <- setdiff(colnames(stats::model.matrix(object = formula, data = data.frame(phyloseq::sample_data(data)))),
+                            colnames(stats::model.matrix(object = formula_null, data = data.frame(phyloseq::sample_data(data)))))
+    restricts_phi <- setdiff(colnames(stats::model.matrix(object = phi.formula, data = data.frame(phyloseq::sample_data(data)))),
+                             colnames(stats::model.matrix(object = phi.formula_null, data = data.frame(phyloseq::sample_data(data)))))
 
     attr(restricts_mu, "index") <- restricts$mu
     attr(restricts_phi, "index") <- restricts$phi

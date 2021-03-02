@@ -6,7 +6,7 @@ Authors@R: c(
     person("Daniela", "Witten", email = "dwitten@uw.edu", role = "aut"),
     person("Amy D", "Willis", email = "adwillis@uw.edu", role = "aut")
   )
-Description: This packages models correlated count data using the beta-binomial distribution. It allows for both mean and overdispersion covariates.
+Description: Statistical modeling for correlated count data using the beta-binomial distribution. It allows for both mean and overdispersion covariates.
 Depends: R (>= 3.2)
 License: GPL (>= 2)
 Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, ggplot2, trust, dplyr, magrittr, rmutil, detectseparation, scales

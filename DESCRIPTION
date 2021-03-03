@@ -9,7 +9,7 @@ Authors@R: c(
 Description: Statistical modeling for correlated count data using the beta-binomial distribution. It allows for both mean and overdispersion covariates.
 Depends: R (>= 3.2)
 License: GPL (>= 2)
-Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, ggplot2, trust, dplyr, magrittr, rmutil, detectseparation, scales
+Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, ggplot2, trust, dplyr, magrittr, rmutil, detectseparation, scales, phyloseq
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
@@ -17,6 +17,5 @@ Suggests: knitr,
     rmarkdown,
     testthat,
     covr,
-    phyloseq,
     limma
 VignetteBuilder: knitr

@@ -130,25 +130,26 @@ corncob <- bbdml(formula = OTU.1 ~ 1,
 First, let's plot the data with our model fit on the relative abundance scale. To do this, we simply type:
 
 ```{r}
-plot(corncob)
+plot(corncob, B = 100)
 ```
 
 The points represent the relative abundances. The bars represent the 95\% prediction intervals for the observed relative abundance by sample. 
+The parameter `B` determines the number of bootstrap simulations used to approximate the prediction intervals. For purposes of this tutorial, we use a small value `B = 100` for computational purposes.
 
 Now let's look at the same plot, but on the counts scale with 95\% prediction intervals (since counts is not a parameter). To do this, we add the option \texttt{total = TRUE} to our plotting code.
 
 ```{r}
-plot(corncob, total = TRUE)
+plot(corncob, total = TRUE, B = 100)
 ```
 
 Finally, let's color the plot by the \texttt{DayAmdmt} covariate. To do this, we add the option \texttt{color = "DayAmdmt"} to our plotting code. 
 
 ```{r}
-plot(corncob, total = TRUE, color = "DayAmdmt")
+plot(corncob, total = TRUE, color = "DayAmdmt", B = 100)
 ```
 
 ```{r}
-plot(corncob, color = "DayAmdmt")
+plot(corncob, color = "DayAmdmt", B = 100)
 ```
 
 Notice that this plot also reorders our samples so that groups appear together so that they are easier to compare.
@@ -169,11 +170,11 @@ corncob_da <- bbdml(formula = OTU.1 ~ DayAmdmt,
 Let's also plot this data on both the total count and relative abundance scales.
 
 ```{r}
-plot(corncob_da, color = "DayAmdmt", total = TRUE)
+plot(corncob_da, color = "DayAmdmt", total = TRUE, B = 100)
 ```
 
 ```{r}
-plot(corncob_da, color = "DayAmdmt")
+plot(corncob_da, color = "DayAmdmt", B = 100)
 ```
 
 Visually, the model with covariates seems to provide a much better fit to the data, but how can we compare the two models statistically?

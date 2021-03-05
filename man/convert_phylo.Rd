@@ -18,9 +18,7 @@ A \code{data.frame} object, with elements \code{W} as the observed counts, \code
 Function to subset and convert phyloseq data
 }
 \examples{
-\dontrun{
 data(soil_phylo)
 convert_phylo(soil_phylo, "OTU1")
-}
 
 }

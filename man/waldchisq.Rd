@@ -33,7 +33,6 @@ P-value from Wald test.
 Wald-type chi-squared test
 }
 \examples{
-\dontrun{
 data(soil_phylo)
 soil <- soil_phylo \%>\%
 phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
@@ -53,5 +52,4 @@ waldchisq(mod = mod1, mod_null = mod2)
 waldchisq(mod = mod1, restrictions = 2, restrictions.phi = 2)
 waldchisq(mod = mod1, restrictions = "DayAmdmt", restrictions.phi = "DayAmdmt")
 waldchisq(mod = mod1, restrictions = 2, restrictions.phi = "DayAmdmt")
-}
 }

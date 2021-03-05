@@ -7,7 +7,6 @@
 #' @return P-value from parametric bootstrap Wald test.
 #'
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -20,7 +19,6 @@
 #' phi.formula = ~ 1,
 #' data = soil)
 #' pbWald(mod1, mod2, B = 100)
-#' }
 #' @export
 pbWald <- function(mod, mod_null, B = 1000) {
   tmp <- getRestrictionTerms(mod = mod, mod_null = mod_null)

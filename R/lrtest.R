@@ -6,7 +6,6 @@
 #' @return P-value from likelihood ratio test.
 #'
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -19,7 +18,6 @@
 #' phi.formula = ~ 1,
 #' data = soil)
 #' lrtest(mod1, mod2)
-#' }
 #' @export
 lrtest <- function(mod, mod_null) {
   checkNested(mod, mod_null)

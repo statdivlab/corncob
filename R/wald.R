@@ -5,16 +5,15 @@
 #' @return Matrix with wald test statistics and p-values. Only performs univariate tests.
 #'
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-#' tax_glom("Phylum")
+#' phyloseq::tax_glom("Phylum")
 #' mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
 #' data = soil)
 #' waldt(mod1)
-#' }
+#'
 #' @export
 waldt <- function(mod) {
   # Covariance matrix
@@ -53,19 +52,6 @@ waldt <- function(mod) {
 #' @param contrasts_DV List. Optional. Constructs a contrast matrix. List elements should be characters specifying contrasts in the parameters within \code{phi.formula}. Note that this is only available with \code{"Wald"} value for \code{test}.
 #'
 #' @return Test statistic for Wald test.
-#'
-#' @examples
-#' \dontrun{
-#' data(soil_phylo)
-#' soil <- soil_phylo %>%
-#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-#' tax_glom("Phylum")
-#' mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
-#' phi.formula = ~ DayAmdmt,
-#' data = soil)
-#'
-#' waldchisq_test(mod = mod1, restrictions = 2)
-#' }
 waldchisq_test <- function(mod, restrictions = NULL, restrictions.phi = NULL,
                            contrasts_DA = NULL, contrasts_DV = NULL) {
   if (length(restrictions) == 0 && length(restrictions.phi) == 0 &&
@@ -144,7 +130,6 @@ waldchisq_test <- function(mod, restrictions = NULL, restrictions.phi = NULL,
 #' @return P-value from Wald test.
 #'
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -164,7 +149,6 @@ waldchisq_test <- function(mod, restrictions = NULL, restrictions.phi = NULL,
 #' waldchisq(mod = mod1, restrictions = 2, restrictions.phi = 2)
 #' waldchisq(mod = mod1, restrictions = "DayAmdmt", restrictions.phi = "DayAmdmt")
 #' waldchisq(mod = mod1, restrictions = 2, restrictions.phi = "DayAmdmt")
-#' }
 #' @export
 waldchisq <- function(mod, mod_null = NULL, restrictions = NULL,
                       restrictions.phi = NULL,

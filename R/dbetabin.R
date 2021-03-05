@@ -48,7 +48,6 @@ dbetabin_neg <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, log
 #' @return Negative beta-binomial (log-)likelihood
 #'
 #' @examples
-#' \dontrun{
 #' set.seed(1)
 #' seq_depth <- rpois(20, lambda = 10000)
 #' my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
@@ -62,7 +61,6 @@ dbetabin_neg <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, log
 #'        np = 2, npstar = 2,
 #'        link = "logit",
 #'        phi.link = "logit")
-#' }
 dbetabin <- function(theta, W, M, X, X_star, np, npstar, link, phi.link, logpar = TRUE) {
 
   # extract matrix of betas (np x 1), first np entries

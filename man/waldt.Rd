@@ -16,14 +16,13 @@ Matrix with wald test statistics and p-values. Only performs univariate tests.
 Wald-type t test
 }
 \examples{
-\dontrun{
 data(soil_phylo)
 soil <- soil_phylo \%>\%
 phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
-tax_glom("Phylum")
+phyloseq::tax_glom("Phylum")
 mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
 data = soil)
 waldt(mod1)
-}
+
 }

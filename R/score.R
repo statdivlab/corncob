@@ -7,7 +7,6 @@
 #' @return Score
 #'
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -16,7 +15,6 @@
 #' phi.formula = ~ DayAmdmt,
 #' data = soil)
 #' score(mod)
-#' }
 #'
 #' @export
 score <- function(mod, numerical = FALSE, forHess = FALSE) {

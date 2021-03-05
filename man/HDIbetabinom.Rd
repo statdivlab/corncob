@@ -22,7 +22,6 @@ List where \code{lower} represents the lower bound and \code{upper} represents t
 Get highest density interval of beta-binomial
 }
 \examples{
-\dontrun{
 data(soil_phylo)
 soil <- soil_phylo \%>\%
 phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
@@ -31,5 +30,5 @@ mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
 data = soil)
 HDIbetabinom(.95, M = mod$M[1], mu = mod$mu.resp[1], phi = mod$phi.resp[1])
-}
+
 }

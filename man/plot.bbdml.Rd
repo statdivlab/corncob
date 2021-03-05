@@ -45,14 +45,6 @@ Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% predictio
 Plotting function
 }
 \examples{
-\dontrun{
-data(soil_phylo)
-soil <- soil_phylo \%>\%
-phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
-phyloseq::tax_glom("Phylum")
-mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
-phi.formula = ~ DayAmdmt,
-data = soil)
-plot(mod, color = "DayAmdmt")
+\donttest{
 }
 }

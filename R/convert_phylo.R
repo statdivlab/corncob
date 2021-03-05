@@ -5,10 +5,8 @@
 #'
 #' @return A \code{data.frame} object, with elements \code{W} as the observed counts, \code{M} as the sequencing depth, and the sample data with their original names.
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' convert_phylo(soil_phylo, "OTU1")
-#' }
 #'
 #' @export
 convert_phylo <- function(data, select) {

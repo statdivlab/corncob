@@ -48,7 +48,6 @@ An object of class \code{bbdml}.
 Maximum Likelihood for the Beta-binomial Distribution
 }
 \examples{
-\dontrun{
 # phyloseq example
 data(soil_phylo)
 soil <- soil_phylo \%>\%
@@ -67,6 +66,5 @@ example_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
 bbdml(formula = cbind(W, M - W) ~ X1,
 phi.formula = ~ X1,
 data = example_data)
-}
 
 }

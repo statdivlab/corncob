@@ -15,7 +15,6 @@
 #' @return An object of class \code{bbdml}.
 #'
 #' @examples
-#' \dontrun{
 #' # phyloseq example
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
@@ -34,7 +33,6 @@
 #' bbdml(formula = cbind(W, M - W) ~ X1,
 #' phi.formula = ~ X1,
 #' data = example_data)
-#' }
 #'
 #' @export
 bbdml <- function(formula, phi.formula, data,

@@ -29,16 +29,3 @@ Test statistic for Wald test.
 \description{
 This is a helper function and not intended for users
 }
-\examples{
-\dontrun{
-data(soil_phylo)
-soil <- soil_phylo \%>\%
-phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
-tax_glom("Phylum")
-mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
-phi.formula = ~ DayAmdmt,
-data = soil)
-
-waldchisq_test(mod = mod1, restrictions = 2)
-}
-}

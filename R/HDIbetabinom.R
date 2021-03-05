@@ -8,7 +8,6 @@
 #' @return List where \code{lower} represents the lower bound and \code{upper} represents the upper bound
 #'
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -17,7 +16,7 @@
 #' phi.formula = ~ DayAmdmt,
 #' data = soil)
 #' HDIbetabinom(.95, M = mod$M[1], mu = mod$mu.resp[1], phi = mod$phi.resp[1])
-#' }
+#'
 #' @export
 HDIbetabinom <- function(percent, M, mu, phi)  {
   pdfvec <- VGAM::dbetabinom(x = 0:M, size = M, prob = mu, rho = phi)

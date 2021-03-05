@@ -27,6 +27,7 @@
 #'
 #'
 #' @examples
+#' \donttest{
 #' # phyloseq example
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
@@ -39,7 +40,7 @@
 #'                                 test = "Wald", boot = FALSE,
 #'                                 data = soil,
 #'                                 fdr_cutoff = 0.05)
-#'
+#' }
 #' @export
 differentialTest <- function(formula, phi.formula,
                              formula_null, phi.formula_null,

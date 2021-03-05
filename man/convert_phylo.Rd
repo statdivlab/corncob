@@ -19,6 +19,6 @@ Function to subset and convert phyloseq data
 }
 \examples{
 data(soil_phylo)
-convert_phylo(soil_phylo, "OTU1")
+convert_phylo(soil_phylo, "OTU.43")
 
 }

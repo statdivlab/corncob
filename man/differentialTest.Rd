@@ -78,6 +78,7 @@ Identify differentially-abundant and differentially-variable taxa
 See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}. To use a contrast matrix, see \code{\link{contrastsTest}}.
 }
 \examples{
+\donttest{
 # phyloseq example
 data(soil_phylo)
 soil <- soil_phylo \%>\%
@@ -90,5 +91,5 @@ da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                 test = "Wald", boot = FALSE,
                                 data = soil,
                                 fdr_cutoff = 0.05)
-
+}
 }

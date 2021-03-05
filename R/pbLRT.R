@@ -7,6 +7,7 @@
 #' @return P-value from parametric bootstrap likelihood ratio test.
 #'
 #' @examples
+#' \donttest{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -19,6 +20,7 @@
 #' phi.formula = ~ 1,
 #' data = soil)
 #' pbLRT(mod1, mod2, B = 100)
+#' }
 #' @export
 pbLRT <- function(mod, mod_null, B = 1000) {
   checkNested(mod, mod_null)

@@ -20,10 +20,11 @@ P-value from parametric bootstrap Wald test.
 Parametric bootstrap Wald test
 }
 \examples{
+\donttest{
 data(soil_phylo)
 soil <- soil_phylo \%>\%
 phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
-tax_glom("Phylum")
+phyloseq::tax_glom("Phylum")
 mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
 data = soil)
@@ -32,4 +33,5 @@ mod2 <- bbdml(formula = OTU.1 ~ 1,
 phi.formula = ~ 1,
 data = soil)
 pbWald(mod1, mod2, B = 100)
+}
 }

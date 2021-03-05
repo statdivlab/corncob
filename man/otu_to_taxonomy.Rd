@@ -20,6 +20,7 @@ String vector. Names of taxonomic labels matching labels of \code{OTU}.
 Transform OTUs to their taxonomic label
 }
 \examples{
+\donttest{
 data(soil_phylo)
 soil <- soil_phylo \%>\%
 phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
@@ -32,5 +33,6 @@ da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                 data = soil,
                                 fdr_cutoff = 0.05)
 otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil, level = "Phylum")
+}
 
 }

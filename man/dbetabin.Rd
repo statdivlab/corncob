@@ -33,18 +33,3 @@ Negative beta-binomial (log-)likelihood
 \description{
 Betabinomial density
 }
-\examples{
-set.seed(1)
-seq_depth <- rpois(20, lambda = 10000)
-my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
-my_covariate <- cbind(rep(c(0,1), each = 10))
-colnames(my_covariate) <- c("X1")
-
-example_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
-
-dbetabin(theta = rep(-4, 4), W = my_counts, M = seq_depth,
-       X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
-       np = 2, npstar = 2,
-       link = "logit",
-       phi.link = "logit")
-}

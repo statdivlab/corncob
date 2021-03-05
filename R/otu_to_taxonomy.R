@@ -9,6 +9,7 @@
 #' @return String vector. Names of taxonomic labels matching labels of \code{OTU}.
 #'
 #' @examples
+#' \donttest{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -21,6 +22,7 @@
 #'                                 data = soil,
 #'                                 fdr_cutoff = 0.05)
 #' otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil, level = "Phylum")
+#' }
 #'
 #' @export
 otu_to_taxonomy <- function(OTU, data, level = NULL) {

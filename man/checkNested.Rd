@@ -21,7 +21,7 @@ Check for nested models
 data(soil_phylo)
 soil <- soil_phylo \%>\%
 phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
-tax_glom("Phylum")
+phyloseq::tax_glom("Phylum")
 mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
 data = soil)

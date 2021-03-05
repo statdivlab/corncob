@@ -20,6 +20,7 @@ P-value from parametric bootstrap likelihood ratio test.
 Parametric bootstrap likelihood ratio test
 }
 \examples{
+\donttest{
 data(soil_phylo)
 soil <- soil_phylo \%>\%
 phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
@@ -32,4 +33,5 @@ mod2 <- bbdml(formula = OTU.1 ~ 1,
 phi.formula = ~ 1,
 data = soil)
 pbLRT(mod1, mod2, B = 100)
+}
 }

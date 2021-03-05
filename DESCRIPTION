@@ -6,7 +6,9 @@ Authors@R: c(
     person("Daniela", "Witten", email = "dwitten@uw.edu", role = "aut"),
     person("Amy D", "Willis", email = "adwillis@uw.edu", role = "aut")
   )
-Description: Statistical modeling for correlated count data using the beta-binomial distribution. It allows for both mean and overdispersion covariates.
+Description: Statistical modeling for correlated count data using the beta-binomial distribution, described in Martin et al. (2020) <doi:10.1214/19-aoas1283>. It allows for both mean and overdispersion covariates.
+URL: https://github.com/bryandmartin/corncob
+BugReports: https://github.com/bryandmartin/corncob/issues
 Depends: R (>= 3.2)
 License: GPL (>= 2)
 Imports: stats, utils, optimr, VGAM, numDeriv, Matrix, ggplot2, trust, dplyr, magrittr, rmutil, detectseparation, scales, phyloseq

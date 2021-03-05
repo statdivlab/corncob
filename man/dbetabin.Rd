@@ -34,7 +34,6 @@ Negative beta-binomial (log-)likelihood
 Betabinomial density
 }
 \examples{
-\dontrun{
 set.seed(1)
 seq_depth <- rpois(20, lambda = 10000)
 my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
@@ -48,5 +47,4 @@ dbetabin(theta = rep(-4, 4), W = my_counts, M = seq_depth,
        np = 2, npstar = 2,
        link = "logit",
        phi.link = "logit")
-}
 }

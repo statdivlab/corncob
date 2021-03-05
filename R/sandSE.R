@@ -5,7 +5,6 @@
 #' @return Sandwich variance-covariance matrix
 #'
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -14,7 +13,6 @@
 #' phi.formula = ~ DayAmdmt,
 #' data = soil)
 #' sandSE(mod)
-#' }
 #'
 #' @export
 sandSE <- function(mod, numerical = FALSE) {

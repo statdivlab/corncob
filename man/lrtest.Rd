@@ -18,7 +18,6 @@ P-value from likelihood ratio test.
 Likelihood ratio test
 }
 \examples{
-\dontrun{
 data(soil_phylo)
 soil <- soil_phylo \%>\%
 phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
@@ -31,5 +30,4 @@ mod2 <- bbdml(formula = OTU.1 ~ 1,
 phi.formula = ~ 1,
 data = soil)
 lrtest(mod1, mod2)
-}
 }

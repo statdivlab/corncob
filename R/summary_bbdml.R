@@ -7,7 +7,6 @@
 #' @return Object of class \code{summary.bbdml}. Displays printed model summary.
 #'
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -16,7 +15,6 @@
 #' phi.formula = ~ DayAmdmt,
 #' data = soil)
 #' summary(mod)
-#' }
 #' @export
 summary.bbdml <- function(object, ...) {
   # For now, Wald test

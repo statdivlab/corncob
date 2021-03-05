@@ -3,6 +3,9 @@
 \name{import_phyloseq}
 \alias{import_phyloseq}
 \title{Import phyloseq classes for data}
+\value{
+No return value. Created for important phyloseq classes.
+}
 \description{
 Import phyloseq classes for data
 }

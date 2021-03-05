@@ -6,7 +6,6 @@
 #' @return \code{TRUE} if \code{mod_null} is nested within \code{mod}, otherwise it throws an error.
 #'
 #' @examples
-#' \dontrun{
 #' data(soil_phylo)
 #' soil <- soil_phylo %>%
 #' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
@@ -20,7 +19,6 @@
 #' data = soil)
 #'
 #' checkNested(mod1, mod2)
-#' }
 #' @export
 checkNested <- function(mod, mod_null) {
 

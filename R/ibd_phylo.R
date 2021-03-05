@@ -13,4 +13,5 @@
 #'
 #' @name import_phyloseq
 #' @importClassesFrom phyloseq otu_table phyloseq
+#' @return No return value. Created for important phyloseq classes.
 NULL

@@ -5,8 +5,9 @@
 #'
 #' @name corncob-package
 #' @aliases corncob
+#' @return No return value. Created for documentation.
 #' @details
-#' For details on the model implemented in this package, see the package vignette.
+#' For details on the model implemented in this package, see Martin et al. (2020) <doi:10.1214/19-aoas1283>.
 #'
 #' The development version of the package will be maintained on \url{https://github.com/bryandmartin/corncob}.
 NULL

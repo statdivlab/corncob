@@ -19,8 +19,3 @@ test statistic from one bootstrap iteration
 \description{
 Internal function. Not intended for users.
 }
-\examples{
-\dontrun{
-corncob:::doBoot(mod1, mod2, "LRT")
-}
-}

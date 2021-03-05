@@ -13,20 +13,6 @@
 #' @param phi.link ink function for dispersion covariates
 #'
 #' @return List of negative log-likelihood, gradient, and hessian
-#'
-#' @examples
-#' \dontrun{
-#' set.seed(1)
-#' seq_depth <- rpois(20, lambda = 10000)
-#' my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
-#' my_covariate <- cbind(rep(c(0,1), each = 10))
-#' colnames(my_covariate) <- c("X1")
-#' corncob:::objfun(theta = rep(-4, 4), W = my_counts, M = seq_depth,
-#'   X = cbind(1, my_covariate), X_star = cbind(1, my_covariate),
-#'   np = 2, npstar = 2,
-#'   link = "logit",
-#'   phi.link = "logit")
-#' }
 objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
 
   ### STEP 1 - Negative Log-likelihood

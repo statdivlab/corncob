@@ -7,11 +7,6 @@
 #' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"} or \code{"LRT"} (likelihood ratio test).
 #'
 #' @return test statistic from one bootstrap iteration
-#'
-#' @examples
-#' \dontrun{
-#' corncob:::doBoot(mod1, mod2, "LRT")
-#' }
 doBoot <- function(mod, mod_null, test) {
   # Simulate n samples from the model fit under the null
   newW <- simulate(object = mod_null, nsim = nrow(mod_null$dat))

@@ -63,17 +63,12 @@ Identify differentially-abundant and differentially-variable taxa using contrast
 This function uses contrast matrices to test for differential abundance and differential variability using a Wald-type chi-squared test. To use a formula implementation, see \code{\link{differentialTest}}.
 }
 \examples{
-\donttest{
 # phyloseq example
-data(soil_phylo)
-soil <- soil_phylo \%>\%
-  phyloseq::subset_samples(DayAmdmt \%in\% c("01","11","21", "22")) \%>\%
-  phyloseq::tax_glom("Phylum")
+data(soil_phylum_small)
 da_analysis <- contrastsTest(formula = ~ DayAmdmt,
                              phi.formula = ~ DayAmdmt,
                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
                                                  "DayAmdmt22 - DayAmdmt21"),
-                             data = soil,
+                             data = soil_phylum_small,
                              fdr_cutoff = 0.05)
-}
 }

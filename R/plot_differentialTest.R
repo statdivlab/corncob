@@ -9,21 +9,16 @@
 #' @return Object of class \code{ggplot}. Plot of coefficients from models for significant taxa from \code{differentialTest}
 #'
 #' @examples
-#' \dontrun{
 #' # phyloseq example
-#' data(soil_phylo)
-#' soil <- soil_phylo %>%
-#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-#' phyloseq::tax_glom("Phylum")
+#' data(soil_phylum_small)
 #' da_analysis <- differentialTest(formula = ~ DayAmdmt,
 #'                                 phi.formula = ~ DayAmdmt,
 #'                                 formula_null = ~ 1,
 #'                                 phi.formula_null = ~ DayAmdmt,
 #'                                 test = "Wald", boot = FALSE,
-#'                                 data = soil,
+#'                                 data = soil_phylum_small,
 #'                                 fdr_cutoff = 0.05)
 #' plot(da_analysis, level = "Phylum")
-#' }
 #'
 #' @export
 plot.differentialTest <- function(x, level = NULL, data_only = FALSE, ...) {

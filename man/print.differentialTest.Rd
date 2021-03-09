@@ -18,20 +18,15 @@
 differentialTest print function
 }
 \examples{
-\dontrun{
 # phyloseq example
-data(soil_phylo)
-soil <- soil_phylo \%>\%
-phyloseq::subset_samples(DayAmdmt \%in\% c(11,21)) \%>\%
-phyloseq::tax_glom("Phylum")
+data(soil_phylum_small)
 da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                 phi.formula = ~ DayAmdmt,
                                 formula_null = ~ 1,
                                 phi.formula_null = ~ DayAmdmt,
                                 test = "Wald", boot = FALSE,
-                                data = soil,
+                                data = soil_phylum_small,
                                 fdr_cutoff = 0.05)
 print(da_analysis)
-}
 
 }

@@ -45,6 +45,11 @@ Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% predictio
 Plotting function
 }
 \examples{
-\donttest{
-}
+data(soil_phylum_small)
+mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+phi.formula = ~ DayAmdmt,
+data = soil_phylum_small)
+# Here we use B = 50 for quick demonstration purposes.
+# In practice, we recommend a higher value for B for more accurate intervals
+plot(mod, color = "DayAmdmt", B = 50)
 }

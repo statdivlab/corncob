@@ -7,13 +7,10 @@
 #' @return Object of class \code{summary.bbdml}. Displays printed model summary.
 #'
 #' @examples
-#' data(soil_phylo)
-#' soil <- soil_phylo %>%
-#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-#' phyloseq::tax_glom("Phylum")
+#' data(soil_phylum_small)
 #' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
-#' data = soil)
+#' data = soil_phylum_small)
 #' summary(mod)
 #' @export
 summary.bbdml <- function(object, ...) {

@@ -9,20 +9,16 @@
 #' @return String vector. Names of taxonomic labels matching labels of \code{OTU}.
 #'
 #' @examples
-#' \donttest{
-#' data(soil_phylo)
-#' soil <- soil_phylo %>%
-#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-#' phyloseq::tax_glom("Phylum")
+#' data(soil_phylum_small)
 #' da_analysis <- differentialTest(formula = ~ DayAmdmt,
 #'                                 phi.formula = ~ DayAmdmt,
 #'                                 formula_null = ~ 1,
 #'                                 phi.formula_null = ~ DayAmdmt,
 #'                                 test = "Wald", boot = FALSE,
-#'                                 data = soil,
+#'                                 data = soil_phylum_small,
 #'                                 fdr_cutoff = 0.05)
-#' otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil, level = "Phylum")
-#' }
+#' otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil_phylum_small,
+#'  level = "Phylum")
 #'
 #' @export
 otu_to_taxonomy <- function(OTU, data, level = NULL) {

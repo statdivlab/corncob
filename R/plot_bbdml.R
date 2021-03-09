@@ -14,16 +14,13 @@
 #' @return Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% prediction intervals.
 #'
 #' @examples
-#' \donttest{
-# data(soil_phylo)
-# soil <- soil_phylo %>%
-# phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-# phyloseq::tax_glom("Phylum")
-# mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
-# phi.formula = ~ DayAmdmt,
-# data = soil)
-# plot(mod, color = "DayAmdmt")
-#' }
+#' data(soil_phylum_small)
+#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = soil_phylum_small)
+#' # Here we use B = 50 for quick demonstration purposes.
+#' # In practice, we recommend a higher value for B for more accurate intervals
+#' plot(mod, color = "DayAmdmt", B = 50)
 #' @export
 plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NULL, title = NULL, B = 1000, sample_names = TRUE, data_only = FALSE, ...) {
   # input <- match.call(expand.dots = TRUE)

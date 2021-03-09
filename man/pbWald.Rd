@@ -28,5 +28,5 @@ data = soil_phylum_small)
 mod2 <- bbdml(formula = OTU.1 ~ 1,
 phi.formula = ~ 1,
 data = soil_phylum_small)
-pbWald(mod1, mod2, B = 100)
+pbWald(mod1, mod2, B = 50)
 }

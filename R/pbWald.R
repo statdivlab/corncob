@@ -15,7 +15,7 @@
 #' mod2 <- bbdml(formula = OTU.1 ~ 1,
 #' phi.formula = ~ 1,
 #' data = soil_phylum_small)
-#' pbWald(mod1, mod2, B = 100)
+#' pbWald(mod1, mod2, B = 50)
 #' @export
 pbWald <- function(mod, mod_null, B = 1000) {
   tmp <- getRestrictionTerms(mod = mod, mod_null = mod_null)

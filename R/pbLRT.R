@@ -15,7 +15,7 @@
 #' mod2 <- bbdml(formula = OTU.1 ~ 1,
 #' phi.formula = ~ 1,
 #' data = soil_phylum_small)
-#' pbLRT(mod1, mod2, B = 100)
+#' pbLRT(mod1, mod2, B = 50)
 #' @export
 pbLRT <- function(mod, mod_null, B = 1000) {
   checkNested(mod, mod_null)

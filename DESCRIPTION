@@ -19,5 +19,7 @@ Suggests: knitr,
     rmarkdown,
     testthat,
     covr,
-    limma
-VignetteBuilder: knitr
+    limma,
+    R.rsp
+VignetteBuilder: knitr,
+    R.rsp

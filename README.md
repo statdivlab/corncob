@@ -3,9 +3,12 @@ Count Regression for Correlated Observations with the Beta-binomial
 
 `corncob` is an `R` package for modeling relative abundance and testing hypotheses about the effect of covariates on relative abundance. The `corncob` methodology was specifically developed for modelling microbial abundances based on high throughput sequencing data, such as 16S or whole-genome sequencing.
 
-[![Build Status](https://travis-ci.com/bryandmartin/corncob.svg?branch=master)](https://travis-ci.com/bryandmartin/corncob)
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/bryandmartin/CORNCOB/workflows/R-CMD-check/badge.svg)](https://github.com/bryandmartin/CORNCOB/actions)
 [![codecov](https://codecov.io/gh/bryandmartin/CORNCOB/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/CORNCOB)
 [![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)
+<!-- badges: end -->
+
 
 ## Installation
 

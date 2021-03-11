@@ -4,6 +4,7 @@ Count Regression for Correlated Observations with the Beta-binomial
 `corncob` is an `R` package for modeling relative abundance and testing hypotheses about the effect of covariates on relative abundance. The `corncob` methodology was specifically developed for modelling microbial abundances based on high throughput sequencing data, such as 16S or whole-genome sequencing.
 
 <!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/corncob)](https://CRAN.R-project.org/package=corncob)
 [![R-CMD-check](https://github.com/bryandmartin/CORNCOB/workflows/R-CMD-check/badge.svg)](https://github.com/bryandmartin/CORNCOB/actions)
 [![codecov](https://codecov.io/gh/bryandmartin/CORNCOB/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/CORNCOB)
 [![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)
@@ -13,6 +14,13 @@ Count Regression for Correlated Observations with the Beta-binomial
 ## Installation
 
 To download the corncob package, use the code below.
+
+``` r
+install.packages("corncob")
+library(corncob)
+```
+
+Alternatively, you can install the development version directly from GitHub.
 
 ``` r
 # install.packages("devtools")
@@ -31,8 +39,6 @@ The vignette demonstrates example usage of all main functions. Please [file an i
 
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("bryandmartin/corncob", build_vignette = TRUE, build_opts = c())
 library(corncob)
 # Use this to view the vignette in the corncob HTML help
 help(package = "corncob", help_type = "html")

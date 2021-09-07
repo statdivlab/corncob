@@ -20,6 +20,7 @@ Suggests: knitr,
     testthat,
     covr,
     limma,
+    slam,
     R.rsp
 VignetteBuilder: knitr,
     R.rsp

@@ -19,6 +19,7 @@
 #' @param inits Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.
 #' @param inits_null Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.
 #' @param try_only Optional numeric. Will try only the \code{try_only} taxa, specified either via numeric input or character taxa names. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
+#' @param verbose Boolean. Defaults to \code{FALSE}; print status updates for long-running analyses
 #' @param ... Optional additional arguments for \code{\link{bbdml}}
 #'
 #' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}. To use a contrast matrix, see \code{\link{contrastsTest}}.
@@ -54,6 +55,7 @@ differentialTest <- function(formula, phi.formula,
                              inits = NULL,
                              inits_null = NULL,
                              try_only = NULL,
+                             verbose = FALSE,
                              ...) {
 
   # Record call
@@ -118,7 +120,7 @@ differentialTest <- function(formula, phi.formula,
     }
     # Loop through OTU/taxa
     for (i in try_only) {
-
+      if (verbose) print(paste0(" ------- Fitting ", taxanames[i],  ", taxa ", i, " of ", length(try_only), " -------"))
       # Subset data to only select that taxa
       data_i <- convert_phylo(data, select = taxanames[i])
 
@@ -134,11 +136,14 @@ differentialTest <- function(formula, phi.formula,
         mod <- suppressWarnings(try(bbdml(formula = formula_i, phi.formula = phi.formula,
                                           data = data_i, link = link, phi.link = phi.link,
                                           inits = inits, ...), silent = TRUE))
-
+        print(" -- model --")
+        print(mod)
         # Fit restricted model
         mod_null <- suppressWarnings(try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
                                                data = data_i, link = link, phi.link = phi.link,
                                                inits = inits_null, ...), silent = TRUE))
+        print(" -- null model --")
+        print(mod_null)
 
         if (!("try-error" %in% c(class(mod), class(mod_null)))) {
           if (restrict_ind == 0) {

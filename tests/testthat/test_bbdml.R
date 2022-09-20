@@ -78,6 +78,10 @@ test_that("checking for perfectly discriminant", {
                        nstart = 1))
   expect_output(expect_warning(print(tmp)))
   expect_output(expect_warning(print(summary(tmp))))
+  expect_true(tmp$sep_da) # confirm separation detected
+  expect_true(tmp$sep_dv)
+  expect_false(out_bad_init$sep_da) # sanity check comparison, no separation
+
   expect_warning(bbdml(formula = cbind(W, M - W) ~ 1,
                        phi.formula = ~ X1,
                        data = test_data_bad,

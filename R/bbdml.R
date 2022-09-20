@@ -117,45 +117,18 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
   # Check for separation
   sep_da <- sep_dv <- FALSE
   if (length(attr(terms.mu, "term.labels") != 0)) {
-    if (ncol(X.b) == 1) {
-      if (detectseparation::detect_separation(y = cbind(W, M - W), x = cbind(1, X.b), family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
-        warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
-                      "there are all zero counts within a group. Consider identifying and removing",
-                      "this covariate from your model. The results of this model are not to be",
-                      "trusted because there is not enough data. \n", sep = "\n"), immediate. = TRUE)
-        sep_da <- TRUE
-      }
-    } else {
-      if (detectseparation::detect_separation(y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
-        warning(paste("Separation detected in abundance model!", "Likely, one of your covariates/experimental conditions is such that",
-                      "there are all zero counts within a group. Consider identifying and removing",
-                      "this covariate from your model. The results of this model are not to be",
-                      "trusted because there is not enough data. \n", sep = "\n"), immediate. = TRUE)
-        sep_da <- TRUE
-      }
-    }
+    sep_da <- separationDetection(
+      y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"), control = list(purpose = "test")
+    )
+    if (sep_da) separationWarning(model_name = "abundance model")
   }
 
   if (length(attr(terms.phi, "term.labels") != 0)) {
-    if (ncol(X.bstar) == 1) {
-      if (detectseparation::detect_separation(y = cbind(W, M - W), x = cbind(1, X.bstar), family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
-        warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
-                      "there are all zero counts within a group. Consider identifying and removing",
-                      "this covariate from your model. The results of this model are not to be",
-                      "trusted because there is not enough data. \n", sep = "\n"), immediate. = TRUE)
-        sep_dv <- TRUE
-      }
-    } else {
-      if (detectseparation::detect_separation(y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"), control = list(purpose = "test"))$separation) {
-        warning(paste("Separation detected in dispersion model!", "Likely, one of your covariates/experimental conditions is such that",
-                      "there are all zero counts within a group. Consider identifying and removing",
-                      "this covariate from your model. The results of this model are not to be",
-                      "trusted because there is not enough data. \n", sep = "\n"), immediate. = TRUE)
-        sep_dv <- TRUE
-      }
-    }
+    sep_dv <- separationDetection(
+      y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"), control = list(purpose = "test")
+    )
+    if (sep_dv) separationWarning(model_name = "dispersion model")
   }
-
 
   # Generate inits
   if (is.null(inits)) {
@@ -387,3 +360,35 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
     class = "bbdml")
 }
 
+
+# Wrapper around detectseparation::detect_separation
+#
+# All arguments are always passed to detect_separation as is, except for x.
+# If x has only 1 column, x is replaced with cbind(1, x)
+#
+# Return value is TRUE or FALSE, extracted from either the "separation" or "outcome" element returned by detect_separation
+# The name of this element changed between detectseparation package versions 0.2 and 0.3
+separationDetection <- function(y, x, family, control) {
+  if (ncol(x) == 1) x <- cbind(1, x)
+  separation <- detectseparation::detect_separation(y = y, x = x, family = family, control = control)
+
+  # name of boolean element in list returned by detect_separation changed between package versions
+  if (utils::packageVersion("detectseparation") < 0.3) {
+    return(separation[["separation"]])
+  } else {
+    return(separation[["outcome"]])
+  }
+}
+
+# Simple helper to generate warning about detected separation in a bbdml model
+# model_name takes a string, e.g. "abundance model" or "dispersion model"
+separationWarning <- function(model_name) {
+  warning(paste(
+    paste0("Separation detected in ", model_name, "!"),
+    "Likely, one of your covariates/experimental conditions is such that",
+    "there are all zero counts within a group. Consider identifying and removing",
+    "this covariate from your model. The results of this model are not to be",
+    "trusted because there is not enough data. \n",
+    sep = "\n"
+  ), immediate. = TRUE, call. = FALSE)
+}

@@ -1,6 +1,6 @@
 Package: corncob
 Title: Count Regression for Correlated Observations with the Beta-Binomial
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
     person("Bryan D", "Martin", email = "bmartin6@uw.edu", role = c("aut", "cre")),
     person("Daniela", "Witten", email = "dwitten@uw.edu", role = "aut"),

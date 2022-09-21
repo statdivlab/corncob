@@ -13,3 +13,8 @@ New submission
 
 This is a new submission with myself as a maintainer.
 
+## Version 0.3.0
+
+* This version fixes a dependency issue with differentialTest
+* Other minor revisions to fix notes and improve performance
+

@@ -7,3 +7,4 @@
 ^\.github$
 vignettes/corncob-intro.Rmd
 
+^CRAN-SUBMISSION$

@@ -6,7 +6,7 @@ Count Regression for Correlated Observations with the Beta-binomial
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/corncob)](https://CRAN.R-project.org/package=corncob)
 [![R-CMD-check](https://github.com/bryandmartin/CORNCOB/workflows/R-CMD-check/badge.svg)](https://github.com/bryandmartin/CORNCOB/actions)
-[![codecov](https://codecov.io/gh/bryandmartin/CORNCOB/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/CORNCOB)
+[![codecov](https://codecov.io/gh/bryandmartin/corncob/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/corncob)
 [![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)
 <!-- badges: end -->
 

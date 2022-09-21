@@ -158,24 +158,24 @@ differentialTest <- function(formula, phi.formula,
           if (test == "Wald") {
             if (boot) {
               tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
-              if (class(tmp) != "try-error") {
+              if (inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             } else {
               tmp <- try(waldchisq(mod = mod, mod_null = mod_null), silent = TRUE)
-              if (class(tmp) != "try-error") {
+              if (inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             }
           } else if (test == "LRT") {
             if (boot) {
               tmp <- try(pbLRT(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
-              if (class(tmp) != "try-error") {
+              if (inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             } else {
               tmp <- try(lrtest(mod = mod, mod_null = mod_null), silent = TRUE)
-              if (class(tmp) != "try-error") {
+              if (inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             }

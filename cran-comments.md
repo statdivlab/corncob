@@ -16,5 +16,7 @@ This is a new submission with myself as a maintainer.
 ## Version 0.3.0
 
 * This version fixes a dependency issue with differentialTest
+* Fixes all notes with if() conditions for comparing class() to string
+* Fixes dead link in README
 * Other minor revisions to fix notes and improve performance
 

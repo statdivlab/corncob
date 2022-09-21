@@ -25,13 +25,24 @@ temp2 <- differentialTest(formula = ~ Plants + DayAmdmt,
                          inits = rbind(rep(.01, 6)),
                          inits_null = rbind(rep(0.01, 2)))
 
-temp3 <- differentialTest(formula = ~ Plants + DayAmdmt,
-                         phi.formula = ~ Plants + DayAmdmt,
-                         formula_null = ~ 1,
-                         phi.formula_null = ~ 1,
-                         data = subsoil_disc, boot = FALSE, test = "LRT",
-                         inits = rbind(rep(.01, 6)),
-                         inits_null = rbind(rep(0.01, 2)))
+temp3 <- suppressWarnings(
+  differentialTest(formula = ~ Plants + DayAmdmt,
+                   phi.formula = ~ Plants + DayAmdmt,
+                   formula_null = ~ 1,
+                   phi.formula_null = ~ 1,
+                   data = subsoil_disc, boot = FALSE, test = "LRT",
+                   inits = rbind(rep(.01, 6)),
+                   inits_null = rbind(rep(0.01, 2)))
+  # Record of expected warnings below #
+
+  # Warning in print.bbdml(mod) :
+  # This model is based on a discriminant taxa.
+  # You may see NAs in the model summary because Wald testing is invalid.
+  # Likelihood ratio testing can be used, but valid standard errors cannot be calculated.
+
+  # Warning in waldt(object) :
+  # Singular Hessian! Cannot calculate p-values in this setting.
+)
 
 temp_badinits1 <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,

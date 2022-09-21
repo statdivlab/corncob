@@ -130,7 +130,7 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
 
   if (custom_color) {
-    my_gg <- my_gg + ggplot2::guides(colour = FALSE)
+    my_gg <- my_gg + ggplot2::guides(colour = "none")
   }
   if (custom_shape) {
     my_gg <- my_gg + ggplot2::scale_shape_identity()

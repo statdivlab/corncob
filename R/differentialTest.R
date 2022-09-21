@@ -136,14 +136,14 @@ differentialTest <- function(formula, phi.formula,
         mod <- suppressWarnings(try(bbdml(formula = formula_i, phi.formula = phi.formula,
                                           data = data_i, link = link, phi.link = phi.link,
                                           inits = inits, ...), silent = TRUE))
-        print(" -- model --")
-        print(mod)
+        #print(" -- model --")
+        #print(mod)
         # Fit restricted model
         mod_null <- suppressWarnings(try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
                                                data = data_i, link = link, phi.link = phi.link,
                                                inits = inits_null, ...), silent = TRUE))
-        print(" -- null model --")
-        print(mod_null)
+        #print(" -- null model --")
+        #print(mod_null)
 
         if (!("try-error" %in% c(class(mod), class(mod_null)))) {
           if (restrict_ind == 0) {
@@ -158,24 +158,24 @@ differentialTest <- function(formula, phi.formula,
           if (test == "Wald") {
             if (boot) {
               tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
-              if (inherits(tmp, "try-error")) {
+              if (!inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             } else {
               tmp <- try(waldchisq(mod = mod, mod_null = mod_null), silent = TRUE)
-              if (inherits(tmp, "try-error")) {
+              if (!inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             }
           } else if (test == "LRT") {
             if (boot) {
               tmp <- try(pbLRT(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
-              if (inherits(tmp, "try-error")) {
+              if (!inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             } else {
               tmp <- try(lrtest(mod = mod, mod_null = mod_null), silent = TRUE)
-              if (inherits(tmp, "try-error")) {
+              if (!inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             }

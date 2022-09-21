@@ -120,7 +120,7 @@ contrastsTest <- function(formula, phi.formula,
                                         data = data_i, link = link, phi.link = phi.link,
                                         inits = inits, ...), silent = TRUE))
 
-      if (inherits(mod, "try-error")) {
+      if (!inherits(mod, "try-error")) {
         # If both models fit, otherwise keep as NA
         #model_summaries[[i]] <- suppressWarnings(summary(mod))
 
@@ -128,7 +128,7 @@ contrastsTest <- function(formula, phi.formula,
           for (contr in 1:num_DA) {
             tmp <- try(waldchisq(mod = mod, contrasts_DA = contrasts_DA[[contr]],
                                  contrasts_DV = NULL), silent = TRUE)
-            if (inherits(tmp, "try-error")) {
+            if (!inherits(tmp, "try-error")) {
               pvals[i, contr] <- tmp
             }
             perfDisc_DA[i, contr] <- mod$sep_da
@@ -140,7 +140,7 @@ contrastsTest <- function(formula, phi.formula,
           for (contr in 1:num_DV) {
             tmp <- try(waldchisq(mod = mod, contrasts_DA = NULL,
                                  contrasts_DV = contrasts_DV[[contr]]), silent = TRUE)
-            if (inherits(tmp, "try-error")) {
+            if (!inherits(tmp, "try-error")) {
               pvals[i, contr + num_DA] <- tmp
             }
             perfDisc_DA[i, contr + num_DA] <- mod$sep_da

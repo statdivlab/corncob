@@ -160,7 +160,7 @@ waldchisq <- function(mod, mod_null = NULL, restrictions = NULL,
                                 contrasts_DA = contrasts_DA,
                                 contrasts_DV = contrasts_DV),
                  silent = TRUE)
-  if (class(chi.val) == "try-error") {
+  if (inherits(chi.val, "try-error")) {
     return(NA)
   }
   dof.dif <- attr(chi.val, "df")

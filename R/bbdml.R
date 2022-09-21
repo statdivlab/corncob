@@ -261,7 +261,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                 npstar = npstar,
                                 link = link,
                                 phi.link = phi.link, logpar = TRUE),
-                     silent = TRUE); if (class(mlout) == "try-error") next
+                     silent = TRUE); if (inherits(mlout, "try-error")) next
         #theta.orig <- theta.init
         #curtime <- proc.time()[1] - starttime
 
@@ -290,7 +290,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                               link = link,
                               phi.link = phi.link,
                               rinit = rinit, rmax = rmax),
-                     silent = TRUE); if (class(mlout) == "try-error") next
+                     silent = TRUE); if (inherits(mlout, "try-error")) next
         #curtime <- proc.time()[1] - starttime
 
         if (is.null(bestOut)) bestOut <- mlout

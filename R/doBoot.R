@@ -35,7 +35,7 @@ doBoot <- function(mod, mod_null, test) {
     restrictions <- tmp$mu
     restrictions.phi <- tmp$phi
     test.stat <- try(waldchisq_test(mod = newout_alt, restrictions = restrictions, restrictions.phi = restrictions.phi), silent = TRUE)
-    if (class(test.stat) == "try-error") {
+    if (inherits(test.stat, "try-error")) {
       return(NA)
     }
   }

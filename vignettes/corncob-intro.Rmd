@@ -4,6 +4,7 @@ author: "Bryan D Martin"
 output: pdf_document
 header-includes:
     - \usepackage{fancyhdr}
+    - \usepackage{amsmath}
 vignette: >
   %\VignetteIndexEntry{Introduction to corncob}
   %\VignetteEngine{knitr::rmarkdown}
@@ -92,7 +93,7 @@ tax_table(soil_phylo)[1:3, ]
 Now, let's set up our model. 
 
 First, let's subset our samples to only include those with the \texttt{DayAmdmt} covariate equal to 11 or 21 and then collapse the samples to the phylum level.
-The code to generate this data from \texttt{soil_phylo} is commented out.
+The code to generate this data from \texttt{soil\_phylo} is commented out.
 
 
 

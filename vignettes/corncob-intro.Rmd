@@ -4,7 +4,6 @@ author: "Bryan D Martin"
 output: pdf_document
 header-includes:
     - \usepackage{fancyhdr}
-    - \usepackage{amsmath}
 vignette: >
   %\VignetteIndexEntry{Introduction to corncob}
   %\VignetteEngine{knitr::rmarkdown}

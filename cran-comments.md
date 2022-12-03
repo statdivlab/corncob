@@ -18,5 +18,9 @@ This is a new submission with myself as a maintainer.
 * This version fixes a dependency issue with differentialTest
 * Fixes all notes with if() conditions for comparing class() to string
 * Fixes dead link in README
+* Remove codecov link for CRAN invalid URL issue
 * Other minor revisions to fix notes and improve performance
 
+## Version 0.3.1
+
+* Add --compact-vignettes=both to build options to reduce PDF size for WARN

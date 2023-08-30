@@ -24,3 +24,7 @@ This is a new submission with myself as a maintainer.
 ## Version 0.3.1
 
 * Add --compact-vignettes=both to build options to reduce PDF size for WARN
+
+## Version 0.3.2
+
+* Fix the invalid non-character numeric package version check as requested by CRAN

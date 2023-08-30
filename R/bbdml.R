@@ -373,7 +373,7 @@ separationDetection <- function(y, x, family, control) {
   separation <- detectseparation::detect_separation(y = y, x = x, family = family, control = control)
 
   # name of boolean element in list returned by detect_separation changed between package versions
-  if (utils::packageVersion("detectseparation") < 0.3) {
+  if (utils::packageVersion("detectseparation") < "0.3") {
     return(separation[["separation"]])
   } else {
     return(separation[["outcome"]])

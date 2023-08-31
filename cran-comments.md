@@ -27,4 +27,7 @@ This is a new submission with myself as a maintainer.
 
 ## Version 0.3.2
 
-* Fix the invalid non-character numeric package version check as requested by CRAN
+* Fix the invalid non-character numeric package version check as requested by CRAN, fixes all four of last released version's CRAN ERRORS
+* README link updated to avoid redirect, fixes CRAN auto-check
+* Update to RoxygenNote version
+

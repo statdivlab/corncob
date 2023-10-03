@@ -199,10 +199,20 @@ differentialTest <- function(formula, phi.formula,
     }
 
     if (all(is.na(pvals))) {
-      stop("All models failed to converge! \n
+      message("All models failed to converge! \n
            If you are seeing this, it is likely that your model is overspecified. This occurs when your sample size is not large enough to estimate all the parameters of your model. This is most commonly due to categorical variables that include many categories. \n
            Alternatively, double-check your values for the arguments `link`, `phi.link`, and `method` to makes sure that they follow the specified options. \n
-           To confirm you have fixed the issue, try running a model for a single taxon with bbdml.")
+           To see the relevant error message, the following is the result from running `bbdml` for a single taxon: \n")
+      i <- (try_only[!(try_only %in% ind_disc)])[1]
+      data_i <- convert_phylo(data, select = taxanames[i])
+      formula_i <- stats::update(formula, cbind(W, M - W) ~ .)
+      formula_null_i <- stats::update(formula_null, cbind(W, M - W) ~ .)
+      mod <- bbdml(formula = formula_i, phi.formula = phi.formula,
+                                        data = data_i, link = link, phi.link = phi.link,
+                                        inits = inits, ...)
+      mod_null <- bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
+                                             data = data_i, link = link, phi.link = phi.link,
+                                             inits = inits_null, ...)
     }
     post_fdr <- stats::p.adjust(pvals, method = fdr)
     names(pvals) <- names(post_fdr) <- taxanames

@@ -1,3 +1,4 @@
+context("Test parametric bootstrap")
 
 set.seed(1)
 seq_depth <- rpois(20, lambda = 10000)

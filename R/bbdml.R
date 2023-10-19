@@ -10,6 +10,7 @@
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
 #' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
+#' @param allow_noninteger Boolean. Defaults to \code{FALSE}. Should noninteger W's and M's be allowed? This behavior was not permitted prior to v4.1, needs to be explicitly allowed.
 #' @param ... Optional additional arguments for \code{\link{optimr}} or \code{\link{trust}}
 #'
 #' @return An object of class \code{bbdml}.
@@ -40,6 +41,7 @@ bbdml <- function(formula, phi.formula, data,
                   numerical = FALSE,
                   nstart = 1,
                   inits  = NULL,
+                  allow_noninteger = FALSE,
                   ...) {
   if (numerical) {
     control$usenumDeriv <- TRUE
@@ -114,19 +116,52 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
   # Sample Size
   M <- rowSums(resp)
 
+  if (!allow_noninteger & (any(round(W) != W) | any(round(M) != M))) {
+    stop("You don't have counts in your abundances. \n
+         Double-check and correct your data, and/or force the model to fit with `allow_noninteger`")
+  }
+
   # Check for separation
   sep_da <- sep_dv <- FALSE
   if (length(attr(terms.mu, "term.labels") != 0)) {
-    sep_da <- separationDetection(
-      y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"), control = list(purpose = "test")
+
+    withCallingHandlers(
+      expr = {
+        sep_da <- separationDetection(
+          y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"), control = list(purpose = "test")
+        )
+      },
+      warning = function(w) {
+        if (allow_noninteger & grepl("non-integer counts in a binomial glm", w$message)) {
+          invokeRestart("muffleWarning")
+        } else {
+          warning(w$message, call.=F)
+          invokeRestart("muffleWarning")
+        }
+      }
     )
+
     if (sep_da) separationWarning(model_name = "abundance model")
   }
 
   if (length(attr(terms.phi, "term.labels") != 0)) {
-    sep_dv <- separationDetection(
-      y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"), control = list(purpose = "test")
-    )
+
+    withCallingHandlers(
+        expr = {
+          sep_dv <- separationDetection(
+            y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"), control = list(purpose = "test")
+          )
+        },
+        warning = function(w) {
+          if (allow_noninteger & grepl("non-integer counts in a binomial glm", w$message)) {
+            invokeRestart("muffleWarning")
+          } else {
+            warning(w$message, call.=F)
+            invokeRestart("muffleWarning")
+          }
+        }
+      )
+
     if (sep_dv) separationWarning(model_name = "dispersion model")
   }
 
@@ -170,7 +205,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                                nstart = 1,
                                                use = FALSE))
       } else {
-        val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
+        val_init <- suppressWarnings(sum(dbetabinom_cts_mod(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
         if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
           warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
           inits[i,] <- suppressWarnings(genInits(W = W,
@@ -241,18 +276,46 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
   bestOut <- NULL
 
   # if (nstart >= 2) {
-    for (i in 1:nstart) {
-      ### BEGIN FOR
-      theta.init <- inits[i,]
-      # replace any NA inits with 0
-      theta.init[which(is.na(theta.init))] <- 0
-      if (method == "BFGS") {
-        #starttime <- proc.time()[1]
-        mlout <- try(optimr::optimr(par = theta.init,
-                                fn = dbetabin_neg,
-                                gr = gr_full,
-                                method = method,
-                                control = control,
+  for (i in 1:nstart) {
+    ### BEGIN FOR
+    theta.init <- inits[i,]
+    # replace any NA inits with 0
+    theta.init[which(is.na(theta.init))] <- 0
+    if (method == "BFGS") {
+      #starttime <- proc.time()[1]
+      mlout <- try(optimr::optimr(par = theta.init,
+                                  fn = dbetabin_neg,
+                                  gr = gr_full,
+                                  method = method,
+                                  control = control,
+                                  W = W,
+                                  M = M,
+                                  X = X.b,
+                                  X_star = X.bstar,
+                                  np = np,
+                                  npstar = npstar,
+                                  link = link,
+                                  phi.link = phi.link, logpar = TRUE),
+                   silent = TRUE); if (inherits(mlout, "try-error")) next
+      #theta.orig <- theta.init
+      #curtime <- proc.time()[1] - starttime
+
+      if (is.null(bestOut)) bestOut <- mlout
+      # if the model is improved
+      if (mlout$value < bestOut$value) {
+        bestOut <- mlout
+        #time <- curtime
+      }
+    } ### END IF bfgs
+    if (method == "trust") {
+      #starttime <- proc.time()[1]
+      if (is.null(argList$rinit)) {
+        rinit <- 1
+      }
+      if (is.null(argList$rmax)) {
+        rmax <- 100
+      }
+      mlout <- try(trust::trust(objfun, parinit = theta.init,
                                 W = W,
                                 M = M,
                                 X = X.b,
@@ -260,47 +323,19 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                 np = np,
                                 npstar = npstar,
                                 link = link,
-                                phi.link = phi.link, logpar = TRUE),
-                     silent = TRUE); if (inherits(mlout, "try-error")) next
-        #theta.orig <- theta.init
-        #curtime <- proc.time()[1] - starttime
+                                phi.link = phi.link,
+                                rinit = rinit, rmax = rmax),
+                   silent = TRUE); if (inherits(mlout, "try-error")) next
+      #curtime <- proc.time()[1] - starttime
 
-        if (is.null(bestOut)) bestOut <- mlout
-        # if the model is improved
-        if (mlout$value < bestOut$value) {
-          bestOut <- mlout
-          #time <- curtime
-        }
-      } ### END IF bfgs
-      if (method == "trust") {
-        #starttime <- proc.time()[1]
-          if (is.null(argList$rinit)) {
-            rinit <- 1
-          }
-          if (is.null(argList$rmax)) {
-            rmax <- 100
-          }
-        mlout <- try(trust::trust(objfun, parinit = theta.init,
-                              W = W,
-                              M = M,
-                              X = X.b,
-                              X_star = X.bstar,
-                              np = np,
-                              npstar = npstar,
-                              link = link,
-                              phi.link = phi.link,
-                              rinit = rinit, rmax = rmax),
-                     silent = TRUE); if (inherits(mlout, "try-error")) next
-        #curtime <- proc.time()[1] - starttime
-
-        if (is.null(bestOut)) bestOut <- mlout
-        # if the model is improved
-        if (mlout$value < bestOut$value) {
-          bestOut <- mlout
-          #time <- curtime
-        }
-      } ### END IF trust
-    } ### END FOR - inits
+      if (is.null(bestOut)) bestOut <- mlout
+      # if the model is improved
+      if (mlout$value < bestOut$value) {
+        bestOut <- mlout
+        #time <- curtime
+      }
+    } ### END IF trust
+  } ### END FOR - inits
   # } ### END IF - nstarts
 
   if (is.null(bestOut)) stop("Model could not be optimized! Try changing initializations or simplifying your model.")

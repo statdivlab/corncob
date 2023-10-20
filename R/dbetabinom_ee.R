@@ -4,6 +4,8 @@
 # we can still use corncob to estimate parameters, but we need to think of them as
 # no longer coming from the specific beta binomial parametric model,
 # and instead from an estimating equations framework.
+#
+# TODO author credits? builds heavily off VGAM::dbetabinom.ab
 
 dbetabinom_cts_mod <-  function (x, size, prob, rho = 0, log = FALSE) {
   dbetabinom_ab_cts_mod(x = x, size = size, shape1 = prob * (1 - rho)/rho,

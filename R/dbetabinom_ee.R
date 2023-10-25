@@ -1,20 +1,29 @@
-# Densities of beta binomial distributions, permitting non integer x
-#
-# In some cases we may not have integer W and M's. In these cases,
-# we can still use corncob to estimate parameters, but we need to think of them as
-# no longer coming from the specific beta binomial parametric model,
-# and instead from an estimating equations framework.
-#
-# TODO author credits? builds heavily off VGAM::dbetabinom.ab
+#' Densities of beta binomial distributions, permitting non integer x
+#'
+#' In some cases we may not have integer W and M's. In these cases,
+#' we can still use corncob to estimate parameters, but we need to think of them as
+#' no longer coming from the specific beta binomial parametric model,
+#' and instead from an estimating equations framework.
+#'
+#'
+#' @author Thomas W Yee
+#' @author Xiangjie Xue
+#' @author Amy D Willis
+#'
+#' @param x the value at which defined the density
+#' @param size number of trials
+#' @param prob the probability of success
+#' @param rho the correlation parameter
+#' @param log if TRUE, log-densities p are given
 
-dbetabinom_cts_mod <-  function (x, size, prob, rho = 0, log = FALSE) {
-  dbetabinom_ab_cts_mod(x = x, size = size, shape1 = prob * (1 - rho)/rho,
-                         shape2 = (1 - prob) * (1 - rho)/rho, limit.prob = prob,
-                         log = log)
+dbetabinom_cts <-  function (x, size, prob, rho = 0, log = FALSE) {
+  dbetabinom_ab_cts(x = x, size = size, shape1 = prob * (1 - rho)/rho,
+                        shape2 = (1 - prob) * (1 - rho)/rho, limit.prob = prob,
+                        log = log)
 }
 
-dbetabinom_ab_cts_mod <- function (x, size, shape1, shape2, log = FALSE, Inf.shape = exp(20),
-                                    limit.prob = 0.5) {
+dbetabinom_ab_cts <- function (x, size, shape1, shape2, log = FALSE, Inf.shape = exp(20),
+                               limit.prob = 0.5) {
   Bigg <- Inf.shape
   Bigg2 <- Inf.shape
   if (!is.logical(log.arg <- log) || length(log) != 1)
@@ -86,22 +95,21 @@ dbetabinom_ab_cts_mod <- function (x, size, shape1, shape2, log = FALSE, Inf.sha
     ok33 <- !is.na(ok3) & ok3
     prob1 <- shape1[ok33]/(shape1[ok33] + shape2[ok33])
     ans[ok33] <- stats::dbinom(x = x[ok33], size = size[ok33], prob = prob1,
-                        log = log.arg)
+                               log = log.arg)
     if (any(ok4)) {
       ans[ok4] <- stats::dbinom(x = x[ok4], size = size[ok4],
-                         prob = limit.prob[ok4], log = log.arg)
+                                prob = limit.prob[ok4], log = log.arg)
     }
   }
   if (any(ok1))
     ans[ok1] <- stats::dbinom(x = x[ok1], size = size[ok1], prob = 0,
-                       log = log.arg)
+                              log = log.arg)
   if (any(ok2))
     ans[ok2] <- stats::dbinom(x = x[ok2], size = size[ok2], prob = 1,
-                       log = log.arg)
+                              log = log.arg)
   ans[is.na(shape1) | shape1 < 0] <- NaN
   ans[is.na(shape2) | shape2 < 0] <- NaN
   a.NA <- is.na(x) | is.na(size) | is.na(shape1) | is.na(shape2)
   ans[a.NA] <- NA
   ans
 }
-

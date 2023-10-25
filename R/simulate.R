@@ -11,5 +11,10 @@
 #' @export
 simulate.bbdml <- function(object, nsim, seed = NULL, ...) {
   if (!is.null(seed)) {set.seed(seed)}
+  if (!all(round(object$M) == object$M)) {
+    stop(paste("Can't simulate from a beta-binomial distribution without integer M.\n",
+               "If this is for bootstrap testing, please choose a different testing approach."))
+  }
   return(VGAM::rbetabinom(n = nsim, size = object$M, prob = object$mu.resp, rho = object$phi.resp))
 }
+

@@ -25,6 +25,7 @@ differentialTest(
   inits_null = NULL,
   try_only = NULL,
   verbose = FALSE,
+  robust = FALSE,
   ...
 )
 }
@@ -43,7 +44,7 @@ differentialTest(
 
 \item{phi.link}{link function for dispersion covariates, defaults to \code{"logit"}}
 
-\item{test}{Character. Hypothesis testing procedure to use. One of \code{"Wald"} or \code{"LRT"} (likelihood ratio test).}
+\item{test}{Character. Hypothesis testing procedure to use. One of \code{"Wald"}, \code{"LRT"} (likelihood ratio test), or \code{"WaldSandwich"}.}
 
 \item{boot}{Boolean. Defaults to \code{FALSE}. Indicator of whether or not to use parametric bootstrap algorithm. (See \code{\link{pbWald}} and \code{\link{pbLRT}}).}
 
@@ -68,6 +69,8 @@ differentialTest(
 \item{try_only}{Optional numeric. Will try only the \code{try_only} taxa, specified either via numeric input or character taxa names. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.}
 
 \item{verbose}{Boolean. Defaults to \code{FALSE}; print status updates for long-running analyses}
+
+\item{robust}{Should robust standard errors be used? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.}
 
 \item{...}{Optional additional arguments for \code{\link{bbdml}}}
 }

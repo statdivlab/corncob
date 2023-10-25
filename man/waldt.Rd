@@ -2,7 +2,7 @@
 % Please edit documentation in R/wald.R
 \name{waldt}
 \alias{waldt}
-\title{Wald-type t test}
+\title{Wald-type t test (model-based or robust)}
 \usage{
 waldt(mod)
 }
@@ -13,7 +13,7 @@ waldt(mod)
 Matrix with wald test statistics and p-values. Only performs univariate tests.
 }
 \description{
-Wald-type t test
+Wald-type t test (model-based or robust)
 }
 \examples{
 data(soil_phylo)

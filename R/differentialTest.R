@@ -7,7 +7,7 @@
 #' @param data a data frame containing the OTU table, or \code{phyloseq} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
-#' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"} or \code{"LRT"} (likelihood ratio test).
+#' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"}, \code{"LRT"} (likelihood ratio test), or \code{"WaldSandwich"}.
 #' @param boot Boolean. Defaults to \code{FALSE}. Indicator of whether or not to use parametric bootstrap algorithm. (See \code{\link{pbWald}} and \code{\link{pbLRT}}).
 #' @param B Optional integer. Number of bootstrap iterations. Ignored if \code{boot} is \code{FALSE}. Otherwise, defaults to \code{1000}.
 #' @param sample_data Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates/sample data.
@@ -20,6 +20,7 @@
 #' @param inits_null Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.
 #' @param try_only Optional numeric. Will try only the \code{try_only} taxa, specified either via numeric input or character taxa names. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
 #' @param verbose Boolean. Defaults to \code{FALSE}; print status updates for long-running analyses
+#' @param robust Should robust standard errors be used? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.
 #' @param ... Optional additional arguments for \code{\link{bbdml}}
 #'
 #' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}. To use a contrast matrix, see \code{\link{contrastsTest}}.
@@ -56,6 +57,7 @@ differentialTest <- function(formula, phi.formula,
                              inits_null = NULL,
                              try_only = NULL,
                              verbose = FALSE,
+                             robust = FALSE,
                              ...) {
 
   # Record call
@@ -157,23 +159,27 @@ differentialTest <- function(formula, phi.formula,
           }
           if (test == "Wald") {
             if (boot) {
-              tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
+              tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B, robust = robust), silent = TRUE)
               if (!inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             } else {
-              tmp <- try(waldchisq(mod = mod, mod_null = mod_null), silent = TRUE)
+              tmp <- try(waldchisq(mod = mod, mod_null = mod_null, robust = robust), silent = TRUE)
               if (!inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             }
           } else if (test == "LRT") {
+
+            if (mod$has_noninteger) stop("Amy needs to think about whether you can test via LRTs with non-integer data first! \n   We would recommend robust Wald testing instead. \n   If you really, really, really want to LRT with non-integer data, \n   please post an issue to GitHub and Amy will think about this for you.")
+
             if (boot) {
               tmp <- try(pbLRT(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
               if (!inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
               }
             } else {
+
               tmp <- try(lrtest(mod = mod, mod_null = mod_null), silent = TRUE)
               if (!inherits(tmp, "try-error")) {
                 pvals[i] <- tmp
@@ -199,10 +205,17 @@ differentialTest <- function(formula, phi.formula,
     }
 
     if (all(is.na(pvals))) {
-      message("All models failed to converge! \n
-           If you are seeing this, it is likely that your model is overspecified. This occurs when your sample size is not large enough to estimate all the parameters of your model. This is most commonly due to categorical variables that include many categories. \n
-           Alternatively, double-check your values for the arguments `link`, `phi.link`, and `method` to makes sure that they follow the specified options. \n
-           To see the relevant error message, the following is the result from running `bbdml` for a single taxon: \n")
+      message("All p-values are NA! \n
+           There are a number of reasons why this could happen, including
+              - All models failed to converge because your model is overspecified
+                (e.g., because your design matrix X is not full rank, or because your sample size
+                is not large enough to estimate all parameters)
+              - You misspelled an argument. Double-check your values for the arguments (e.g., `link`, `phi.link`,
+                `method`, etc.) to makes sure that they follow the specified options.
+              - Other reasons not listed here. \n
+We *strongly recommend* running `bbdml` on a single taxon (especially before posting an issue on GitHub). \n
+           If a error message was thrown by `bbdml`, it is reproduced below for a single taxon.
+           If no errors were thrown by `bbdml`, and the issue is instead in `differentialTest`, no output is shown. \n")
       i <- (try_only[!(try_only %in% ind_disc)])[1]
       data_i <- convert_phylo(data, select = taxanames[i])
       formula_i <- stats::update(formula, cbind(W, M - W) ~ .)

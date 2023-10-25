@@ -18,6 +18,9 @@
 #' pbLRT(mod1, mod2, B = 50)
 #' @export
 pbLRT <- function(mod, mod_null, B = 1000) {
+
+  if (mod$has_noninteger) stop("Can't perform parametric bootstrap with non-integer M or W. ")
+
   checkNested(mod, mod_null)
   t.observed <- 2 * (mod$logL - mod_null$logL)
   BOOT <- rep(NA, B)

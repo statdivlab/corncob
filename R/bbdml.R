@@ -11,6 +11,7 @@
 #' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
 #' @param allow_noninteger Boolean. Defaults to \code{FALSE}. Should noninteger W's and M's be allowed? This behavior was not permitted prior to v4.1, needs to be explicitly allowed.
+#' @param robust Should robust standard errors be returned? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.
 #' @param ... Optional additional arguments for \code{\link{optimr}} or \code{\link{trust}}
 #'
 #' @return An object of class \code{bbdml}.
@@ -42,6 +43,7 @@ bbdml <- function(formula, phi.formula, data,
                   nstart = 1,
                   inits  = NULL,
                   allow_noninteger = FALSE,
+                  robust = FALSE,
                   ...) {
   if (numerical) {
     control$usenumDeriv <- TRUE
@@ -116,7 +118,8 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
   # Sample Size
   M <- rowSums(resp)
 
-  if (!allow_noninteger & (any(round(W) != W) | any(round(M) != M))) {
+  has_noninteger <- any(round(W) != W) | any(round(M) != M)
+  if (!allow_noninteger & has_noninteger) {
     stop("You don't have counts in your abundances. \n
          Double-check and correct your data, and/or force the model to fit with `allow_noninteger`")
   }
@@ -205,7 +208,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                                nstart = 1,
                                                use = FALSE))
       } else {
-        val_init <- suppressWarnings(sum(dbetabinom_cts_mod(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
+        val_init <- suppressWarnings(sum(dbetabinom_cts(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
         if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
           warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
           inits[i,] <- suppressWarnings(genInits(W = W,
@@ -391,7 +394,10 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
       np.total = nppar, np.mu = np, np.phi = npstar,
       df.model = df.model, df.residual = df.residual,
       logL = logL, inits = inits, sep_da = sep_da, sep_dv = sep_dv,
-      iterations = iterations, code = code, msg = msg),
+      iterations = iterations, code = code, msg = msg,
+      robust = robust,
+      allow_noninteger = allow_noninteger,
+      has_noninteger = has_noninteger),
     class = "bbdml")
 }
 

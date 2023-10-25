@@ -4,7 +4,7 @@
 \alias{doBoot}
 \title{Function to run a bootstrap iteration}
 \usage{
-doBoot(mod, mod_null, test)
+doBoot(mod, mod_null, test, robust = FALSE)
 }
 \arguments{
 \item{mod}{an object of class \code{bbdml}}
@@ -12,6 +12,8 @@ doBoot(mod, mod_null, test)
 \item{mod_null}{an object of class \code{bbdml}}
 
 \item{test}{Character. Hypothesis testing procedure to use. One of \code{"Wald"} or \code{"LRT"} (likelihood ratio test).}
+
+\item{robust}{Should robust standard errors be used? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.}
 }
 \value{
 test statistic from one bootstrap iteration

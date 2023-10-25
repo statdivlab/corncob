@@ -45,9 +45,10 @@ test_that("Noninteger W's work", {
 
   # Sandwich standard errors work for noninteger W's
 
-  expect_is(sandSE(out_integer), "matrix")
-  expect_is(sandSE(out_noninteger), "matrix")
+  expect_is(sand_vcov(out_integer), "matrix")
+  expect_is(sand_vcov(out_noninteger), "matrix")
 })
 
-sandSE(out_noninteger) %>% diag %>% sqrt
+sand_vcov(out_noninteger) %>% diag %>% sqrt
 out_noninteger %>% summary %>% coef
+

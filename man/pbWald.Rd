@@ -4,7 +4,7 @@
 \alias{pbWald}
 \title{Parametric bootstrap Wald test}
 \usage{
-pbWald(mod, mod_null, B = 1000)
+pbWald(mod, mod_null, B = 1000, robust = FALSE)
 }
 \arguments{
 \item{mod}{an object of class \code{bbdml}}
@@ -12,6 +12,8 @@ pbWald(mod, mod_null, B = 1000)
 \item{mod_null}{an object of class \code{bbdml}, should be nested within \code{mod}}
 
 \item{B}{Integer. Defaults to \code{1000}. Number of bootstrap iterations.}
+
+\item{robust}{Should robust standard errors be used? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.}
 }
 \value{
 P-value from parametric bootstrap Wald test.

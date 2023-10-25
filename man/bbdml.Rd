@@ -16,6 +16,7 @@ bbdml(
   nstart = 1,
   inits = NULL,
   allow_noninteger = FALSE,
+  robust = FALSE,
   ...
 )
 }
@@ -41,6 +42,8 @@ bbdml(
 \item{inits}{Optional initializations as rows of a matrix. Defaults to \code{NULL}.}
 
 \item{allow_noninteger}{Boolean. Defaults to \code{FALSE}. Should noninteger W's and M's be allowed? This behavior was not permitted prior to v4.1, needs to be explicitly allowed.}
+
+\item{robust}{Should robust standard errors be returned? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.}
 
 \item{...}{Optional additional arguments for \code{\link{optimr}} or \code{\link{trust}}}
 }

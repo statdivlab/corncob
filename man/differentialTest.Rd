@@ -44,7 +44,7 @@ differentialTest(
 
 \item{phi.link}{link function for dispersion covariates, defaults to \code{"logit"}}
 
-\item{test}{Character. Hypothesis testing procedure to use. One of \code{"Wald"}, \code{"LRT"} (likelihood ratio test), or \code{"WaldSandwich"}.}
+\item{test}{Character. Hypothesis testing procedure to use. One of \code{"Wald"}, \code{"LRT"} (likelihood ratio test), or \code{"Rao"}.}
 
 \item{boot}{Boolean. Defaults to \code{FALSE}. Indicator of whether or not to use parametric bootstrap algorithm. (See \code{\link{pbWald}} and \code{\link{pbLRT}}).}
 

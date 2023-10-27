@@ -7,7 +7,7 @@
 #' @param data a data frame containing the OTU table, or \code{phyloseq} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
-#' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"}, \code{"LRT"} (likelihood ratio test), or \code{"WaldSandwich"}.
+#' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"}, \code{"LRT"} (likelihood ratio test), or \code{"Rao"}.
 #' @param boot Boolean. Defaults to \code{FALSE}. Indicator of whether or not to use parametric bootstrap algorithm. (See \code{\link{pbWald}} and \code{\link{pbLRT}}).
 #' @param B Optional integer. Number of bootstrap iterations. Ignored if \code{boot} is \code{FALSE}. Otherwise, defaults to \code{1000}.
 #' @param sample_data Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates/sample data.
@@ -169,6 +169,20 @@ differentialTest <- function(formula, phi.formula,
                 pvals[i] <- tmp
               }
             }
+          } else if (test == "Rao") {
+
+            if (boot) {
+              tmp <- try(pbRao(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
+              if (!inherits(tmp, "try-error")) {
+                pvals[i] <- tmp
+              }
+            } else {
+
+              tmp <- try(raotest(mod = mod, mod_null = mod_null), silent = TRUE)
+              if (!inherits(tmp, "try-error")) {
+                pvals[i] <- tmp
+              }
+            }
           } else if (test == "LRT") {
 
             if (mod$has_noninteger) stop("Amy needs to think about whether you can test via LRTs with non-integer data first! \n   We would recommend robust Wald testing instead. \n   If you really, really, really want to LRT with non-integer data, \n   please post an issue to GitHub and Amy will think about this for you.")
@@ -185,6 +199,8 @@ differentialTest <- function(formula, phi.formula,
                 pvals[i] <- tmp
               }
             }
+          } else {
+            stop("Invalid test argument?")
           }
           perfDisc_DA[i] <- mod$sep_da
           perfDisc_DV[i] <- mod$sep_dv

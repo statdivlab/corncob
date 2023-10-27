@@ -121,9 +121,11 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
 
   ylab_tmp <- ifelse(!total, "Relative Abundance", "Total Counts")
 
-  # aes_map <- ggplot2::aes_string(x = "order", y = "RA", colour = color, shape = shape, labs = "samples")
-  aes_map <- ggplot2::aes(x = .data[["order"]], y = .data[["RA"]],
-                          colour = .data[[color]], shape = .data[[shape]], labs = .data[["samples"]])
+  aes_map <- ggplot2::aes_string(x = "order", y = "RA", colour = color, shape = shape, labs = "samples")
+  # aes_map <- ggplot2::aes(x = .data[["order"]], y = .data[["RA"]],
+  #                         colour = .data[[color]],
+  #                         shape = .data[[shape]],
+  #                         labs = .data[["samples"]])
   my_gg <- ggplot2::ggplot(df, aes_map) +
     ggplot2::geom_point() +
     ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax), width = .2) +

@@ -115,13 +115,15 @@ plot.bbdml <- function(x, total = FALSE, color = NULL, shape = NULL, facet = NUL
   }
 
   # reorder
-  #my_ord_str <- paste(my_ord_str, df$samples, sep = "_")
+  my_ord_str <- paste(my_ord_str, df$samples, sep = "_")
   df$order <- factor(df$samples, levels = dplyr::arrange(df, df[[colvar]],
                                                   df[[shapevar]], samples)$samples)
 
   ylab_tmp <- ifelse(!total, "Relative Abundance", "Total Counts")
 
-  aes_map <- ggplot2::aes_string(x = "order", y = "RA", colour = color, shape = shape, labs = "samples")
+  # aes_map <- ggplot2::aes_string(x = "order", y = "RA", colour = color, shape = shape, labs = "samples")
+  aes_map <- ggplot2::aes(x = .data[["order"]], y = .data[["RA"]],
+                          colour = .data[[color]], shape = .data[[shape]], labs = .data[["samples"]])
   my_gg <- ggplot2::ggplot(df, aes_map) +
     ggplot2::geom_point() +
     ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax), width = .2) +

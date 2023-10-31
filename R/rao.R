@@ -46,12 +46,12 @@ raotest <- function(mod, mod_null) {
   }
 
   score_null <- score(ll_full_at_theta0)
-  chisq.val <- as.numeric(score_null %*% (inv_fish_info_null) %*% score_null)
 
   if ("try-error" %in% class(inv_fish_info_null)) {
     warning("Singular Hessian! Cannot calculate p-values in this setting.", immediate. = TRUE)
     pvalue <- NA
   } else {
+    chisq.val <- as.numeric(score_null %*% (inv_fish_info_null) %*% score_null)
     pvalue <- stats::pchisq(chisq.val, dof.dif, lower.tail = FALSE)
   }
 

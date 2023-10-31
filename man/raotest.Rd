@@ -2,7 +2,7 @@
 % Please edit documentation in R/rao.R
 \name{raotest}
 \alias{raotest}
-\title{Rao-type t test (model-based or robust)}
+\title{Rao-type chi-squared test (model-based or robust)}
 \usage{
 raotest(mod, mod_null)
 }
@@ -15,7 +15,7 @@ raotest(mod, mod_null)
 P-value from likelihood ratio test.
 }
 \description{
-Rao-type t test (model-based or robust)
+Rao-type chi-squared test (model-based or robust)
 }
 \examples{
 data(soil_phylum_small)

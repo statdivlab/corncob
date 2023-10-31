@@ -1,10 +1,10 @@
-#' Compute score
+#' Compute score at the MLE
 #'
 #' @param mod an object of class \code{bbdml}
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).
 #' @param forHess Boolean. Defaults to \code{FALSE}. Indicator of whether to put in vector form. Defaults to FALSE. This parameter is not intended for users.
 #'
-#' @return Score
+#' @return Score at the MLE
 #'
 #' @examples
 #' data(soil_phylum_small)
@@ -17,7 +17,6 @@
 score <- function(mod, numerical = FALSE, forHess = FALSE) {
   mu <- mod$mu.resp
   phi <- mod$phi.resp
-  gam <- phi/(1 - phi)
   W <- mod$W
   M <- mod$M
   X <- mod$X.mu
@@ -28,8 +27,10 @@ score <- function(mod, numerical = FALSE, forHess = FALSE) {
   npx <- ncol(X)
   npw <- ncol(X_star)
 
-
   if (numerical) {
+    ## care needed if trying to calculate at somewhere other than MLE
+    stopifnot(length(mod$param) != ncol(mod$X.mu) + ncol(mod$X.phi))
+
     return(numDeriv::grad(func = dbetabin, x = mod$param, W = W, M = M,
                           X = X, X_star = X_star, np = npx, npstar = npw,
                           link = mod$link, phi.link = mod$phi.link))

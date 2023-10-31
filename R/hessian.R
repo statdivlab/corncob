@@ -1,8 +1,8 @@
-#' Compute Hessian matrix
+#' Compute Hessian matrix at the MLE
 #'
 #' @param mod an object of class \code{bbdml}
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
-#' @return Hessian matrix
+#' @return Hessian matrix at the MLE
 #'
 #' @examples
 #' data(soil_phylum_small)
@@ -15,7 +15,6 @@
 hessian <- function(mod, numerical = FALSE) {
   mu <- mod$mu.resp
   phi <- mod$phi.resp
-  gam <- phi/(1 - phi)
   W <- mod$W
   M <- mod$M
   X <- mod$X.mu
@@ -27,10 +26,15 @@ hessian <- function(mod, numerical = FALSE) {
   npw <- ncol(X_star)
 
   if (numerical) {
+    ## care needed if trying to calculate at somewhere other than MLE
+    stopifnot(length(mod$param) != ncol(mod$X.mu) + ncol(mod$X.phi))
+
     return(numDeriv::hessian(func = dbetabin_neg, x = mod$param, W = W, M = M,
                              X = X, X_star = X_star, np = npx, npstar = npw,
                              link = mod$link, phi.link = mod$phi.link))
   }
+
+  gam <- phi/(1 - phi)
 
   # Hold digammas
   dg1 <- digamma(1/gam)

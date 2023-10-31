@@ -2,7 +2,7 @@
 % Please edit documentation in R/hessian.R
 \name{hessian}
 \alias{hessian}
-\title{Compute Hessian matrix}
+\title{Compute Hessian matrix at the MLE}
 \usage{
 hessian(mod, numerical = FALSE)
 }
@@ -12,10 +12,10 @@ hessian(mod, numerical = FALSE)
 \item{numerical}{Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).}
 }
 \value{
-Hessian matrix
+Hessian matrix at the MLE
 }
 \description{
-Compute Hessian matrix
+Compute Hessian matrix at the MLE
 }
 \examples{
 data(soil_phylum_small)

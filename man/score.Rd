@@ -2,7 +2,7 @@
 % Please edit documentation in R/score.R
 \name{score}
 \alias{score}
-\title{Compute score}
+\title{Compute score at the MLE}
 \usage{
 score(mod, numerical = FALSE, forHess = FALSE)
 }
@@ -14,10 +14,10 @@ score(mod, numerical = FALSE, forHess = FALSE)
 \item{forHess}{Boolean. Defaults to \code{FALSE}. Indicator of whether to put in vector form. Defaults to FALSE. This parameter is not intended for users.}
 }
 \value{
-Score
+Score at the MLE
 }
 \description{
-Compute score
+Compute score at the MLE
 }
 \examples{
 data(soil_phylum_small)

@@ -322,4 +322,57 @@ test_that("differentialTest and non integers", {
                                B=3,
                                boot=TRUE)
   )
+
+
+  expect_silent(
+    temp15 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants + DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil,
+                               allow_noninteger = TRUE,
+                               test = "Rao",
+                               robust=TRUE,
+                               B=3,
+                               boot=TRUE)
+  )
+
+  expect_silent(
+    temp16 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants + DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil,
+                               allow_noninteger = TRUE,
+                               test = "Rao",
+                               robust=FALSE,
+                               B=3,
+                               boot=TRUE)
+  )
+
+  expect_silent(
+    temp17 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants + DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil_nonint,
+                               allow_noninteger = TRUE,
+                               test = "Rao",
+                               robust=TRUE,
+                               B=3,
+                               boot=FALSE)
+  )
+
+  expect_silent(
+    temp18 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants + DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil_nonint,
+                               allow_noninteger = TRUE,
+                               test = "Rao",
+                               robust=FALSE,
+                               B=3,
+                               boot=FALSE)
+  )
 })

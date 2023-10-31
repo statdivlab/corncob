@@ -32,6 +32,10 @@ doBoot <- function(mod, mod_null, test, robust = FALSE) {
   if (test == "LRT") {
     if (robust) stop("Amy needs to think about whether robust LRTs are valid!")
     test.stat <- 2 * abs(newout_alt$logL - newout_null$logL)
+  } else if (test == "Rao") {
+    test.stat <- stats::qchisq(raotest(newout_alt, newout_null),
+                               newout_alt$df.model - newout_null$df.model,
+                               lower.tail = FALSE)
   } else if (test == "Wald") {
     tmp <- getRestrictionTerms(mod = mod, mod_null = mod_null)
     restrictions <- tmp$mu

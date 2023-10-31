@@ -2,7 +2,10 @@
 #'
 #' @param mod an object of class \code{bbdml}
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
-#' @return Hessian matrix at the MLE
+#'
+#' @return Hessian matrix at the MLE. In this setting, it's hard to compute expectations to calculate the information matrix,
+#' so we return the consistent estimate using sample moments:
+#' $hat{A}(hat{theta}) = sum i frac{partial^2}{partial theta partial theta^T} l(theta, W_i)$ evaluated at $theta = hat{theta}$.
 #'
 #' @examples
 #' data(soil_phylum_small)
@@ -27,7 +30,7 @@ hessian <- function(mod, numerical = FALSE) {
 
   if (numerical) {
     ## care needed if trying to calculate at somewhere other than MLE
-    stopifnot(length(mod$param) != ncol(mod$X.mu) + ncol(mod$X.phi))
+    stopifnot(length(mod$param) == ncol(mod$X.mu) + ncol(mod$X.phi))
 
     return(numDeriv::hessian(func = dbetabin_neg, x = mod$param, W = W, M = M,
                              X = X, X_star = X_star, np = npx, npstar = npw,

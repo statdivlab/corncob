@@ -2,7 +2,7 @@
 #'
 #' @param mod an object of class \code{bbdml}
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).
-#' @return Sandwich variance-covariance matrix
+#' @return Sandwich variance-covariance matrix. $hat{A}^{-1} hat{B} hat{A}^{-1}.$
 #'
 #' @examples
 #' data(soil_phylum_small)
@@ -14,10 +14,10 @@
 #' @export
 sand_vcov <- function(mod, numerical = FALSE) {
   # Form A^-1 * B * A^-1
-  A <- hessian(mod, numerical = numerical)
-  B <- score(mod, numerical = numerical, forHess = TRUE)
-  Ainv <- solve(A)
-  return(Ainv %*% B %*% Ainv)
+  A_hat <- hessian(mod, numerical = numerical)
+  B_hat <- score(mod, numerical = numerical, forHess = TRUE)
+  A_hat_inv <- solve(A_hat)
+  return(A_hat_inv %*% B_hat %*% A_hat_inv)
 }
 
 #' Compute sandwich standard errors. Legacy function. Use sand_vcov instead.

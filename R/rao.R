@@ -40,22 +40,13 @@ raotest <- function(mod, mod_null) {
   ## assumption is that value under null is zero
 
   if (robust) {
-
-    stop("Amy hasn't implemented this yet")
-
-    inv_fish_info_null_robust <- sand_vcov(mod)
-    score_null_robust <- NULL
-
-    chisq.val <- as.numeric(score_null_robust %*% (inv_fish_info_null_robust) %*% score_null_robust)
-
-
+    inv_fish_info_null <- sand_vcov(ll_full_at_theta0)
   } else {
-
     inv_fish_info_null <- try(chol2inv(chol(hessian(ll_full_at_theta0, numerical = FALSE))), silent = TRUE)
-    score_null <- score(ll_full_at_theta0)
-    chisq.val <- as.numeric(score_null %*% (inv_fish_info_null) %*% score_null)
-
   }
+
+  score_null <- score(ll_full_at_theta0)
+  chisq.val <- as.numeric(score_null %*% (inv_fish_info_null) %*% score_null)
 
   if ("try-error" %in% class(inv_fish_info_null)) {
     warning("Singular Hessian! Cannot calculate p-values in this setting.", immediate. = TRUE)

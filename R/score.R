@@ -2,9 +2,9 @@
 #'
 #' @param mod an object of class \code{bbdml}
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).
-#' @param forHess Boolean. Defaults to \code{FALSE}. Indicator of whether to put in vector form. Defaults to FALSE. This parameter is not intended for users.
+#' @param forHess Boolean. Defaults to \code{FALSE}. Bryan: Indicator of whether to put in vector form. This parameter is not intended for users. Amy: actually returns robust estimate of variance of score: $hat{B}(hat{theta}) = sum_i G(hat{theta}; W_i) G(hat{theta}; W_i)^T $.
 #'
-#' @return Score at the MLE
+#' @return Score at the MLE. For $G(theta, w)$ score function, returns $sum_i G(hat{theta}, W_i)$ if forHess = FALSE.
 #'
 #' @examples
 #' data(soil_phylum_small)
@@ -29,7 +29,7 @@ score <- function(mod, numerical = FALSE, forHess = FALSE) {
 
   if (numerical) {
     ## care needed if trying to calculate at somewhere other than MLE
-    stopifnot(length(mod$param) != ncol(mod$X.mu) + ncol(mod$X.phi))
+    stopifnot(length(mod$param) == ncol(mod$X.mu) + ncol(mod$X.phi))
 
     return(numDeriv::grad(func = dbetabin, x = mod$param, W = W, M = M,
                           X = X, X_star = X_star, np = npx, npstar = npw,

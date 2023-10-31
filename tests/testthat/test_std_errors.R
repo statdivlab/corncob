@@ -68,6 +68,8 @@ test_that("Sandwich SEs are close to model-based SEs", {
 #
 # }
 # plot(nns, res[, 1])
+# plot(nns, res_model[, 1])
 # plot(nns, sqrt(nns)*res[, 1])
+# plot(nns, sqrt(nns)*res_model[, 1])
 # plot(res[, 1], res_model[, 1], log="xy"); abline(0,1)
 

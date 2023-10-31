@@ -326,7 +326,7 @@ test_that("differentialTest and non integers", {
 
   expect_silent(
     temp15 <- differentialTest(formula = ~ Plants + DayAmdmt,
-                               phi.formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants,
                                formula_null = ~ 1,
                                phi.formula_null = ~ 1,
                                data = subsoil,
@@ -339,7 +339,7 @@ test_that("differentialTest and non integers", {
 
   expect_silent(
     temp16 <- differentialTest(formula = ~ Plants + DayAmdmt,
-                               phi.formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants,
                                formula_null = ~ 1,
                                phi.formula_null = ~ 1,
                                data = subsoil,
@@ -352,7 +352,7 @@ test_that("differentialTest and non integers", {
 
   expect_silent(
     temp17 <- differentialTest(formula = ~ Plants + DayAmdmt,
-                               phi.formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants,
                                formula_null = ~ 1,
                                phi.formula_null = ~ 1,
                                data = subsoil_nonint,
@@ -365,7 +365,7 @@ test_that("differentialTest and non integers", {
 
   expect_silent(
     temp18 <- differentialTest(formula = ~ Plants + DayAmdmt,
-                               phi.formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants,
                                formula_null = ~ 1,
                                phi.formula_null = ~ 1,
                                data = subsoil_nonint,

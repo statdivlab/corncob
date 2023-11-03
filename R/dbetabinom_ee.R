@@ -1,4 +1,4 @@
-#' Densities of beta binomial distributions, permitting non integer x
+#' Densities of beta binomial distributions, permitting non integer x and size
 #'
 #' In some cases we may not have integer W and M's. In these cases,
 #' we can still use corncob to estimate parameters, but we need to think of them as
@@ -18,8 +18,8 @@
 
 dbetabinom_cts <-  function (x, size, prob, rho = 0, log = FALSE) {
   dbetabinom_ab_cts(x = x, size = size, shape1 = prob * (1 - rho)/rho,
-                        shape2 = (1 - prob) * (1 - rho)/rho, limit.prob = prob,
-                        log = log)
+                    shape2 = (1 - prob) * (1 - rho)/rho, limit.prob = prob,
+                    log = log)
 }
 
 dbetabinom_ab_cts <- function (x, size, shape1, shape2, log = FALSE, Inf.shape = exp(20),
@@ -59,9 +59,16 @@ dbetabinom_ab_cts <- function (x, size, shape1, shape2, log = FALSE, Inf.shape =
   ### TO REFLECT ESTIMATING EQUATIONS FOCUS
 
   if (any(okk)) { ## false, would be true if W was integer
-    ans[okk] <- lchoose(size[okk], x[okk]) + lbeta(shape1[okk] +
-                                                     x[okk], shape2[okk] + size[okk] - x[okk]) - lbeta(shape1[okk],
-                                                                                                       shape2[okk])
+
+    # lchoose(size, x)  is the same as -log(size+1) - lbeta(x + 1, size - x + 1), the continuous modification
+    # ans[okk] <- lchoose(size[okk], x[okk]) + lbeta(shape1[okk] +
+    #                                                  x[okk], shape2[okk] + size[okk] - x[okk]) - lbeta(shape1[okk],
+    #                                                                                                    shape2[okk])
+
+    ans[okk] <- - log(size[okk] + 1) - lbeta(x[okk] + 1, size[okk] - x[okk] + 1) +
+                            lbeta(shape1[okk] + x[okk], shape2[okk] + size[okk] - x[okk]) - lbeta(shape1[okk],
+                                                                shape2[okk])
+
     endpt1 <- (x == size) & ((shape1 < 1/Bigg) | (shape2 <
                                                     1/Bigg)) & ok0
     if (any(endpt1)) {
@@ -78,9 +85,9 @@ dbetabinom_ab_cts <- function (x, size, shape1, shape2, log = FALSE, Inf.shape =
     }
     endpt3 <- ((Bigg < shape1) | (Bigg < shape2)) & ok0
     if (any(endpt3)) {
-      ans[endpt3] <- lchoose(size[endpt3], x[endpt3]) +
-        lbeta(shape1[endpt3] + x[endpt3], shape2[endpt3] +
-                size[endpt3] - x[endpt3]) - lbeta(shape1[endpt3],
+      ans[endpt3] <- #lchoose(size[endpt3], x[endpt3]) +
+                      - log(size[endpt3] + 1) - lbeta(x[endpt3] + 1, size[endpt3] - x[endpt3] + 1) +
+                            lbeta(shape1[endpt3] + x[endpt3], shape2[endpt3] + size[endpt3] - x[endpt3]) - lbeta(shape1[endpt3],
                                                   shape2[endpt3])
     }
   }

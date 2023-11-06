@@ -22,6 +22,7 @@ Suggests: knitr,
     limma,
     slam,
     R.rsp,
-    optimx
+    optimx,
+    optimr
 VignetteBuilder: knitr,
     R.rsp

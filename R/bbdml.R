@@ -5,12 +5,12 @@
 #' @param data a data frame or \code{phyloseq} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
-#' @param method optimization method, defaults to \code{"trust"}, or see \code{\link{optimr}} for other options
-#' @param control optimization control parameters (see \code{\link{optimr}})
+#' @param method optimization method, defaults to \code{"trust"}, or see \code{\link[optimx]{optimr}} for other options
+#' @param control optimization control parameters (see \code{\link[optimx]{optimr}})
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
 #' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
-#' @param ... Optional additional arguments for \code{\link{optimr}} or \code{\link{trust}}
+#' @param ... Optional additional arguments for \code{\link[optimx]{optimr}} or \code{\link{trust}}
 #'
 #' @return An object of class \code{bbdml}.
 #'
@@ -75,6 +75,13 @@ bbdml <- function(formula, phi.formula, data,
   method <- try(match.arg(method, choices = c("BFGS", "trust")))
   if ("try-error" %in% class(method)) {
     stop('If method is specified, it must be either "BFGS" or "trust"!')
+  }
+  # Check that optimx is installed if method is "BFGS"
+  if (method == "BFGS") {
+    packages_available <- utils::installed.packages()
+    if (!("optimx" %in% packages_available || "optimr" %in% packages_available)) {
+      stop("If you would like to use the 'BFGS' method, please install the `optimx` package.")
+    }
   }
 
   mu.f <- formula
@@ -241,18 +248,66 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
   bestOut <- NULL
 
   # if (nstart >= 2) {
-    for (i in 1:nstart) {
-      ### BEGIN FOR
-      theta.init <- inits[i,]
-      # replace any NA inits with 0
-      theta.init[which(is.na(theta.init))] <- 0
-      if (method == "BFGS") {
-        #starttime <- proc.time()[1]
-        mlout <- try(optimr::optimr(par = theta.init,
-                                fn = dbetabin_neg,
-                                gr = gr_full,
-                                method = method,
-                                control = control,
+  for (i in 1:nstart) {
+    ### BEGIN FOR
+    theta.init <- inits[i,]
+    # replace any NA inits with 0
+    theta.init[which(is.na(theta.init))] <- 0
+    if (method == "BFGS") {
+      #starttime <- proc.time()[1]
+      if ("optimx" %in% packages_available) {
+        # optimx::optimr prints out all of the control parameters, suppress these print statements with `invisible(capture.output())`
+        invisible(utils::capture.output(mlout <- suppressWarnings(try(optimx::optimr(par = theta.init,
+                                                                                     fn = dbetabin_neg,
+                                                                                     gr = gr_full,
+                                                                                     method = method,
+                                                                                     control = control,
+                                                                                     W = W,
+                                                                                     M = M,
+                                                                                     X = X.b,
+                                                                                     X_star = X.bstar,
+                                                                                     np = np,
+                                                                                     npstar = npstar,
+                                                                                     link = link,
+                                                                                     phi.link = phi.link, logpar = TRUE),
+                                                                      silent = TRUE)))); if (inherits(mlout, "try-error")) next
+      } else if ("optimr" %in% packages_available) {
+        requireNamespace(optimr)
+        mlout <- try(optimr(par = theta.init,
+                                    fn = dbetabin_neg,
+                                    gr = gr_full,
+                                    method = method,
+                                    control = control,
+                                    W = W,
+                                    M = M,
+                                    X = X.b,
+                                    X_star = X.bstar,
+                                    np = np,
+                                    npstar = npstar,
+                                    link = link,
+                                    phi.link = phi.link, logpar = TRUE),
+                     silent = TRUE); if (inherits(mlout, "try-error")) next
+      }
+
+      #theta.orig <- theta.init
+      #curtime <- proc.time()[1] - starttime
+
+      if (is.null(bestOut)) bestOut <- mlout
+      # if the model is improved
+      if (mlout$value < bestOut$value) {
+        bestOut <- mlout
+        #time <- curtime
+      }
+    } ### END IF bfgs
+    if (method == "trust") {
+      #starttime <- proc.time()[1]
+      if (is.null(argList$rinit)) {
+        rinit <- 1
+      }
+      if (is.null(argList$rmax)) {
+        rmax <- 100
+      }
+      mlout <- try(trust::trust(objfun, parinit = theta.init,
                                 W = W,
                                 M = M,
                                 X = X.b,
@@ -260,47 +315,19 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                 np = np,
                                 npstar = npstar,
                                 link = link,
-                                phi.link = phi.link, logpar = TRUE),
-                     silent = TRUE); if (inherits(mlout, "try-error")) next
-        #theta.orig <- theta.init
-        #curtime <- proc.time()[1] - starttime
+                                phi.link = phi.link,
+                                rinit = rinit, rmax = rmax),
+                   silent = TRUE); if (inherits(mlout, "try-error")) next
+      #curtime <- proc.time()[1] - starttime
 
-        if (is.null(bestOut)) bestOut <- mlout
-        # if the model is improved
-        if (mlout$value < bestOut$value) {
-          bestOut <- mlout
-          #time <- curtime
-        }
-      } ### END IF bfgs
-      if (method == "trust") {
-        #starttime <- proc.time()[1]
-          if (is.null(argList$rinit)) {
-            rinit <- 1
-          }
-          if (is.null(argList$rmax)) {
-            rmax <- 100
-          }
-        mlout <- try(trust::trust(objfun, parinit = theta.init,
-                              W = W,
-                              M = M,
-                              X = X.b,
-                              X_star = X.bstar,
-                              np = np,
-                              npstar = npstar,
-                              link = link,
-                              phi.link = phi.link,
-                              rinit = rinit, rmax = rmax),
-                     silent = TRUE); if (inherits(mlout, "try-error")) next
-        #curtime <- proc.time()[1] - starttime
-
-        if (is.null(bestOut)) bestOut <- mlout
-        # if the model is improved
-        if (mlout$value < bestOut$value) {
-          bestOut <- mlout
-          #time <- curtime
-        }
-      } ### END IF trust
-    } ### END FOR - inits
+      if (is.null(bestOut)) bestOut <- mlout
+      # if the model is improved
+      if (mlout$value < bestOut$value) {
+        bestOut <- mlout
+        #time <- curtime
+      }
+    } ### END IF trust
+  } ### END FOR - inits
   # } ### END IF - nstarts
 
   if (is.null(bestOut)) stop("Model could not be optimized! Try changing initializations or simplifying your model.")

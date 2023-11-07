@@ -1,5 +1,5 @@
 library(corncob)
-library(phyloseq)
+suppressWarnings(library(phyloseq))
 context("Test bbdml")
 
 set.seed(1)
@@ -29,14 +29,35 @@ test_that("overspecified model fails", {
                      inits = rbind(c(1,1,1,1), c(2,2,2,2))))
 })
 
-out_bfgs_inits_num <- bbdml(formula = cbind(W, M - W) ~ X1,
-             phi.formula = ~ X1,
-             data = test_data,
-             link = "logit",
-             phi.link = "logit",
-             method = "BFGS",
-             numerical = TRUE,
-             inits = rbind(c(1,1,1,1), c(2,2,2,2)))
+# check that either an error about needing `optimx` appears, or model is able to be fit
+packages_available <- utils::installed.packages()
+optimx_optimr_installed <- "optimx" %in% packages_available | "optimr" %in% packages_available
+if (optimx_optimr_installed) {
+  out_bfgs_inits_num <- bbdml(formula = cbind(W, M - W) ~ X1,
+                              phi.formula = ~ X1,
+                              data = test_data,
+                              link = "logit",
+                              phi.link = "logit",
+                              method = "BFGS",
+                              numerical = TRUE,
+                              inits = rbind(c(1,1,1,1), c(2,2,2,2)))
+}
+
+test_that("bbdml with 'BFGS' optimization works", {
+  if (optimx_optimr_installed) {
+    expect_is(out_bfgs_inits_num, "bbdml")
+  } else {
+    expect_error(out_bfgs_inits_num <- bbdml(formula = cbind(W, M - W) ~ X1,
+                                             phi.formula = ~ X1,
+                                             data = test_data,
+                                             link = "logit",
+                                             phi.link = "logit",
+                                             method = "BFGS",
+                                             numerical = TRUE,
+                                             inits = rbind(c(1,1,1,1), c(2,2,2,2))),
+                 "If you would like to use the 'BFGS' method, please install the `optimx` package.")
+  }
+})
 
 out_trust <- bbdml(formula = cbind(W, M - W) ~ X1,
                    phi.formula = ~ X1,
@@ -53,8 +74,7 @@ out_bad_init <- suppressWarnings(bbdml(formula = cbind(W, M - W) ~ X1,
                    phi.link = "logit",
                    method = "trust",
                    inits = cbind(1,-1000,1,1000)))
-test_that("bbdml with BFGS, inits, and numerical works", {
-  expect_is(out_bfgs_inits_num, "bbdml")
+test_that("bbdml with BFGS and numerical works", {
   expect_is(out_trust, "bbdml")
   expect_is(out_bad_init, "bbdml")
 })

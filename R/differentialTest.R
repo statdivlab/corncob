@@ -242,6 +242,7 @@ We *strongly recommend* running `bbdml` on a single taxon (especially before pos
     mod_null <- bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
                       data = data_i, link = link, phi.link = phi.link,
                       inits = inits_null, ...)
+    print(tmp)
   }
   post_fdr <- stats::p.adjust(pvals, method = fdr)
   names(pvals) <- names(post_fdr) <- taxanames

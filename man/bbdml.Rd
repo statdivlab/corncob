@@ -46,7 +46,6 @@ bbdml(
 \item{robust}{Should robust standard errors be returned? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.}
 
 \item{...}{Optional additional arguments for \code{\link[optimx]{optimr}} or \code{\link{trust}}}
-
 }
 \value{
 An object of class \code{bbdml}.

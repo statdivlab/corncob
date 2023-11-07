@@ -6,14 +6,14 @@ header-includes:
     - \usepackage{fancyhdr}
 vignette: >
   %\VignetteIndexEntry{Introduction to corncob}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 urlcolor: blue
 ---
 
 \addtolength{\headheight}{-.025\textheight} 
 \thispagestyle{fancyplain} 
-\rhead{\includegraphics[height=.1\textheight]{logo.png}}
+\rhead{\includegraphics[height=.1\textheight]{../docs/logo.png}}
 \renewcommand{\headrulewidth}{0pt}
 
 

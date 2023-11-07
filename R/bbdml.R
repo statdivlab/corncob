@@ -5,12 +5,12 @@
 #' @param data a data frame or \code{phyloseq} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
-#' @param method optimization method, defaults to \code{"trust"}, or see \code{\link{optimx}} for other options
-#' @param control optimization control parameters (see \code{\link{optimx}})
+#' @param method optimization method, defaults to \code{"trust"}, or see \code{\link[optimx]{optimr}} for other options
+#' @param control optimization control parameters (see \code{\link[optimx]{optimr}})
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
 #' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
-#' @param ... Optional additional arguments for \code{\link{optimx}} or \code{\link{trust}}
+#' @param ... Optional additional arguments for \code{\link[optimx]{optimr}} or \code{\link{trust}}
 #'
 #' @return An object of class \code{bbdml}.
 #'
@@ -272,7 +272,8 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                                                                      phi.link = phi.link, logpar = TRUE),
                                                                       silent = TRUE)))); if (inherits(mlout, "try-error")) next
       } else if ("optimr" %in% packages_available) {
-        mlout <- try(optimr::optimr(par = theta.init,
+        requireNamespace(optimr)
+        mlout <- try(optimr(par = theta.init,
                                     fn = dbetabin_neg,
                                     gr = gr_full,
                                     method = method,

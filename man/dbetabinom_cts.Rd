@@ -2,7 +2,7 @@
 % Please edit documentation in R/dbetabinom_ee.R
 \name{dbetabinom_cts}
 \alias{dbetabinom_cts}
-\title{Densities of beta binomial distributions, permitting non integer x}
+\title{Densities of beta binomial distributions, permitting non integer x and size}
 \usage{
 dbetabinom_cts(x, size, prob, rho = 0, log = FALSE)
 }

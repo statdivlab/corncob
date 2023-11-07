@@ -78,7 +78,7 @@ bbdml <- function(formula, phi.formula, data,
   }
   # Check that optimx is installed if method is "BFGS"
   if (method == "BFGS") {
-    packages_available <- utils::installed.packages()
+    packages_available <- utils::installed.packages()[, "Package"]
     if (!("optimx" %in% packages_available || "optimr" %in% packages_available)) {
       stop("If you would like to use the 'BFGS' method, please install the `optimx` package.")
     }
@@ -272,8 +272,8 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                                                                      phi.link = phi.link, logpar = TRUE),
                                                                       silent = TRUE)))); if (inherits(mlout, "try-error")) next
       } else if ("optimr" %in% packages_available) {
-        requireNamespace(optimr)
-        mlout <- try(optimr(par = theta.init,
+        # requireNamespace(optimr)
+        mlout <- try(optimr::optimr(par = theta.init,
                                     fn = dbetabin_neg,
                                     gr = gr_full,
                                     method = method,

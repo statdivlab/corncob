@@ -31,9 +31,9 @@ bbdml(
 
 \item{phi.link}{link function for dispersion covariates, defaults to \code{"logit"}}
 
-\item{method}{optimization method, defaults to \code{"trust"}, or see \code{\link{optimr}} for other options}
+\item{method}{optimization method, defaults to \code{"trust"}, or see \code{\link[optimx]{optimr}} for other options}
 
-\item{control}{optimization control parameters (see \code{\link{optimr}})}
+\item{control}{optimization control parameters (see \code{\link[optimx]{optimr}})}
 
 \item{numerical}{Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).}
 
@@ -45,7 +45,8 @@ bbdml(
 
 \item{robust}{Should robust standard errors be returned? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.}
 
-\item{...}{Optional additional arguments for \code{\link{optimr}} or \code{\link{trust}}}
+\item{...}{Optional additional arguments for \code{\link[optimx]{optimr}} or \code{\link{trust}}}
+
 }
 \value{
 An object of class \code{bbdml}.

@@ -5,14 +5,14 @@
 #' @param data a data frame or \code{phyloseq} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
-#' @param method optimization method, defaults to \code{"trust"}, or see \code{\link{optimr}} for other options
-#' @param control optimization control parameters (see \code{\link{optimr}})
+#' @param method optimization method, defaults to \code{"trust"}, or see \code{\link[optimx]{optimr}} for other options
+#' @param control optimization control parameters (see \code{\link[optimx]{optimr}})
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
 #' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
 #' @param allow_noninteger Boolean. Defaults to \code{FALSE}. Should noninteger W's and M's be allowed? This behavior was not permitted prior to v4.1, needs to be explicitly allowed.
 #' @param robust Should robust standard errors be returned? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.
-#' @param ... Optional additional arguments for \code{\link{optimr}} or \code{\link{trust}}
+#' @param ... Optional additional arguments for \code{\link[optimx]{optimr}} or \code{\link{trust}}
 #'
 #' @return An object of class \code{bbdml}.
 #'
@@ -79,6 +79,13 @@ bbdml <- function(formula, phi.formula, data,
   method <- try(match.arg(method, choices = c("BFGS", "trust")))
   if ("try-error" %in% class(method)) {
     stop('If method is specified, it must be either "BFGS" or "trust"!')
+  }
+  # Check that optimx is installed if method is "BFGS"
+  if (method == "BFGS") {
+    packages_available <- utils::installed.packages()[, "Package"]
+    if (!("optimx" %in% packages_available || "optimr" %in% packages_available)) {
+      stop("If you would like to use the 'BFGS' method, please install the `optimx` package.")
+    }
   }
 
   mu.f <- formula
@@ -286,20 +293,39 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
     theta.init[which(is.na(theta.init))] <- 0
     if (method == "BFGS") {
       #starttime <- proc.time()[1]
-      mlout <- try(optimr::optimr(par = theta.init,
-                                  fn = dbetabin_neg,
-                                  gr = gr_full,
-                                  method = method,
-                                  control = control,
-                                  W = W,
-                                  M = M,
-                                  X = X.b,
-                                  X_star = X.bstar,
-                                  np = np,
-                                  npstar = npstar,
-                                  link = link,
-                                  phi.link = phi.link, logpar = TRUE),
-                   silent = TRUE); if (inherits(mlout, "try-error")) next
+      if ("optimx" %in% packages_available) {
+        # optimx::optimr prints out all of the control parameters, suppress these print statements with `invisible(capture.output())`
+        invisible(utils::capture.output(mlout <- suppressWarnings(try(optimx::optimr(par = theta.init,
+                                                                                     fn = dbetabin_neg,
+                                                                                     gr = gr_full,
+                                                                                     method = method,
+                                                                                     control = control,
+                                                                                     W = W,
+                                                                                     M = M,
+                                                                                     X = X.b,
+                                                                                     X_star = X.bstar,
+                                                                                     np = np,
+                                                                                     npstar = npstar,
+                                                                                     link = link,
+                                                                                     phi.link = phi.link, logpar = TRUE),
+                                                                      silent = TRUE)))); if (inherits(mlout, "try-error")) next
+      } else if ("optimr" %in% packages_available) {
+        # requireNamespace(optimr)
+        mlout <- try(optimr::optimr(par = theta.init,
+                                    fn = dbetabin_neg,
+                                    gr = gr_full,
+                                    method = method,
+                                    control = control,
+                                    W = W,
+                                    M = M,
+                                    X = X.b,
+                                    X_star = X.bstar,
+                                    np = np,
+                                    npstar = npstar,
+                                    link = link,
+                                    phi.link = phi.link, logpar = TRUE),
+                     silent = TRUE); if (inherits(mlout, "try-error")) next
+      }
       #theta.orig <- theta.init
       #curtime <- proc.time()[1] - starttime
 

@@ -45,6 +45,10 @@ contrastsTest <- function(formula, phi.formula,
                           try_only = NULL,
                           ...) {
 
+  # NA values returned whether or not limma is installed
+  warning("This function currently returns NA values due to a problem associated with the `limma` package.")
+
+
   if (is.null(contrasts_DA) && is.null(contrasts_DV)) {
     stop("Must include at least one of contrasts_DA or contrasts_DV!")
   }

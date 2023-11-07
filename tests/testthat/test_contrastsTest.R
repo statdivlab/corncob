@@ -1,5 +1,5 @@
 library(corncob)
-library(phyloseq)
+suppressWarnings(library(phyloseq))
 context("Test contrastsTest")
 
 set.seed(1)

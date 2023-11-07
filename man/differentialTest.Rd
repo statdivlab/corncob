@@ -56,7 +56,7 @@ differentialTest(
 
 \item{filter_discriminant}{Boolean. Defaults to \code{TRUE}. If \code{FALSE}, discriminant taxa will not be filtered out.}
 
-\item{fdr_cutoff}{Integer. Defaults to \code{0.05}. Desired type 1 error rate}
+\item{fdr_cutoff}{Integer. Defaults to \code{0.05}. Desired false discovery rate.}
 
 \item{fdr}{Character. Defaults to \code{"fdr"}. False discovery rate control method, see \code{\link{p.adjust}} for more options.}
 
@@ -70,7 +70,7 @@ differentialTest(
 
 \item{verbose}{Boolean. Defaults to \code{FALSE}; print status updates for long-running analyses}
 
-\item{robust}{Should robust standard errors be used? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.}
+\item{robust}{Should robust standard errors be used? If not, model-based standard errors are used. Logical, defaults to \code{FALSE}.}
 
 \item{...}{Optional additional arguments for \code{\link{bbdml}}}
 }

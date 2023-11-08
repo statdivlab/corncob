@@ -15,7 +15,7 @@
 sand_vcov <- function(mod, numerical = FALSE) {
   # Form A^-1 * B * A^-1
   A_hat <- hessian(mod, numerical = numerical)
-  B_hat <- score(mod, numerical = numerical, forHess = TRUE)
+  B_hat <- score(mod, numerical = numerical, get_score_covariance = TRUE)
   A_hat_inv <- solve(A_hat)
   return(A_hat_inv %*% B_hat %*% A_hat_inv)
 }

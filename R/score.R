@@ -2,9 +2,9 @@
 #'
 #' @param mod an object of class \code{bbdml}
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).
-#' @param forHess Boolean. Defaults to \code{FALSE}. Bryan: Indicator of whether to put in vector form. This parameter is not intended for users. Amy: actually returns robust estimate of variance of score: $hat{B}(hat{theta}) = sum_i G(hat{theta}; W_i) G(hat{theta}; W_i)^T $.
+#' @param get_score_covariance Boolean. Defaults to \code{FALSE}. Should we return a robust estimate of variance of score: $hat{B}(hat{theta}) = sum_i G(hat{theta}; W_i) G(hat{theta}; W_i)^T $. This parameter is not intended for users.
 #'
-#' @return Score at the MLE. For $G(theta, w)$ score function, returns $sum_i G(hat{theta}, W_i)$ if forHess = FALSE.
+#' @return Score at the MLE. For $G(theta, w)$ score function, returns $sum_i G(hat{theta}, W_i)$ if get_score_covariance = FALSE.
 #'
 #' @examples
 #' data(soil_phylum_small)
@@ -14,7 +14,7 @@
 #' score(mod)
 #'
 #' @export
-score <- function(mod, numerical = FALSE, forHess = FALSE) {
+score <- function(mod, numerical = FALSE, get_score_covariance = FALSE) {
   mu <- mod$mu.resp
   phi <- mod$phi.resp
   W <- mod$W
@@ -64,7 +64,7 @@ score <- function(mod, numerical = FALSE, forHess = FALSE) {
   g_bstar <- c(crossprod(tmp_bstar, X_star))
 
   # Keep in terms of subject-specific score, useful for sandwich
-  if (forHess) {
+  if (get_score_covariance) {
     V <- matrix(0, nrow = npx + npw, ncol = npx + npw)
     nu <- rep(0, npx + npw)
     # sample size

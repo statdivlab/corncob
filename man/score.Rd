@@ -4,17 +4,17 @@
 \alias{score}
 \title{Compute score at the MLE}
 \usage{
-score(mod, numerical = FALSE, forHess = FALSE)
+score(mod, numerical = FALSE, get_score_covariance = FALSE)
 }
 \arguments{
 \item{mod}{an object of class \code{bbdml}}
 
 \item{numerical}{Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).}
 
-\item{forHess}{Boolean. Defaults to \code{FALSE}. Bryan: Indicator of whether to put in vector form. This parameter is not intended for users. Amy: actually returns robust estimate of variance of score: $hat{B}(hat{theta}) = sum_i G(hat{theta}; W_i) G(hat{theta}; W_i)^T $.}
+\item{get_score_covariance}{Boolean. Defaults to \code{FALSE}. Should we return a robust estimate of variance of score: $hat{B}(hat{theta}) = sum_i G(hat{theta}; W_i) G(hat{theta}; W_i)^T $. This parameter is not intended for users.}
 }
 \value{
-Score at the MLE. For $G(theta, w)$ score function, returns $sum_i G(hat{theta}, W_i)$ if forHess = FALSE.
+Score at the MLE. For $G(theta, w)$ score function, returns $sum_i G(hat{theta}, W_i)$ if get_score_covariance = FALSE.
 }
 \description{
 Compute score at the MLE

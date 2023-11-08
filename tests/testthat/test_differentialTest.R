@@ -363,7 +363,8 @@ test_that("differentialTest and non integers", {
                                boot=FALSE)
   )
 
-  expect_silent(
+  # expect warning when non-integers are present and robust = FALSE from Rao test
+  expect_warning(
     temp18 <- differentialTest(formula = ~ Plants + DayAmdmt,
                                phi.formula = ~ Plants,
                                formula_null = ~ 1,
@@ -375,4 +376,6 @@ test_that("differentialTest and non integers", {
                                B=3,
                                boot=FALSE)
   )
+
+  expect_false(identical(temp17$p, temp18$p))
 })

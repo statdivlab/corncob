@@ -7,19 +7,20 @@
 #' @param data a data frame containing the OTU table, or \code{phyloseq} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
-#' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"} or \code{"LRT"} (likelihood ratio test).
+#' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"}, \code{"LRT"} (likelihood ratio test), or \code{"Rao"}.
 #' @param boot Boolean. Defaults to \code{FALSE}. Indicator of whether or not to use parametric bootstrap algorithm. (See \code{\link{pbWald}} and \code{\link{pbLRT}}).
 #' @param B Optional integer. Number of bootstrap iterations. Ignored if \code{boot} is \code{FALSE}. Otherwise, defaults to \code{1000}.
 #' @param sample_data Data frame or matrix. Defaults to \code{NULL}. If \code{data} is a data frame or matrix, this must be included as covariates/sample data.
 #' @param taxa_are_rows Boolean. Optional. If \code{data} is a data frame or matrix, this indicates whether taxa are rows. Defaults to \code{TRUE}.
 #' @param filter_discriminant Boolean. Defaults to \code{TRUE}. If \code{FALSE}, discriminant taxa will not be filtered out.
-#' @param fdr_cutoff Integer. Defaults to \code{0.05}. Desired type 1 error rate
+#' @param fdr_cutoff Integer. Defaults to \code{0.05}. Desired false discovery rate.
 #' @param fdr Character. Defaults to \code{"fdr"}. False discovery rate control method, see \code{\link{p.adjust}} for more options.
 #' @param full_output Boolean. Opetional. Defaults to \code{FALSE}. Indicator of whether to include full \code{bbdml} model output for all taxa.
 #' @param inits Optional initializations for model fit using \code{formula} and \code{phi.formula} as rows of a matrix. Defaults to \code{NULL}.
 #' @param inits_null Optional initializations for model fit using \code{formula_null} and \code{phi.formula_null} as rows of a matrix. Defaults to \code{NULL}.
 #' @param try_only Optional numeric. Will try only the \code{try_only} taxa, specified either via numeric input or character taxa names. Useful for speed when troubleshooting. Defaults to \code{NULL}, testing all taxa.
 #' @param verbose Boolean. Defaults to \code{FALSE}; print status updates for long-running analyses
+#' @param robust Should robust standard errors be used? If not, model-based standard errors are used. Logical, defaults to \code{FALSE}.
 #' @param ... Optional additional arguments for \code{\link{bbdml}}
 #'
 #' @details See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}. To use a contrast matrix, see \code{\link{contrastsTest}}.
@@ -56,6 +57,7 @@ differentialTest <- function(formula, phi.formula,
                              inits_null = NULL,
                              try_only = NULL,
                              verbose = FALSE,
+                             robust = FALSE,
                              ...) {
 
   # Record call
@@ -109,134 +111,156 @@ differentialTest <- function(formula, phi.formula,
     }
   }
 
-    restrict_ind <- 0
+  restrict_ind <- 0
 
-    if (is.null(try_only)) {
-      try_only <- 1:length(taxanames)
-    }
+  if (is.null(try_only)) {
+    try_only <- 1:length(taxanames)
+  }
 
-    if (is.character(try_only)) {
-      try_only <- which(taxanames %in% try_only)
-    }
-    # Loop through OTU/taxa
-    for (i in try_only) {
-      if (verbose) print(paste0(" ------- Fitting ", taxanames[i],  ", taxa ", i, " of ", length(try_only), " -------"))
-      # Subset data to only select that taxa
-      data_i <- convert_phylo(data, select = taxanames[i])
+  if (is.character(try_only)) {
+    try_only <- which(taxanames %in% try_only)
+  }
+  # Loop through OTU/taxa
+  for (i in try_only) {
+    if (verbose) print(paste0(" ------- Fitting ", taxanames[i],  ", taxa ", i, " of ", length(try_only), " -------"))
+    # Subset data to only select that taxa
+    data_i <- convert_phylo(data, select = taxanames[i])
 
-      if (sum(data_i$W) == 0) {
-        perfDisc_DA[i] <- TRUE
-        perfDisc_DV[i] <- TRUE
-      } else {
-        # Update formula to match
-        formula_i <- stats::update(formula, cbind(W, M - W) ~ .)
-        formula_null_i <- stats::update(formula_null, cbind(W, M - W) ~ .)
-
-        # Fit unrestricted model
-        mod <- suppressWarnings(try(bbdml(formula = formula_i, phi.formula = phi.formula,
-                                          data = data_i, link = link, phi.link = phi.link,
-                                          inits = inits, ...), silent = TRUE))
-        #print(" -- model --")
-        #print(mod)
-        # Fit restricted model
-        mod_null <- suppressWarnings(try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
-                                               data = data_i, link = link, phi.link = phi.link,
-                                               inits = inits_null, ...), silent = TRUE))
-        #print(" -- null model --")
-        #print(mod_null)
-
-        if (!("try-error" %in% c(class(mod), class(mod_null)))) {
-          if (restrict_ind == 0) {
-            restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
-            restrict_ind <- 1
-          }
-          # If both models fit, otherwise keep as NA
-          model_summaries[[i]] <- suppressWarnings(summary(mod))
-          if (full_output) {
-            full_outputs[[i]] <- suppressWarnings(mod)
-          }
-          if (test == "Wald") {
-            if (boot) {
-              tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
-              if (!inherits(tmp, "try-error")) {
-                pvals[i] <- tmp
-              }
-            } else {
-              tmp <- try(waldchisq(mod = mod, mod_null = mod_null), silent = TRUE)
-              if (!inherits(tmp, "try-error")) {
-                pvals[i] <- tmp
-              }
-            }
-          } else if (test == "LRT") {
-            if (boot) {
-              tmp <- try(pbLRT(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
-              if (!inherits(tmp, "try-error")) {
-                pvals[i] <- tmp
-              }
-            } else {
-              tmp <- try(lrtest(mod = mod, mod_null = mod_null), silent = TRUE)
-              if (!inherits(tmp, "try-error")) {
-                pvals[i] <- tmp
-              }
-            }
-          }
-          perfDisc_DA[i] <- mod$sep_da
-          perfDisc_DV[i] <- mod$sep_dv
-        }
-      }
-    }
-
-    ind_disc_da <- which(perfDisc_DA == TRUE)
-    ind_disc_dv <- which(perfDisc_DV == TRUE)
-    disc_vec_da <- taxanames[ind_disc_da]
-    disc_vec_dv <- taxanames[ind_disc_dv]
-
-    ind_disc <- union(ind_disc_da, ind_disc_dv)
-
-    if (filter_discriminant && length(ind_disc) > 0) {
-      # Want to keep same length, rest will ignore NAs
-      pvals[ind_disc] <- NA
-    }
-
-    if (all(is.na(pvals))) {
-      message("All models failed to converge! \n
-           If you are seeing this, it is likely that your model is overspecified. This occurs when your sample size is not large enough to estimate all the parameters of your model. This is most commonly due to categorical variables that include many categories. \n
-           Alternatively, double-check your values for the arguments `link`, `phi.link`, and `method` to makes sure that they follow the specified options. \n
-           To see the relevant error message, the following is the result from running `bbdml` for a single taxon: \n")
-      i <- (try_only[!(try_only %in% ind_disc)])[1]
-      data_i <- convert_phylo(data, select = taxanames[i])
+    if (sum(data_i$W) == 0) {
+      perfDisc_DA[i] <- TRUE
+      perfDisc_DV[i] <- TRUE
+    } else {
+      # Update formula to match
       formula_i <- stats::update(formula, cbind(W, M - W) ~ .)
       formula_null_i <- stats::update(formula_null, cbind(W, M - W) ~ .)
-      mod <- bbdml(formula = formula_i, phi.formula = phi.formula,
+
+      # Fit unrestricted model
+      mod <- suppressWarnings(try(bbdml(formula = formula_i, phi.formula = phi.formula,
                                         data = data_i, link = link, phi.link = phi.link,
-                                        inits = inits, ...)
-      mod_null <- bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
+                                        inits = inits, robust = robust, ...), silent = TRUE))
+      #print(" -- model --")
+      #print(mod)
+      # Fit restricted model
+      mod_null <- suppressWarnings(try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
                                              data = data_i, link = link, phi.link = phi.link,
-                                             inits = inits_null, ...)
+                                             inits = inits_null, robust = robust, ...), silent = TRUE))
+      #print(" -- null model --")
+      #print(mod_null)
+
+      if (!("try-error" %in% c(class(mod), class(mod_null)))) {
+        if (restrict_ind == 0) {
+          restricts <- getRestrictionTerms(mod = mod, mod_null = mod_null)
+          restrict_ind <- 1
+        }
+        # If both models fit, otherwise keep as NA
+        model_summaries[[i]] <- suppressWarnings(summary(mod))
+        if (full_output) {
+          full_outputs[[i]] <- suppressWarnings(mod)
+        }
+        if (test == "Wald") {
+          if (boot) {
+            tmp <- try(pbWald(mod = mod, mod_null = mod_null, B = B, robust = robust), silent = TRUE)
+            if (!inherits(tmp, "try-error")) {
+              pvals[i] <- tmp
+            }
+          } else {
+            tmp <- try(waldchisq(mod = mod, mod_null = mod_null, robust = robust), silent = TRUE)
+            if (!inherits(tmp, "try-error")) {
+              pvals[i] <- tmp
+            }
+          }
+        } else if (test == "Rao") {
+
+          if (boot) {
+            tmp <- try(pbRao(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
+            if (!inherits(tmp, "try-error")) {
+              pvals[i] <- tmp
+            }
+          } else {
+
+            tmp <- try(raotest(mod = mod, mod_null = mod_null), silent = TRUE)
+            if (!inherits(tmp, "try-error")) {
+              pvals[i] <- tmp
+            }
+          }
+        } else if (test == "LRT") {
+
+          if (mod$has_noninteger) stop("Amy needs to think about whether you can test via LRTs with non-integer data first! \n   We would recommend robust Wald testing instead. \n   If you really, really, really want to LRT with non-integer data, \n   please post an issue to GitHub and Amy will think about this for you.")
+
+          if (boot) {
+            tmp <- try(pbLRT(mod = mod, mod_null = mod_null, B = B), silent = TRUE)
+            if (!inherits(tmp, "try-error")) {
+              pvals[i] <- tmp
+            }
+          } else {
+
+            tmp <- try(lrtest(mod = mod, mod_null = mod_null), silent = TRUE)
+            if (!inherits(tmp, "try-error")) {
+              pvals[i] <- tmp
+            }
+          }
+        } else {
+          stop("Invalid test argument?")
+        }
+        perfDisc_DA[i] <- mod$sep_da
+        perfDisc_DV[i] <- mod$sep_dv
+      }
     }
-    post_fdr <- stats::p.adjust(pvals, method = fdr)
-    names(pvals) <- names(post_fdr) <- taxanames
-    # Record significant taxa
-    signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
-    signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
+  }
 
+  ind_disc_da <- which(perfDisc_DA == TRUE)
+  ind_disc_dv <- which(perfDisc_DV == TRUE)
+  disc_vec_da <- taxanames[ind_disc_da]
+  disc_vec_dv <- taxanames[ind_disc_dv]
 
-    # restricts_mu <- setdiff(attr(terms(formula), "term.labels"),
-    #                         attr(terms(formula_null), "term.labels"))
-    # restricts_phi <- setdiff(attr(terms(phi.formula), "term.labels"),
-    #                          attr(terms(phi.formula_null), "term.labels"))
+  ind_disc <- union(ind_disc_da, ind_disc_dv)
 
-    restricts_mu <- setdiff(colnames(stats::model.matrix(object = formula, data = data.frame(phyloseq::sample_data(data)))),
-                            colnames(stats::model.matrix(object = formula_null, data = data.frame(phyloseq::sample_data(data)))))
-    restricts_phi <- setdiff(colnames(stats::model.matrix(object = phi.formula, data = data.frame(phyloseq::sample_data(data)))),
-                             colnames(stats::model.matrix(object = phi.formula_null, data = data.frame(phyloseq::sample_data(data)))))
+  if (filter_discriminant && length(ind_disc) > 0) {
+    # Want to keep same length, rest will ignore NAs
+    pvals[ind_disc] <- NA
+  }
 
-    attr(restricts_mu, "index") <- restricts$mu
-    attr(restricts_phi, "index") <- restricts$phi
+  if (all(is.na(pvals))) {
+    message("All p-values are NA! \n
+           There are a number of reasons why this could happen, including
+              - All models failed to converge because your model is overspecified
+                (e.g., because your design matrix X is not full rank, or because your sample size
+                is not large enough to estimate all parameters)
+              - You misspelled an argument. Double-check your values for the arguments (e.g., `link`, `phi.link`,
+                `method`, etc.) to makes sure that they follow the specified options.
+              - Other reasons not listed here. \n
+We *strongly recommend* running `bbdml` on a single taxon (especially before posting an issue on GitHub). \n
+           If a error message was thrown by `bbdml`, it is reproduced below for a single taxon.
+           If no errors were thrown by `bbdml`, and the issue is instead in `differentialTest`, no output is shown. \n")
+    i <- (try_only[!(try_only %in% ind_disc)])[1]
+    data_i <- convert_phylo(data, select = taxanames[i])
+    formula_i <- stats::update(formula, cbind(W, M - W) ~ .)
+    formula_null_i <- stats::update(formula_null, cbind(W, M - W) ~ .)
+    mod <- bbdml(formula = formula_i, phi.formula = phi.formula,
+                 data = data_i, link = link, phi.link = phi.link,
+                 inits = inits, ...)
+    mod_null <- bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
+                      data = data_i, link = link, phi.link = phi.link,
+                      inits = inits_null, ...)
+    print(tmp)
+  }
+  post_fdr <- stats::p.adjust(pvals, method = fdr)
+  names(pvals) <- names(post_fdr) <- taxanames
+  # Record significant taxa
+  signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
+  signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
 
-    if (!full_output) {
-      full_outputs <- NULL
-    }
+  restricts_mu <- setdiff(colnames(stats::model.matrix(object = formula, data = data.frame(phyloseq::sample_data(data)))),
+                          colnames(stats::model.matrix(object = formula_null, data = data.frame(phyloseq::sample_data(data)))))
+  restricts_phi <- setdiff(colnames(stats::model.matrix(object = phi.formula, data = data.frame(phyloseq::sample_data(data)))),
+                           colnames(stats::model.matrix(object = phi.formula_null, data = data.frame(phyloseq::sample_data(data)))))
+
+  attr(restricts_mu, "index") <- restricts$mu
+  attr(restricts_phi, "index") <- restricts$phi
+
+  if (!full_output) {
+    full_outputs <- NULL
+  }
 
 
   structure(

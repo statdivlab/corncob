@@ -1,11 +1,10 @@
-#' Parametric bootstrap Wald test
+#' Parametric bootstrap Rao test
 #'
 #' @param mod an object of class \code{bbdml}
 #' @param mod_null an object of class \code{bbdml}, should be nested within \code{mod}
 #' @param B Integer. Defaults to \code{1000}. Number of bootstrap iterations.
-#' @param robust Should robust standard errors be used? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.
 #'
-#' @return P-value from parametric bootstrap Wald test.
+#' @return P-value from parametric bootstrap Rao test.
 #'
 #' @examples
 #' data(soil_phylum_small)
@@ -16,24 +15,20 @@
 #' mod2 <- bbdml(formula = OTU.1 ~ 1,
 #' phi.formula = ~ 1,
 #' data = soil_phylum_small)
-#' pbWald(mod1, mod2, B = 50)
+#' pbRao(mod1, mod2, B = 50)
 #' @export
-pbWald <- function(mod, mod_null, B = 1000, robust = FALSE) {
+pbRao <- function(mod, mod_null, B = 1000) {
 
   if (mod$has_noninteger) stop("Can't perform parametric bootstrap with non-integer M or W. ")
 
-  tmp <- getRestrictionTerms(mod = mod, mod_null = mod_null)
-  restrictions <- tmp$mu
-  restrictions.phi <- tmp$phi
-  t.observed <- try(waldchisq_test(mod, restrictions = restrictions, restrictions.phi = restrictions.phi, robust = robust), silent = TRUE)
-  if (inherits(t.observed, "try-error")) {
-    return(NA)
-  }
+  checkNested(mod, mod_null)
 
+  t.observed <- stats::qchisq(raotest(mod, mod_null),
+                              mod$df.model - mod_null$df.model,
+                              lower.tail = FALSE)
   BOOT <- rep(NA, B)
   for (j in 1:B) {
-    #print(j)
-    BOOT[j] <- doBoot(mod = mod, mod_null = mod_null, test = "Wald", robust = robust)
+    BOOT[j] <- doBoot(mod = mod, mod_null = mod_null, test = "Rao")
   }
   perc.rank <- function(x, y) (1 + sum(stats::na.omit(y) >= x)) / (length(stats::na.omit(y)) + 1)
   p.val <- perc.rank(t.observed, BOOT)

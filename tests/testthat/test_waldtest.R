@@ -69,7 +69,7 @@ test_that("waldchisq works", {
 })
 
 test_that("waldtest can break", {
-  expect_warning(expect_error(waldt(c(1,2,3))))
+  expect_error(waldt(c(1,2,3)))
   expect_warning(waldt(out_bad))
 })
 

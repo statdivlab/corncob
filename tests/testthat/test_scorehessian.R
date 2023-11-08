@@ -42,5 +42,5 @@ test_that("Numeric gradient works", {
 })
 
 test_that("Subject-specific gradient works", {
-  expect_is(score(out, forHess = TRUE), "matrix")
+  expect_is(score(out, get_score_covariance = TRUE), "matrix")
 })

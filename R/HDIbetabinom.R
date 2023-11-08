@@ -16,7 +16,7 @@
 #'
 #' @export
 HDIbetabinom <- function(percent, M, mu, phi)  {
-  pdfvec <- VGAM::dbetabinom(x = 0:M, size = M, prob = mu, rho = phi)
+  pdfvec <- dbetabinom_cts(x = 0:M, size = M, prob = mu, rho = phi)
 
   myord <- order(pdfvec, decreasing = TRUE)
   # Get ordered values

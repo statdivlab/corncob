@@ -15,7 +15,7 @@
 #' qbetabinom(.5, M = mod$M[1], mu = mod$mu.resp[1], phi = mod$phi.resp[1])
 #' @export
 qbetabinom <- function(p, M, mu, phi)  {
-  pdfvec <- VGAM::dbetabinom(x = 0:M, size = M, prob = mu, rho = phi)
+  pdfvec <- dbetabinom_cts(x = 0:M, size = M, prob = mu, rho = phi)
   # get cumulative probability
   CDF <- cumsum(pdfvec)
   # Find first value above quantile cutoff

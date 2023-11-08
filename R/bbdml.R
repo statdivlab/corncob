@@ -10,6 +10,8 @@
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian (not recommended).
 #' @param nstart Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
+#' @param allow_noninteger Boolean. Defaults to \code{FALSE}. Should noninteger W's and M's be allowed? This behavior was not permitted prior to v4.1, needs to be explicitly allowed.
+#' @param robust Should robust standard errors be returned? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.
 #' @param ... Optional additional arguments for \code{\link[optimx]{optimr}} or \code{\link{trust}}
 #'
 #' @return An object of class \code{bbdml}.
@@ -40,6 +42,8 @@ bbdml <- function(formula, phi.formula, data,
                   numerical = FALSE,
                   nstart = 1,
                   inits  = NULL,
+                  allow_noninteger = FALSE,
+                  robust = FALSE,
                   ...) {
   if (numerical) {
     control$usenumDeriv <- TRUE
@@ -121,19 +125,53 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
   # Sample Size
   M <- rowSums(resp)
 
+  has_noninteger <- any(round(W) != W) | any(round(M) != M)
+  if (!allow_noninteger & has_noninteger) {
+    stop("You don't have counts in your abundances. \n
+         Double-check and correct your data, and/or force the model to fit with `allow_noninteger`")
+  }
+
   # Check for separation
   sep_da <- sep_dv <- FALSE
   if (length(attr(terms.mu, "term.labels") != 0)) {
-    sep_da <- separationDetection(
-      y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"), control = list(purpose = "test")
+
+    withCallingHandlers(
+      expr = {
+        sep_da <- separationDetection(
+          y = cbind(W, M - W), x = X.b, family = stats::binomial("logit"), control = list(purpose = "test")
+        )
+      },
+      warning = function(w) {
+        if (allow_noninteger & grepl("non-integer counts in a binomial glm", w$message)) {
+          invokeRestart("muffleWarning")
+        } else {
+          warning(w$message, call.=F)
+          invokeRestart("muffleWarning")
+        }
+      }
     )
+
     if (sep_da) separationWarning(model_name = "abundance model")
   }
 
   if (length(attr(terms.phi, "term.labels") != 0)) {
-    sep_dv <- separationDetection(
-      y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"), control = list(purpose = "test")
-    )
+
+    withCallingHandlers(
+        expr = {
+          sep_dv <- separationDetection(
+            y = cbind(W, M - W), x = X.bstar, family = stats::binomial("logit"), control = list(purpose = "test")
+          )
+        },
+        warning = function(w) {
+          if (allow_noninteger & grepl("non-integer counts in a binomial glm", w$message)) {
+            invokeRestart("muffleWarning")
+          } else {
+            warning(w$message, call.=F)
+            invokeRestart("muffleWarning")
+          }
+        }
+      )
+
     if (sep_dv) separationWarning(model_name = "dispersion model")
   }
 
@@ -177,7 +215,7 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
                                                nstart = 1,
                                                use = FALSE))
       } else {
-        val_init <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
+        val_init <- suppressWarnings(sum(dbetabinom_cts(W, M, prob = mu_init, rho = phi_init, log = TRUE)))
         if (is.nan(val_init) || any(phi_init <= sqrt(.Machine$double.eps)) || any(phi_init >= 1 - sqrt(.Machine$double.eps))) {
           warning(paste("Initialization",i,"invalid. Automatically generating new initialization."), immediate. = TRUE)
           inits[i,] <- suppressWarnings(genInits(W = W,
@@ -364,39 +402,11 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
       np.total = nppar, np.mu = np, np.phi = npstar,
       df.model = df.model, df.residual = df.residual,
       logL = logL, inits = inits, sep_da = sep_da, sep_dv = sep_dv,
-      iterations = iterations, code = code, msg = msg),
+      iterations = iterations, code = code, msg = msg,
+      robust = robust,
+      allow_noninteger = allow_noninteger,
+      has_noninteger = has_noninteger),
     class = "bbdml")
 }
 
 
-# Wrapper around detectseparation::detect_separation
-#
-# All arguments are always passed to detect_separation as is, except for x.
-# If x has only 1 column, x is replaced with cbind(1, x)
-#
-# Return value is TRUE or FALSE, extracted from either the "separation" or "outcome" element returned by detect_separation
-# The name of this element changed between detectseparation package versions 0.2 and 0.3
-separationDetection <- function(y, x, family, control) {
-  if (ncol(x) == 1) x <- cbind(1, x)
-  separation <- detectseparation::detect_separation(y = y, x = x, family = family, control = control)
-
-  # name of boolean element in list returned by detect_separation changed between package versions
-  if (utils::packageVersion("detectseparation") < "0.3") {
-    return(separation[["separation"]])
-  } else {
-    return(separation[["outcome"]])
-  }
-}
-
-# Simple helper to generate warning about detected separation in a bbdml model
-# model_name takes a string, e.g. "abundance model" or "dispersion model"
-separationWarning <- function(model_name) {
-  warning(paste(
-    paste0("Separation detected in ", model_name, "!"),
-    "Likely, one of your covariates/experimental conditions is such that",
-    "there are all zero counts within a group. Consider identifying and removing",
-    "this covariate from your model. The results of this model are not to be",
-    "trusted because there is not enough data. \n",
-    sep = "\n"
-  ), immediate. = TRUE, call. = FALSE)
-}

@@ -27,7 +27,7 @@ objfun <- function(theta, W, M, X, X_star, np, npstar, link, phi.link) {
   mu <- switch(link, "logit" = invlogit(mu.withlink))
   phi <- switch(phi.link, "fishZ" = invfishZ(phi.withlink), "logit" = invlogit(phi.withlink))
 
-  val <- suppressWarnings(sum(VGAM::dbetabinom(W, M, prob = mu, rho = phi, log = TRUE)))
+  val <- suppressWarnings(sum(dbetabinom_cts(W, M, prob = mu, rho = phi, log = TRUE)))
   if (is.nan(val) || any(phi <= sqrt(.Machine$double.eps)) || any(phi >= 1 - sqrt(.Machine$double.eps))) {
     return(list(value = Inf))
   }

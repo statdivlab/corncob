@@ -2,14 +2,15 @@
 % Please edit documentation in R/wald.R
 \name{waldchisq_test}
 \alias{waldchisq_test}
-\title{Wald-type chi-squared test statistic}
+\title{Wald-type chi-squared test statistic (model-based or robust)}
 \usage{
 waldchisq_test(
   mod,
   restrictions = NULL,
   restrictions.phi = NULL,
   contrasts_DA = NULL,
-  contrasts_DV = NULL
+  contrasts_DV = NULL,
+  robust = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ waldchisq_test(
 \item{contrasts_DA}{List. Optional. Constructs a contrast matrix. List elements should be characters specifying contrasts in the parameters within \code{formula}. Note that this is only available with \code{"Wald"} value for \code{test}.}
 
 \item{contrasts_DV}{List. Optional. Constructs a contrast matrix. List elements should be characters specifying contrasts in the parameters within \code{phi.formula}. Note that this is only available with \code{"Wald"} value for \code{test}.}
+
+\item{robust}{Should robust standard errors be used? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.}
 }
 \value{
 Test statistic for Wald test.

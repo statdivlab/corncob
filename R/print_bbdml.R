@@ -15,7 +15,8 @@
 #' data = soil_phylum_small)
 #' print(mod)
 #' @export
-print.bbdml <- function(x, digits = max(3L, getOption("digits") - 3L),
+print.bbdml <- function(x,
+                        digits = max(3L, getOption("digits") - 3L),
                         signif.stars = getOption("show.signif.stars"), ...) {
   x <- summary(x)
   # Update below with print_summary_bbdml

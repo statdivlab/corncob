@@ -1,10 +1,13 @@
 Package: corncob
 Title: Count Regression for Correlated Observations with the Beta-Binomial
-Version: 0.3.3
+Version: 0.4.1
 Authors@R: c(
-    person("Bryan D", "Martin", email = "bmartin6@uw.edu", role = c("aut", "cre")),
-    person("Daniela", "Witten", email = "dwitten@uw.edu", role = "aut"),
-    person("Amy D", "Willis", email = "adwillis@uw.edu", role = "aut")
+    person("Bryan D", "Martin", email = "bmartin6@uw.edu", role = "aut"),
+    person("Daniela", "Witten", role = "aut"),
+    person("Sarah", "Teichman", role = "ctb"),
+    person("Amy D", "Willis", email = "adwillis@uw.edu", role = c("aut", "cre")), 
+    person("Thomas W", "Yee", role = "ctb", comment = "VGAM library"), 
+    person("Xiangjie", "Xue", role = "ctb", comment = "VGAM library")
   )
 Description: Statistical modeling for correlated count data using the beta-binomial distribution, described in Martin et al. (2020) <doi:10.1214/19-AOAS1283>. It allows for both mean and overdispersion covariates.
 URL: https://github.com/bryandmartin/corncob

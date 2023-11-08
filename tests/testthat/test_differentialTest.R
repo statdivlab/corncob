@@ -8,6 +8,12 @@ soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
 subsoil <- phyloseq::prune_taxa(x = soil, taxa = rownames(otu_table(soil))[301:325])
 # including 7027 for all zeros
 subsoil_disc <- phyloseq::prune_taxa(x = soil, taxa = rownames(otu_table(soil))[c(3001:3024, 7027)])
+
+subsoil_nonint <- subsoil
+otu_table(subsoil_nonint) <- otu_table(subsoil_nonint) + rexp(1)
+
+
+
 temp <- differentialTest(formula = ~ Plants + DayAmdmt,
                          phi.formula = ~ Plants + DayAmdmt,
                          formula_null = ~ 1,
@@ -17,13 +23,13 @@ temp <- differentialTest(formula = ~ Plants + DayAmdmt,
                          inits_null = rbind(rep(0.01, 2)))
 
 temp2 <- differentialTest(formula = ~ Plants + DayAmdmt,
-                         phi.formula = ~ Plants + DayAmdmt,
-                         formula_null = ~ 1,
-                         phi.formula_null = ~ 1,
-                         data = subsoil, boot = FALSE, test = "LRT",
-                         filter_discriminant = FALSE,
-                         inits = rbind(rep(.01, 6)),
-                         inits_null = rbind(rep(0.01, 2)))
+                          phi.formula = ~ Plants + DayAmdmt,
+                          formula_null = ~ 1,
+                          phi.formula_null = ~ 1,
+                          data = subsoil, boot = FALSE, test = "LRT",
+                          filter_discriminant = FALSE,
+                          inits = rbind(rep(.01, 6)),
+                          inits_null = rbind(rep(0.01, 2)))
 
 temp3 <- suppressWarnings(
   differentialTest(formula = ~ Plants + DayAmdmt,
@@ -45,33 +51,33 @@ temp3 <- suppressWarnings(
 )
 
 temp_badinits1 <- differentialTest(formula = ~ Plants + DayAmdmt,
-                         phi.formula = ~ Plants + DayAmdmt,
-                         formula_null = ~ 1,
-                         phi.formula_null = ~ 1,
-                         data = subsoil, boot = FALSE, test = "LRT",
-                         inits = rbind(rep(Inf, 6)),
-                         inits_null = rbind(rep(0.01, 2)))
+                                   phi.formula = ~ Plants + DayAmdmt,
+                                   formula_null = ~ 1,
+                                   phi.formula_null = ~ 1,
+                                   data = subsoil, boot = FALSE, test = "LRT",
+                                   inits = rbind(rep(Inf, 6)),
+                                   inits_null = rbind(rep(0.01, 2)))
 
 temp_badinits2 <- differentialTest(formula = ~ Plants + DayAmdmt,
-                         phi.formula = ~ Plants + DayAmdmt,
-                         formula_null = ~ 1,
-                         phi.formula_null = ~ 1,
-                         data = subsoil, boot = FALSE, test = "LRT",
-                         inits = rbind(rep(.01, 6)),
-                         inits_null = rbind(rep(Inf, 2)))
+                                   phi.formula = ~ Plants + DayAmdmt,
+                                   formula_null = ~ 1,
+                                   phi.formula_null = ~ 1,
+                                   data = subsoil, boot = FALSE, test = "LRT",
+                                   inits = rbind(rep(.01, 6)),
+                                   inits_null = rbind(rep(Inf, 2)))
 
 # Add this to cause some warnings and check those
 temp_noinit_sing <- differentialTest(formula = ~ DayAmdmt,
-                                phi.formula = ~ DayAmdmt,
+                                     phi.formula = ~ DayAmdmt,
+                                     formula_null = ~ 1,
+                                     phi.formula_null = ~ 1, boot = FALSE, test = "LRT",
+                                     data = subsoil)
+
+temp_noinit <- differentialTest(formula = ~ Plants + DayAmdmt,
+                                phi.formula = ~ Plants + DayAmdmt,
                                 formula_null = ~ 1,
                                 phi.formula_null = ~ 1, boot = FALSE, test = "LRT",
                                 data = subsoil)
-
-temp_noinit <- differentialTest(formula = ~ Plants + DayAmdmt,
-                         phi.formula = ~ Plants + DayAmdmt,
-                         formula_null = ~ 1,
-                         phi.formula_null = ~ 1, boot = FALSE, test = "LRT",
-                         data = subsoil)
 
 temp_sing <- differentialTest(formula = ~ DayAmdmt,
                               phi.formula = ~ DayAmdmt,
@@ -81,46 +87,55 @@ temp_sing <- differentialTest(formula = ~ DayAmdmt,
                               inits = rbind(rep(.01, 4)))
 
 temp_badinits3 <- differentialTest(formula = ~ DayAmdmt,
-                              phi.formula = ~ DayAmdmt,
-                              formula_null = ~ 1,
-                              phi.formula_null = ~ 1,
-                              data = subsoil, boot = FALSE, test = "LRT",
-                              inits = rbind(rep(Inf, 4)))
+                                   phi.formula = ~ DayAmdmt,
+                                   formula_null = ~ 1,
+                                   phi.formula_null = ~ 1,
+                                   data = subsoil, boot = FALSE, test = "LRT",
+                                   inits = rbind(rep(Inf, 4)))
 
 mydat <- phyloseq::get_taxa(subsoil)
 mysampdat <- phyloseq::get_variable(subsoil)
 
 temp_nonphylo <- differentialTest(formula = ~ DayAmdmt,
-                                              phi.formula = ~ DayAmdmt,
-                                              formula_null = ~ 1,
-                                              phi.formula_null = ~ 1,
-                                              data = mydat, boot = FALSE, test = "LRT",
-                                              sample_data = mysampdat,
-                                              inits = rbind(rep(.01, 4)))
+                                  phi.formula = ~ DayAmdmt,
+                                  formula_null = ~ 1,
+                                  phi.formula_null = ~ 1,
+                                  data = mydat, boot = FALSE, test = "LRT",
+                                  sample_data = mysampdat,
+                                  inits = rbind(rep(.01, 4)))
 
 temp_wald <- differentialTest(formula = ~ Plants + DayAmdmt,
-                         phi.formula = ~ Plants + DayAmdmt,
-                         formula_null = ~ 1,
-                         phi.formula_null = ~ 1,
-                         data = subsoil, boot = FALSE, test = "Wald",
-                         inits = rbind(rep(.01, 6)),
-                         inits_null = rbind(rep(0.01, 2)))
+                              phi.formula = ~ Plants + DayAmdmt,
+                              formula_null = ~ 1,
+                              phi.formula_null = ~ 1,
+                              data = subsoil, boot = FALSE, test = "Wald",
+                              inits = rbind(rep(.01, 6)),
+                              inits_null = rbind(rep(0.01, 2)))
 
 temp_pblrt <- differentialTest(formula = ~ Plants + DayAmdmt,
-                         phi.formula = ~ Plants + DayAmdmt,
-                         formula_null = ~ 1,
-                         phi.formula_null = ~ 1,
-                         data = subsoil, boot = TRUE, B = 5, test = "LRT",
-                         inits = rbind(rep(.01, 6)),
-                         inits_null = rbind(rep(0.01, 2)))
-
-temp_pbwald <- differentialTest(formula = ~ Plants + DayAmdmt,
                                phi.formula = ~ Plants + DayAmdmt,
                                formula_null = ~ 1,
                                phi.formula_null = ~ 1,
-                               data = subsoil, boot = TRUE, B = 5, test = "Wald",
+                               data = subsoil, boot = TRUE, B = 5, test = "LRT",
                                inits = rbind(rep(.01, 6)),
                                inits_null = rbind(rep(0.01, 2)))
+
+temp_pbwald <- differentialTest(formula = ~ Plants + DayAmdmt,
+                                phi.formula = ~ Plants + DayAmdmt,
+                                formula_null = ~ 1,
+                                phi.formula_null = ~ 1,
+                                data = subsoil, boot = TRUE, B = 5, test = "Wald",
+                                inits = rbind(rep(.01, 6)),
+                                inits_null = rbind(rep(0.01, 2)))
+
+temp_pbwald_robust <- differentialTest(formula = ~ Plants + DayAmdmt,
+                                       phi.formula = ~ Plants + DayAmdmt,
+                                       formula_null = ~ 1,
+                                       phi.formula_null = ~ 1,
+                                       data = subsoil, boot = TRUE, B = 5, test = "Wald",
+                                       inits = rbind(rep(.01, 6)),
+                                       inits_null = rbind(rep(0.01, 2)),
+                                       robust = TRUE)
 
 
 test_that("differentialTest works", {
@@ -138,6 +153,7 @@ test_that("differentialTest works", {
   expect_is(temp_badinits1, "differentialTest")
   expect_is(temp_badinits2, "differentialTest")
   expect_is(temp_badinits3, "differentialTest")
+  expect_is(temp_pbwald_robust, "differentialTest")
 })
 
 
@@ -184,11 +200,11 @@ test_that("inits require correct length", {
 
 test_that("try_only works", {
   expect_is(differentialTest(formula = ~ DayAmdmt,
-                                phi.formula = ~ DayAmdmt,
-                                formula_null = ~ 1,
-                                phi.formula_null = ~ 1,
-                                data = subsoil, boot = FALSE, test = "LRT",
-                                try_only = 1:2), "differentialTest")
+                             phi.formula = ~ DayAmdmt,
+                             formula_null = ~ 1,
+                             phi.formula_null = ~ 1,
+                             data = subsoil, boot = FALSE, test = "LRT",
+                             try_only = 1:2), "differentialTest")
 })
 
 test_that("overspecification error message", {
@@ -207,3 +223,159 @@ test_that("differentialTest does NAs correctly", {
   expect_equal(length(temp3$p_fdr), 25)
 })
 
+
+
+test_that("differentialTest and non integers", {
+
+  ## non integers should give error
+  expect_error(
+    temp5 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                              phi.formula = ~ Plants + DayAmdmt,
+                              formula_null = ~ 1,
+                              phi.formula_null = ~ 1,
+                              data = subsoil_nonint,
+                              boot = FALSE, test = "LRT")
+  )
+
+  # Warning with Wald, *non-robust*, boot = F
+  expect_warning(
+    temp6 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                              phi.formula = ~ Plants + DayAmdmt,
+                              formula_null = ~ 1,
+                              phi.formula_null = ~ 1,
+                              data = subsoil_nonint,
+                              allow_noninteger = TRUE,
+                              boot = FALSE,
+                              test = "Wald",
+                              robust = FALSE)
+  )
+
+  # Everything goes through with Wald, robust, boot = F
+  expect_silent(
+    temp7 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                              phi.formula = ~ Plants + DayAmdmt,
+                              formula_null = ~ 1,
+                              phi.formula_null = ~ 1,
+                              data = subsoil_nonint,
+                              allow_noninteger = TRUE,
+                              boot = FALSE,
+                              test = "Wald",
+                              robust = TRUE)
+  )
+
+  # Expect message with noninteger data with boot = T
+  # because bootstrap is only parametric, and doesn't make sense with EE
+  expect_message(
+    temp8 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                              phi.formula = ~ Plants + DayAmdmt,
+                              formula_null = ~ 1,
+                              phi.formula_null = ~ 1,
+                              data = subsoil_nonint,
+                              boot = TRUE,
+                              B = 5,
+                              test = "Wald",
+                              robust = TRUE,
+                              allow_noninteger = TRUE)
+  )
+
+  expect_silent(
+    temp11 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants + DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil_nonint,
+                               allow_noninteger = TRUE,
+                               test = "Wald",
+                               robust=TRUE)
+  )
+  expect_warning(
+    temp12 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants + DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil_nonint,
+                               allow_noninteger = TRUE,
+                               test = "Wald",
+                               robust=FALSE)
+  )
+
+  # Amy needs to think about whether this is allowed!!
+  expect_error(
+    temp13 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants + DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil_nonint,
+                               allow_noninteger = TRUE,
+                               test = "LRT",
+                               boot=FALSE)
+  )
+
+  expect_error(
+    temp14 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants + DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil_nonint,
+                               allow_noninteger = TRUE,
+                               test = "LRT",
+                               B=3,
+                               boot=TRUE)
+  )
+
+
+  expect_silent(
+    temp15 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil,
+                               allow_noninteger = TRUE,
+                               test = "Rao",
+                               robust=TRUE,
+                               B=3,
+                               boot=TRUE)
+  )
+
+  expect_silent(
+    temp16 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil,
+                               allow_noninteger = TRUE,
+                               test = "Rao",
+                               robust=FALSE,
+                               B=3,
+                               boot=TRUE)
+  )
+
+  expect_silent(
+    temp17 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil_nonint,
+                               allow_noninteger = TRUE,
+                               test = "Rao",
+                               robust=TRUE,
+                               B=3,
+                               boot=FALSE)
+  )
+
+  # expect warning when non-integers are present and robust = FALSE from Rao test
+  expect_warning(
+    temp18 <- differentialTest(formula = ~ Plants + DayAmdmt,
+                               phi.formula = ~ Plants,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ 1,
+                               data = subsoil_nonint,
+                               allow_noninteger = TRUE,
+                               test = "Rao",
+                               robust=FALSE,
+                               B=3,
+                               boot=FALSE)
+  )
+
+  expect_false(identical(temp17$p, temp18$p))
+})

@@ -137,13 +137,13 @@ differentialTest <- function(formula, phi.formula,
       # Fit unrestricted model
       mod <- suppressWarnings(try(bbdml(formula = formula_i, phi.formula = phi.formula,
                                         data = data_i, link = link, phi.link = phi.link,
-                                        inits = inits, ...), silent = TRUE))
+                                        inits = inits, robust = robust, ...), silent = TRUE))
       #print(" -- model --")
       #print(mod)
       # Fit restricted model
       mod_null <- suppressWarnings(try(bbdml(formula = formula_null_i, phi.formula = phi.formula_null,
                                              data = data_i, link = link, phi.link = phi.link,
-                                             inits = inits_null, ...), silent = TRUE))
+                                             inits = inits_null, robust = robust, ...), silent = TRUE))
       #print(" -- null model --")
       #print(mod_null)
 

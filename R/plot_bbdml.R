@@ -10,6 +10,7 @@
 #' @param sample_names (Optional). Default \code{TRUE}. Boolean. If \code{FALSE}, remove sample names from the plot.
 #' @param data_only (Optional). Default \code{FALSE}. Boolean. If \code{TRUE}, only returns data frame.
 #' @param ... There are no optional parameters at this time.
+#' @importFrom rlang .data
 #'
 #' @return Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% prediction intervals.
 #'

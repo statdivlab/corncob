@@ -4,11 +4,9 @@ on:
   push:
     branches:
       - main
-#      - master
   pull_request:
     branches:
       - main
-#      - master
 
 name: R-CMD-check
 
@@ -85,4 +83,3 @@ jobs:
           path: check
           steps:
       - uses: actions/checkout@main
-#      - uses: actions/checkout@master

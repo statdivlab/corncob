@@ -79,7 +79,7 @@ bbdml <- function(formula, phi.formula, data,
   # Check that optimx is installed if method is "BFGS"
   if (method == "BFGS") {
     packages_available <- utils::installed.packages()[, "Package"]
-    if (!("optimx" %in% packages_available || "optimr" %in% packages_available)) {
+    if (!("optimx" %in% packages_available)) {
       stop("If you would like to use the 'BFGS' method, please install the `optimx` package.")
     }
   }
@@ -255,40 +255,21 @@ Trying to fit more parameters than sample size. Model cannot be estimated.")
     theta.init[which(is.na(theta.init))] <- 0
     if (method == "BFGS") {
       #starttime <- proc.time()[1]
-      if ("optimx" %in% packages_available) {
-        # optimx::optimr prints out all of the control parameters, suppress these print statements with `invisible(capture.output())`
-        invisible(utils::capture.output(mlout <- suppressWarnings(try(optimx::optimr(par = theta.init,
-                                                                                     fn = dbetabin_neg,
-                                                                                     gr = gr_full,
-                                                                                     method = method,
-                                                                                     control = control,
-                                                                                     W = W,
-                                                                                     M = M,
-                                                                                     X = X.b,
-                                                                                     X_star = X.bstar,
-                                                                                     np = np,
-                                                                                     npstar = npstar,
-                                                                                     link = link,
-                                                                                     phi.link = phi.link, logpar = TRUE),
-                                                                      silent = TRUE)))); if (inherits(mlout, "try-error")) next
-      } else if ("optimr" %in% packages_available) {
-        # requireNamespace(optimr)
-        mlout <- try(optimr::optimr(par = theta.init,
-                                    fn = dbetabin_neg,
-                                    gr = gr_full,
-                                    method = method,
-                                    control = control,
-                                    W = W,
-                                    M = M,
-                                    X = X.b,
-                                    X_star = X.bstar,
-                                    np = np,
-                                    npstar = npstar,
-                                    link = link,
-                                    phi.link = phi.link, logpar = TRUE),
-                     silent = TRUE); if (inherits(mlout, "try-error")) next
-      }
-
+      # optimx::optimr prints out all of the control parameters, suppress these print statements with `invisible(capture.output())`
+      invisible(utils::capture.output(mlout <- suppressWarnings(try(optimx::optimr(par = theta.init,
+                                                                                   fn = dbetabin_neg,
+                                                                                   gr = gr_full,
+                                                                                   method = method,
+                                                                                   control = control,
+                                                                                   W = W,
+                                                                                   M = M,
+                                                                                   X = X.b,
+                                                                                   X_star = X.bstar,
+                                                                                   np = np,
+                                                                                   npstar = npstar,
+                                                                                   link = link,
+                                                                                   phi.link = phi.link, logpar = TRUE),
+                                                                    silent = TRUE)))); if (inherits(mlout, "try-error")) next
       #theta.orig <- theta.init
       #curtime <- proc.time()[1] - starttime
 

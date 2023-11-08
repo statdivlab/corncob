@@ -1,12 +1,12 @@
 ---
 title: "Corncob Introduction"
 author: "Bryan D Martin"
-output: pdf_document
+output: rmarkdown::pdf_document
 header-includes:
     - \usepackage{fancyhdr}
 vignette: >
   %\VignetteIndexEntry{Introduction to corncob}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 urlcolor: blue
 ---

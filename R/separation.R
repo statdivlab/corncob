@@ -23,9 +23,8 @@ separationWarning <- function(model_name) {
   warning(paste(
     paste0("Separation detected in ", model_name, "!"),
     "Likely, one of your covariates/experimental conditions is such that",
-    "there are all zero counts within a group. Consider identifying and removing",
-    "this covariate from your model. The results of this model are not to be",
-    "trusted because there is not enough data. \n",
+    "there are all zero counts within a group. The results of this model should",
+    "be interpreted with care because there is insufficient data to distinguish between groups. \n",
     sep = "\n"
   ), immediate. = TRUE, call. = FALSE)
 }

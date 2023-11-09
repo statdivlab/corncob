@@ -42,7 +42,7 @@ print.bbdml <- function(x,
   if (x$sep_da || x$sep_dv) {
     warning("This model is based on a discriminant taxa.
 You may see NAs in the model summary because Wald testing is invalid.
-Likelihood ratio testing can be used, but valid standard errors cannot be calculated.",
+Likelihood ratio and Rao testing can be used, but valid standard errors cannot be calculated.",
             immediate. = TRUE)
   }
 }

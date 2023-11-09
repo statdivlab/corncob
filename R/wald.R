@@ -75,7 +75,7 @@ waldchisq_test <- function(mod, restrictions = NULL, restrictions.phi = NULL,
   } else {
 
     if (mod$has_noninteger) {
-      warning("Your data has non-integer W or M, and you aren't using robust testing. We will let you do this, but you should consider robust testing instead because your data is cannot be assumed to be drawn from a a beta-binomial distribution.")
+      warning("Your data has non-integer W or M, and you aren't using robust testing. We will let you do this, but you should consider robust testing instead because your data cannot be assumed to be drawn from a a beta-binomial distribution.")
     }
 
     # Covariance matrix - I_n^-1

@@ -43,7 +43,7 @@ raotest <- function(mod, mod_null) {
     inv_fish_info_null <- sand_vcov(ll_full_at_theta0)
   } else {
     if (mod$has_noninteger) {
-      warning("Your data has non-integer W or M, and you aren't using robust testing. We will let you do this, but you should consider robust testing instead because your data is cannot be assumed to be drawn from a a beta-binomial distribution.")
+      warning("Your data has non-integer W or M, and you aren't using robust testing. We will let you do this, but you should consider robust testing instead because your data cannot be assumed to be drawn from a a beta-binomial distribution.")
     }
     inv_fish_info_null <- try(chol2inv(chol(hessian(ll_full_at_theta0, numerical = FALSE))), silent = TRUE)
     if ("try-error" %in% class(inv_fish_info_null)) {

@@ -5,7 +5,7 @@ context("Test contrastsTest")
 set.seed(1)
 data(soil_phylum_small_contrasts)
 limma_install <- try(find.package("limma"), silent = TRUE)
-if (class(limma_install) != "try-error") {
+if (!(inherits(limma_install, "try-error"))) {
   temp <- contrastsTest(formula = ~ DayAmdmt,
                         phi.formula = ~ DayAmdmt,
                         contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
@@ -15,7 +15,7 @@ if (class(limma_install) != "try-error") {
 }
 
 test_that("contrastTest works", {
-  if (class(limma_install) != "try-error") {
+  if (!(inherits(limma_install, "try-error"))) {
     expect_is(temp, "contrastsTest")
   } else {
     expect_error(contrastsTest(formula = ~ DayAmdmt,

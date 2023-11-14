@@ -50,7 +50,7 @@ contrastsTest <- function(formula, phi.formula,
   }
 
   limma_install <- try(find.package("limma"), silent = TRUE)
-  if (class(limma_install) == "try-error") {
+  if (inherits(limma_install, "try-error")) {
     {stop("If you would like to test contrasts, please install the `limma` package, available through Bioconductor.")}
   }
 

@@ -31,7 +31,7 @@ test_that("overspecified model fails", {
 
 # check that either an error about needing `optimx` appears, or model is able to be fit
 optimx_install <- try(find.package("optimx"), silent = TRUE)
-if (class(optimx_install) != "try-error") {
+if (!(inherits(optimx_install, "try-error"))) {
   out_bfgs_inits_num <- bbdml(formula = cbind(W, M - W) ~ X1,
                               phi.formula = ~ X1,
                               data = test_data,
@@ -43,7 +43,7 @@ if (class(optimx_install) != "try-error") {
 }
 
 test_that("bbdml with 'BFGS' optimization works", {
-  if (class(optimx_install) != "try-error") {
+  if (!(inherits(optimx_install, "try-error"))) {
     expect_is(out_bfgs_inits_num, "bbdml")
   } else {
     expect_error(bbdml(formula = cbind(W, M - W) ~ X1,

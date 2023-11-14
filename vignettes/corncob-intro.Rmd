@@ -1,9 +1,8 @@
 ---
 title: "Corncob Introduction"
 author: "Bryan D Martin"
-output: rmarkdown::pdf_document
-header-includes:
-    - \usepackage{fancyhdr}
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to corncob}
   %\VignetteEngine{knitr::rmarkdown}

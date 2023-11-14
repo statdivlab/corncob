@@ -82,9 +82,9 @@ bbdml <- function(formula, phi.formula, data,
   }
   # Check that optimx is installed if method is "BFGS"
   if (method == "BFGS") {
-    packages_available <- utils::installed.packages()[, "Package"]
-    if (!("optimx" %in% packages_available)) {
-      stop("If you would like to use the 'BFGS' method, please install the `optimx` package.")
+    optimx_install <- try(find.package("optimx"), silent = TRUE)
+    if (class(optimx_install) == "try-error") {
+      {stop("If you would like to use the 'BFGS' method, please install the `optimx` package from CRAN.")}
     }
   }
 

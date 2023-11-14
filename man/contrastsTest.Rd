@@ -64,11 +64,11 @@ This function uses contrast matrices to test for differential abundance and diff
 }
 \examples{
 # phyloseq example
-data(soil_phylum_small)
+data(soil_phylum_small_contrasts)
 da_analysis <- contrastsTest(formula = ~ DayAmdmt,
                              phi.formula = ~ DayAmdmt,
                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
                                                  "DayAmdmt22 - DayAmdmt21"),
-                             data = soil_phylum_small,
+                             data = soil_phylum_small_contrasts,
                              fdr_cutoff = 0.05)
 }

@@ -1,10 +1,10 @@
-#' Small soil phylum data for examples
+#' Small soil phylum data for contrasts examples
 #'
-#' A small subset of \code{\link{soil_phylo}} used for examples. A phyloseq object with an OTU table and sample data from a soil microbiome study.
+#' A small subset of \code{\link{soil_phylo}} used for examples of testing contrasts. A phyloseq object with an OTU table and sample data from a soil microbiome study.
 #'
 #' @format A phyloseq-class experiment-level object with an OTU table and sample data.
 #' \describe{
-#' \item{otu_table}{OTU table with 39 taxa and 32 samples}
+#' \item{otu_table}{OTU table with 39 taxa and 56 samples}
 #' \item{tax_table}{taxonomy table}
 #' \item{sam_data}{sample data with the following covariates:
 #' \itemize{
@@ -16,4 +16,4 @@
 #' }}
 #' }
 #' @references Whitman, T., Pepe-Ranney, C., Enders, A., Koechli, C., Campbell, A.,  Buckley, D. H., Lehmann, J. (2016). \emph{Dynamics of microbial community composi-tion and soil organic carbon mineralization in soil following addition of pyrogenic andfresh organic matter}. The ISME journal, 10(12):2918. <doi: 10.1038/ismej.2016.68>.
-"soil_phylum_small"
+"soil_phylum_small_contrasts"

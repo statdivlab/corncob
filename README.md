@@ -24,7 +24,7 @@ Alternatively, you can install the development version directly from GitHub.
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("bryandmartin/corncob")
+devtools::install_github("statdivlab/corncob")
 library(corncob)
 ```
 
@@ -35,7 +35,7 @@ Instead of installing corncob to your local system, you can use corncob via the 
 
 ## Use
 
-The vignette demonstrates example usage of all main functions. Please [file an issue](https://github.com/bryandmartin/corncob/issues) if you have a request for a tutorial that is not currently included. You can see the vignette by using the following code:
+The vignette demonstrates example usage of all main functions. Please [file an issue](https://github.com/statdivlab/corncob/issues) if you have a request for a tutorial that is not currently included. You can see the vignette by using the following code:
 
 
 ``` r
@@ -58,4 +58,4 @@ An open-access preprint is available on arXiv [here](https://arxiv.org/abs/1902.
 
 ## Bug Reports / Change Requests
 
-If you encounter a bug or would like make a change request, please file it as an issue [here](https://github.com/bryandmartin/corncob/issues).
+If you encounter a bug or would like make a change request, please file it as an issue [here](https://github.com/statdivlab/corncob/issues).

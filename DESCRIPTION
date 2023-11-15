@@ -26,5 +26,4 @@ Suggests: knitr,
     slam,
     R.rsp,
     optimx
-VignetteBuilder: knitr,
-    R.rsp
+VignetteBuilder: knitr

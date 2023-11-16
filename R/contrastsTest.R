@@ -22,12 +22,12 @@
 
 #' @examples
 #' # phyloseq example
-#' data(soil_phylum_small)
+#' data(soil_phylum_small_contrasts)
 #' da_analysis <- contrastsTest(formula = ~ DayAmdmt,
 #'                              phi.formula = ~ DayAmdmt,
 #'                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
 #'                                                  "DayAmdmt22 - DayAmdmt21"),
-#'                              data = soil_phylum_small,
+#'                              data = soil_phylum_small_contrasts,
 #'                              fdr_cutoff = 0.05)
 #' @export
 contrastsTest <- function(formula, phi.formula,
@@ -45,12 +45,13 @@ contrastsTest <- function(formula, phi.formula,
                           try_only = NULL,
                           ...) {
 
-  # NA values returned whether or not limma is installed
-  warning("This function currently returns NA values due to a problem associated with the `limma` package.")
-
-
   if (is.null(contrasts_DA) && is.null(contrasts_DV)) {
     stop("Must include at least one of contrasts_DA or contrasts_DV!")
+  }
+
+  limma_install <- try(find.package("limma"), silent = TRUE)
+  if (inherits(limma_install, "try-error")) {
+    {stop("If you would like to test contrasts, please install the `limma` package, available through Bioconductor.")}
   }
 
   num_DA <- length(contrasts_DA)

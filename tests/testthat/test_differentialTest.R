@@ -266,7 +266,9 @@ test_that("differentialTest and non integers", {
   # Expect message with noninteger data with boot = T
   # because bootstrap is only parametric, and doesn't make sense with EE
   expect_message(
-    temp8 <- differentialTest(formula = ~ Plants + DayAmdmt,
+    # using invisible and capture.output to avoid printed output giving error from a failed
+    # run of testing testing function
+    invisible(utils::capture.output(temp8 <- differentialTest(formula = ~ Plants + DayAmdmt,
                               phi.formula = ~ Plants + DayAmdmt,
                               formula_null = ~ 1,
                               phi.formula_null = ~ 1,
@@ -275,7 +277,7 @@ test_that("differentialTest and non integers", {
                               B = 5,
                               test = "Wald",
                               robust = TRUE,
-                              allow_noninteger = TRUE)
+                              allow_noninteger = TRUE)))
   )
 
   expect_silent(

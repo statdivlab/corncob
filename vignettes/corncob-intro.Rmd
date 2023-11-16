@@ -1,9 +1,8 @@
 ---
 title: "Corncob Introduction"
 author: "Bryan D Martin"
-output: rmarkdown::pdf_document
-header-includes:
-    - \usepackage{fancyhdr}
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to corncob}
   %\VignetteEngine{knitr::rmarkdown}
@@ -320,7 +319,7 @@ check_GN04 <- bbdml(formula = OTU.4206 ~ DayAmdmt,
 
 While the model fits, we should be skeptical of **any** statistical model fit on a single observed count!
 
-\texttt{corncob} is stable, but new. If you notice any issues, please [log them on Github](https://github.com/bryandmartin/corncob/issues) to help us help you!
+\texttt{corncob} is stable, but new. If you notice any issues, please [log them on Github](https://github.com/statdivlab/corncob/issues) to help us help you!
 
 # Examples of Answering Scientific Questions
 

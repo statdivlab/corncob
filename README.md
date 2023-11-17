@@ -50,7 +50,7 @@ Note that R does not allow variable names to start with numbers. Sometimes, when
 
 ## Documentation 
 
-We additionally have a `pkgdown` [website](https://svteichman.github.io/corncob/) that contains pre-built versions of our function [documentation](https://svteichman.github.io/corncob/reference/index.html) and [vignette](https://svteichman.github.io/corncob/articles/corncob-intro.html). 
+We additionally have a `pkgdown` [website](https://statdivlab.github.io/corncob/) that contains pre-built versions of our function [documentation](https://statdivlab.github.io/corncob/reference/index.html) and [vignette](https://statdivlab.github.io/corncob/articles/corncob-intro.html). 
 
 ## Citation
 

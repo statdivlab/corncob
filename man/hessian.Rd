@@ -14,7 +14,7 @@ hessian(mod, numerical = FALSE)
 \value{
 Hessian matrix at the MLE. In this setting, it's hard to compute expectations to calculate the information matrix,
 so we return the consistent estimate using sample moments:
-$hat{A}(hat{theta}) = sum i frac{partial^2}{partial theta partial theta^T} l(theta, W_i)$ evaluated at $theta = hat{theta}$.
+$\hat{A}(\hat{\theta}) = \sum \_i \frac{\partial^2}{\partial \theta \partial \theta^T} l(\theta, W_i)$ evaluated at $\theta = \hat{\theta}$.
 }
 \description{
 Compute Hessian matrix at the MLE

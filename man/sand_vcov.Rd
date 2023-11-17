@@ -12,7 +12,7 @@ sand_vcov(mod, numerical = FALSE)
 \item{numerical}{Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).}
 }
 \value{
-Sandwich variance-covariance matrix. $hat{A}^{-1} hat{B} hat{A}^{-1}.$
+Sandwich variance-covariance matrix. $\hat{A}^{-1} \hat{B} \hat{A}^{-1}$.
 }
 \description{
 Compute sandwich estimate of variance-covariance matrix

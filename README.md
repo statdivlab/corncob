@@ -48,6 +48,10 @@ utils::browseVignettes(package = "corncob")
 
 Note that R does not allow variable names to start with numbers. Sometimes, when going directly from QIIME2 to phyloseq objects, taxa names will be a large string starting with numbers. To clean these taxa names for use with corncob, use  `clean_taxa_names(my_phyloseq_object)`, see `?clean_taxa_names` for details.
 
+## Documentation 
+
+We additionally have a `pkgdown` [website](https://svteichman.github.io/corncob/) that contains pre-built versions of our function [documentation](https://svteichman.github.io/corncob/reference/index.html) and [vignette](https://svteichman.github.io/corncob/articles/corncob-intro.html). 
+
 ## Citation
 
 If you use `corncob` for your analysis, please cite our manuscript:

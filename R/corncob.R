@@ -9,5 +9,5 @@
 #' @details
 #' For details on the model implemented in this package, see Martin et al. (2020) <doi:10.1214/19-AOAS1283>.
 #'
-#' The development version of the package will be maintained on \url{https://github.com/bryandmartin/corncob}.
+#' The development version of the package will be maintained on \url{https://github.com/statdivlab/corncob}.
 NULL

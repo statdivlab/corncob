@@ -215,9 +215,11 @@ differentialTest <- function(formula, phi.formula,
 
   ind_disc <- union(ind_disc_da, ind_disc_dv)
 
-  if (filter_discriminant && length(ind_disc) > 0) {
-    # Want to keep same length, rest will ignore NAs
-    pvals[ind_disc] <- NA
+  if (test == "Wald") {
+    if (filter_discriminant && length(ind_disc) > 0) {
+      # Want to keep same length, rest will ignore NAs
+      pvals[ind_disc] <- NA
+    }
   }
 
   if (all(is.na(pvals))) {

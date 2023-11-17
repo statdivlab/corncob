@@ -1,5 +1,5 @@
 ---
-title: "Corncob Introduction"
+title: "Introduction to corncob"
 author: "Bryan D Martin"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

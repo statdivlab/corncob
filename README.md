@@ -4,7 +4,6 @@ Count Regression for Correlated Observations with the Beta-binomial
 `corncob` is an `R` package for modeling relative abundance and testing hypotheses about the effect of covariates on relative abundance. The `corncob` methodology was specifically developed for modelling microbial abundances based on high throughput sequencing data, such as 16S or whole-genome sequencing.
 
 <!-- badges: start -->
-[![CRAN status](https://www.r-pkg.org/badges/version/corncob)](https://CRAN.R-project.org/package=corncob)
 [![R-CMD-check](https://github.com/statdivlab/CORNCOB/workflows/R-CMD-check/badge.svg)](https://github.com/statdivlab/CORNCOB/actions)
 [![codecov](https://codecov.io/github/statdivlab/corncob/coverage.svg?branch=main)](https://app.codecov.io/github/statdivlab/corncob)
 [![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)
@@ -13,18 +12,11 @@ Count Regression for Correlated Observations with the Beta-binomial
 
 ## Installation
 
-To download the corncob package, use the code below.
+To install the `corncob` package, use the code below to download the development version from Github.
 
 ``` r
-install.packages("corncob")
-library(corncob)
-```
-
-Alternatively, you can install the development version directly from GitHub.
-
-``` r
-# install.packages("devtools")
-devtools::install_github("statdivlab/corncob")
+# install.packages("remotes")
+remotes::install_github("statdivlab/corncob")
 library(corncob)
 ```
 

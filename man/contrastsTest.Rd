@@ -71,5 +71,5 @@ da_analysis <- contrastsTest(formula = ~ DayAmdmt,
                                                  "DayAmdmt22 - DayAmdmt21"),
                              data = soil_phylum_small_contrasts,
                              fdr_cutoff = 0.05,
-                             try_only = 5)
+                             try_only = 1:5)
 }

@@ -1,4 +1,4 @@
-# corncob <img src="docs/logo.png" align="right" width="165px"/>
+# corncob <img src="man/figures/logo.png" align="right" width="165px"/>
 Count Regression for Correlated Observations with the Beta-binomial
 
 `corncob` is an `R` package for modeling relative abundance and testing hypotheses about the effect of covariates on relative abundance. The `corncob` methodology was specifically developed for modelling microbial abundances based on high throughput sequencing data, such as 16S or whole-genome sequencing.
@@ -39,6 +39,10 @@ utils::browseVignettes(package = "corncob")
 ```
 
 Note that R does not allow variable names to start with numbers. Sometimes, when going directly from QIIME2 to phyloseq objects, taxa names will be a large string starting with numbers. To clean these taxa names for use with corncob, use  `clean_taxa_names(my_phyloseq_object)`, see `?clean_taxa_names` for details.
+
+## Documentation 
+
+We additionally have a `pkgdown` [website](https://statdivlab.github.io/corncob/) that contains pre-built versions of our function [documentation](https://statdivlab.github.io/corncob/reference/index.html) and [vignette](https://statdivlab.github.io/corncob/articles/corncob-intro.html). 
 
 ## Citation
 

@@ -2,9 +2,9 @@
 #'
 #' @param mod an object of class \code{bbdml}
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).
-#' @param get_score_covariance Boolean. Defaults to \code{FALSE}. Should we return a robust estimate of variance of score: $hat{B}(hat{theta}) = sum_i G(hat{theta}; W_i) G(hat{theta}; W_i)^T $. This parameter is not intended for users.
+#' @param get_score_covariance Boolean. Defaults to \code{FALSE}. Should we return a robust estimate of variance of score: \eqn{\hat{B}(\hat{\theta}) = \sum_i G(\hat{\theta}; W_i) G(\hat{\theta}; W_i)^T}. This parameter is not intended for users.
 #'
-#' @return Score at the MLE. For $G(theta, w)$ score function, returns $sum_i G(hat{theta}, W_i)$ if get_score_covariance = FALSE.
+#' @return Score at the MLE. For \eqn{G(\theta, w)} score function, returns \eqn{\sum_i G(\hat{\theta}, W_i)} if get_score_covariance = FALSE.
 #'
 #' @examples
 #' data(soil_phylum_small)

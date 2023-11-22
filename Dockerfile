@@ -15,4 +15,4 @@ RUN R -e "install.packages('tidyverse', repos = 'http://cran.us.r-project.org');
 RUN R -e "install.packages('vroom', repos = 'http://cran.us.r-project.org'); library(vroom)"
 
 # Install corncob
-RUN R -e "library(devtools); devtools::install_github('bryandmartin/corncob')"
+RUN R -e "library(devtools); devtools::install_github('statdivlab/corncob')"

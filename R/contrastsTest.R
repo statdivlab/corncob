@@ -28,7 +28,8 @@
 #'                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
 #'                                                  "DayAmdmt22 - DayAmdmt21"),
 #'                              data = soil_phylum_small_contrasts,
-#'                              fdr_cutoff = 0.05)
+#'                              fdr_cutoff = 0.05,
+#'                              try_only = 1:5)
 #' @export
 contrastsTest <- function(formula, phi.formula,
                           contrasts_DA = NULL,
@@ -101,14 +102,14 @@ contrastsTest <- function(formula, phi.formula,
   }
 
   if (is.null(try_only)) {
-    try_only <- length(taxanames)
+    try_only <- 1:length(taxanames)
   }
 
   if (is.character(try_only)) {
     try_only <- which(taxanames %in% try_only)
   }
   # Loop through OTU/taxa
-  for (i in 1:try_only) {
+  for (i in try_only) {
 
     # Subset data to only select that taxa
     data_i <- convert_phylo(data, select = taxanames[i])

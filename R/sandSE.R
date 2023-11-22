@@ -2,7 +2,7 @@
 #'
 #' @param mod an object of class \code{bbdml}
 #' @param numerical Boolean. Defaults to \code{FALSE}. Indicator of whether to use the numeric Hessian and score (not recommended).
-#' @return Sandwich variance-covariance matrix. $hat{A}^{-1} hat{B} hat{A}^{-1}.$
+#' @return Sandwich variance-covariance matrix. \eqn{\hat{A}^{-1} \hat{B} \hat{A}^{-1}}.
 #'
 #' @examples
 #' data(soil_phylum_small)

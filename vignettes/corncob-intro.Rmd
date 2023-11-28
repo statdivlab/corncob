@@ -18,9 +18,9 @@ urlcolor: blue
 
 # Vignette Information
 
-We thank Dr. Thea Whitman for kindly providing us with the example data set we use for this vignette. You can read more about this data in Whitman, Thea, et al. "Dynamics of microbial community composition and soil organic carbon mineralization in soil following addition of pyrogenic and fresh organic matter." \textit{The ISME Journal} 10.12 (2016): 2918.
+We thank Dr. Thea Whitman for kindly providing us with the example data set we use for this vignette. You can read more about this data in Whitman, Thea, et al. "Dynamics of microbial community composition and soil organic carbon mineralization in soil following addition of pyrogenic and fresh organic matter." *The ISME Journal* 10.12 (2016): 2918.
 
-We also use IBD microbiome data from Papa, Eliseo, et al. "Non-Invasive Mapping of the Gastrointestinal Microbiota Identifies Children with Inflammatory Bowel Disease." \textit{PLoS One} 7(6), e39242. The data are made available by Duvallet, Claire, et al. (2017). "MicrobiomeHD: the human gut microbiome in health and disease" [Data set]. Zenodo. We thank the authors for making their data open source and easily accessible.
+We also use IBD microbiome data from Papa, Eliseo, et al. "Non-Invasive Mapping of the Gastrointestinal Microbiota Identifies Children with Inflammatory Bowel Disease." *PLoS One* 7(6), e39242. The data are made available by Duvallet, Claire, et al. (2017). "MicrobiomeHD: the human gut microbiome in health and disease" [Data set]. Zenodo. We thank the authors for making their data open source and easily accessible.
 
 
 # Introduction
@@ -38,17 +38,17 @@ Effectively modeling microbial relative abundance poses a number of statistical 
 knitr::opts_chunk$set(fig.width=8, fig.height=4) 
 ```
 
-Here, we introduce \texttt{corncob}, an individual taxon regression model that uses abundance tables and sample data. \texttt{corncob} is able to model differential abundance and differential variability, and addresses each of the challenges presented above.
+Here, we introduce `corncob`, an individual taxon regression model that uses abundance tables and sample data. `corncob` is able to model differential abundance and differential variability, and addresses each of the challenges presented above.
 
-Note that in order to follow along with this tutorial (but not to use \texttt{corncob}!) you will need to have \texttt{phyloseq} installed. 
+Note that in order to follow along with this tutorial (but not to use `corncob`!) you will need to have `phyloseq` installed. 
 
-Install \texttt{corncob} using:
+Install `corncob` using:
 ```{r, eval = FALSE}
 remotes::install_github("statdivlab/corncob")
 ```
 
 
-To begin, we load our example data set as a \texttt{phyloseq} object.
+To begin, we load our example data set as a `phyloseq` object.
 
 ```{r, message = FALSE}
 library(corncob)
@@ -57,28 +57,28 @@ library(magrittr)
 data(soil_phylo)
 ```
 
-If you are unfamiliar with \texttt{phyloseq}, we can view a description of the data using:
+If you are unfamiliar with `phyloseq`, we can view a description of the data using:
 
 ```{r}
 soil_phylo
 ```
 
-We now see that we have an OTU abundance table with 7770 OTUs and 119 samples. We can extract using \texttt{otu\_table()}. Let's examine a small subset of our data in more detail.
+We now see that we have an OTU abundance table with 7770 OTUs and 119 samples. We can extract using `otu_table()`. Let's examine a small subset of our data in more detail.
 ```{r}
 otu_table(soil_phylo)[1:3, 1:3]
 ```
 
-We can also see that we have 5 sample variables. We can extract this using \texttt{sample\_data()}. Let's again examine a small subset in more detail.
+We can also see that we have 5 sample variables. We can extract this using `sample_data()`. Let's again examine a small subset in more detail.
 ```{r}
 sample_data(soil_phylo)[1:3, ]
 ```
 Our covariates are as follows:
 \begin{itemize}
-\item  \texttt{Plants}: Indicator of whether plants are in the soil for this sample.
-\item \texttt{Amdmt}: Categorical variable representing one of three soil additives; none, biochar, and freshbiomass, respectively.
-\item \texttt{ID}: Categorical variable representing different plots of soil.
-\item \texttt{Day}: Categorical variable representing one of three days of measurement; day 1, day 21, and day 81, respectively.
-\item \texttt{DayAmdmt}: Categorical variable combining the \texttt{Day} and \texttt{Amdmt} variables into a single variable.
+\item  `Plants`: Indicator of whether plants are in the soil for this sample.
+\item `Amdmt`: Categorical variable representing one of three soil additives; none, biochar, and freshbiomass, respectively.
+\item `ID`: Categorical variable representing different plots of soil.
+\item `Day`: Categorical variable representing one of three days of measurement; day 1, day 21, and day 81, respectively.
+\item `DayAmdmt`: Categorical variable combining the `Day` and `Amdmt` variables into a single variable.
 \end{itemize}
 
 Finally, we have a taxonomy table with 7 taxonomic ranks. 
@@ -90,8 +90,8 @@ tax_table(soil_phylo)[1:3, ]
 
 Now, let's set up our model. 
 
-First, let's subset our samples to only include those with the \texttt{DayAmdmt} covariate equal to 11 or 21 and then collapse the samples to the phylum level.
-The code to generate this data from \texttt{soil\_phylo} is commented out.
+First, let's subset our samples to only include those with the `DayAmdmt` covariate equal to 11 or 21 and then collapse the samples to the phylum level.
+The code to generate this data from `soil_phylo` is commented out.
 
 
 
@@ -117,7 +117,7 @@ Note that collapsing the samples is not necessary, and this model can work at an
 
 Now we fit our model. We will demonstrate with Proteobacteria, or OTU.1. 
 
-For now, we will not include any covariates, so we use \texttt{~ 1} as our model formula responses.
+For now, we will not include any covariates, so we use `~ 1` as our model formula responses.
 
 ```{r}
 corncob <- bbdml(formula = OTU.1 ~ 1,
@@ -138,13 +138,13 @@ plot(corncob, B = 50)
 The points represent the relative abundances. The bars represent the 95\% prediction intervals for the observed relative abundance by sample. 
 The parameter `B` determines the number of bootstrap simulations used to approximate the prediction intervals. For purposes of this tutorial, we use a small value `B = 50` for computational purposes, but recommend a higher setting for more accurate intervals, such as the default `B = 1000`.
 
-Now let's look at the same plot, but on the counts scale with 95\% prediction intervals (since counts is not a parameter). To do this, we add the option \texttt{total = TRUE} to our plotting code.
+Now let's look at the same plot, but on the counts scale with 95\% prediction intervals (since counts is not a parameter). To do this, we add the option `total = TRUE` to our plotting code.
 
 ```{r}
 plot(corncob, total = TRUE, B = 50)
 ```
 
-Finally, let's color the plot by the \texttt{DayAmdmt} covariate. To do this, we add the option \texttt{color = "DayAmdmt"} to our plotting code. 
+Finally, let's color the plot by the `DayAmdmt` covariate. To do this, we add the option `color = "DayAmdmt"` to our plotting code. 
 
 ```{r}
 plot(corncob, total = TRUE, color = "DayAmdmt", B = 50)
@@ -157,11 +157,11 @@ plot(corncob, color = "DayAmdmt", B = 50)
 Notice that this plot also reorders our samples so that groups appear together so that they are easier to compare.
 
 
-We can observe on this plot that it might be of interest to distinguish between the two groups with covariates. The average empirical relative abundance for the samples with \texttt{DayAmdmt = 21} tends to be lower and less variable than the samples with \texttt{DayAmdmt = 11}.
+We can observe on this plot that it might be of interest to distinguish between the two groups with covariates. The average empirical relative abundance for the samples with `DayAmdmt = 21` tends to be lower and less variable than the samples with `DayAmdmt = 11`.
 
 # Adding covariates
 
-Let's try modeling the expected relative abundance and the variability of the counts with \texttt{DayAmdmt} as a covariate. We do this by modifying \texttt{formula} and \texttt{phi.formula} as:
+Let's try modeling the expected relative abundance and the variability of the counts with `DayAmdmt` as a covariate. We do this by modifying `formula` and `phi.formula` as:
 
 ```{r}
 corncob_da <- bbdml(formula = OTU.1 ~ DayAmdmt,
@@ -199,19 +199,19 @@ summary(corncob_da)
 ```
 This output will look familiar if you have done regression analysis in R in the past. Covariates associated with the expected relative abundance are presented separately from covariates associated with the variance of the counts are preceded by.
 
-From this model summary, we can see that the \texttt{DayAmdmt21} abundance coefficient is negative and statistically significant. This suggests that this taxon is differentially-abundant across \texttt{DayAmdmt}, and that samples with \texttt{DayAmdmt = 21} are expected to have a lower relative abundance. This matches what we saw from the observed abundances.
+From this model summary, we can see that the `DayAmdmt21` abundance coefficient is negative and statistically significant. This suggests that this taxon is differentially-abundant across `DayAmdmt`, and that samples with `DayAmdmt = 21` are expected to have a lower relative abundance. This matches what we saw from the observed abundances.
 
-We can also see that the \texttt{DayAmdmt21} dispersion coefficient is negative and statistically significant. This suggests that this taxon is differentially-variable across \texttt{DayAmdmt}, and that samples with \texttt{DayAmdmt = 21} are expected to have a lower variability. This matches what we saw from the observed abundances.
+We can also see that the `DayAmdmt21` dispersion coefficient is negative and statistically significant. This suggests that this taxon is differentially-variable across `DayAmdmt`, and that samples with `DayAmdmt = 21` are expected to have a lower variability. This matches what we saw from the observed abundances.
 
 # Analysis for Multiple Taxa
 
-What if we want to test all the taxa in our data to see if they are differentially-abundant or differentially-variable? We use the \texttt{differentialTest} function. It will perform the above tests on all taxa, and it will control the false discovery rate to account for multiple comparisons.
+What if we want to test all the taxa in our data to see if they are differentially-abundant or differentially-variable? We use the `differentialTest` function. It will perform the above tests on all taxa, and it will control the false discovery rate to account for multiple comparisons.
 
-Next, we use the \texttt{differentialTest} command. We specify the covariates of our model using \texttt{formula} and \texttt{phi.formula} as before, except we no longer include the response term because we are testing multiple taxa. We also specify which covariates we want to test for by removing them in the \texttt{formula\_null} and \texttt{phi.formula\_null} arguments. 
+Next, we use the `differentialTest` command. We specify the covariates of our model using `formula` and `phi.formula` as before, except we no longer include the response term because we are testing multiple taxa. We also specify which covariates we want to test for by removing them in the `formula_null` and `phi.formula_null` arguments. 
 
-The difference between the formulas and the null version of the formulas are the variables that we test. We will go through several examples, starting with a test for differential abundance across the \texttt{DayAmdmt} coefficient.
+The difference between the formulas and the null version of the formulas are the variables that we test. We will go through several examples, starting with a test for differential abundance across the `DayAmdmt` coefficient.
 
-We set \texttt{fdr\_cutoff} to be our controlled false discovery rate.
+We set `fdr_cutoff` to be our controlled false discovery rate.
 
 ```{r}
 set.seed(1)
@@ -236,7 +236,7 @@ We can see a list of differentially-abundant taxa using:
 da_analysis$significant_taxa
 ```
 
-In this case, we identified `r length(da_analysis$significant_taxa)` taxa that are differentially-abundant across \texttt{DayAmdmt} (out of the 39 taxa tested).
+In this case, we identified `r length(da_analysis$significant_taxa)` taxa that are differentially-abundant across `DayAmdmt` (out of the 39 taxa tested).
 
 
 We can see a list of differentially-variable taxa using:
@@ -253,7 +253,7 @@ dv_analysis <- differentialTest(formula = ~ DayAmdmt,
 dv_analysis$significant_taxa
 ```
 
-We can switch the OTU labels to taxonomic labels using \texttt{otu\_to\_taxonomy}. We supply our OTU labels as strings for the \texttt{OTU} argument. We supply the \texttt{phyloseq} object for the \texttt{data} argument.
+We can switch the OTU labels to taxonomic labels using `otu_to_taxonomy`. We supply our OTU labels as strings for the `OTU` argument. We supply the `phyloseq` object for the `data` argument.
 
 ```{r}
 otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil)
@@ -263,7 +263,7 @@ otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil)
 otu_to_taxonomy(OTU = dv_analysis$significant_taxa, data = soil)
 ```
 
-In this case, we identified `r length(dv_analysis$significant_taxa)` taxa that are differentially-variable across \texttt{DayAmdmt} (out of the 40 taxa tested).
+In this case, we identified `r length(dv_analysis$significant_taxa)` taxa that are differentially-variable across `DayAmdmt` (out of the 40 taxa tested).
 
 
 We can examine a subset of the p-values of our tests using:
@@ -287,7 +287,7 @@ We can also plot the model coefficients of our results:
 plot(da_analysis)
 ```
 
-Here, we can see that for Bacteria_Armatimonadetes, the effect of DayAmdmt21 is positive compared to the baseline (in this case, DayAmdmt11).
+Here, we can see that for `Bacteria_Armatimonadetes`, the effect of `DayAmdmt21` is positive compared to the baseline (in this case, `DayAmdmt11`).
 
 Finally, we can see a list of any taxa for which we were not able to fit a model using:
 
@@ -295,7 +295,7 @@ Finally, we can see a list of any taxa for which we were not able to fit a model
 which(is.na(da_analysis$p)) %>% names
 ```
 
-In this case, we weren't able to fit \texttt{OTU.4206} automatically. It's worthwhile to investigate the OTU individually if this is the case. First let's check what phylum this represents.
+In this case, we weren't able to fit `OTU.4206` automatically. It's worthwhile to investigate the OTU individually if this is the case. First let's check what phylum this represents.
 
 ```{r}
 otu_to_taxonomy(OTU = "OTU.4206", data = soil)
@@ -309,7 +309,7 @@ Let's first try examining the data.
 otu_table(soil)["OTU.4206"]
 ```
 
-We see that the observed counts of OTU is zero in all samples except for \texttt{S102}}, where we observed a single count. Let's try fitting the model individually by letting the model select the initializations automatically.
+We see that the observed counts of OTU is zero in all samples except for `S102`, where we observed a single count. Let's try fitting the model individually by letting the model select the initializations automatically.
 
 ```{r}
 check_GN04 <- bbdml(formula = OTU.4206 ~ DayAmdmt,
@@ -319,11 +319,11 @@ check_GN04 <- bbdml(formula = OTU.4206 ~ DayAmdmt,
 
 While the model fits, we should be skeptical of **any** statistical model fit on a single observed count!
 
-\texttt{corncob} is stable, but new. If you notice any issues, please [log them on Github](https://github.com/statdivlab/corncob/issues) to help us help you!
+`corncob` is stable, but new. If you notice any issues, please [log them on Github](https://github.com/statdivlab/corncob/issues) to help us help you!
 
 # Examples of Answering Scientific Questions
 
-We will now walk through several scientific questions of interest and show how they can be answered using hypothesis testing with \texttt{corncob}. Note that Day and Amdmt are both factor covariates with levels 0, 1, and 2.
+We will now walk through several scientific questions of interest and show how they can be answered using hypothesis testing with `corncob`. Note that `Day` and `Amdmt` are both factor covariates with levels 0, 1, and 2.
 
 Note that some of these are rather strange tests, and shown for demonstration of the flexibility of the model only. Normally, when testing for differential variability across a covariate, we recommend always controlling for the effect of that covariate on the abundance. We first demonstrate examples with the soil dataset.
 
@@ -332,7 +332,7 @@ soil_full <- soil_phylo %>%
   tax_glom("Phylum") 
 ```
 
-Testing for differential abundance across Day, without controlling for anything else:
+Testing for differential abundance across `Day`, without controlling for anything else:
 
 ```{r}
 ex1 <- differentialTest(formula = ~ Day,
@@ -345,7 +345,7 @@ ex1 <- differentialTest(formula = ~ Day,
 plot(ex1)
 ```
 
-Testing for differential abundance across Day, controlling for the effect of Day on dispersion:
+Testing for differential abundance across `Day`, controlling for the effect of `Day` on dispersion:
 
 ```{r}
 ex2 <- differentialTest(formula = ~ Day,
@@ -358,7 +358,7 @@ ex2 <- differentialTest(formula = ~ Day,
 plot(ex2)
 ```
 
-Jointly testing for differential abundance and differential variability across Day:
+Jointly testing for differential abundance and differential variability across `Day`:
 
 ```{r}
 ex3 <- differentialTest(formula = ~ Day,
@@ -371,7 +371,7 @@ ex3 <- differentialTest(formula = ~ Day,
 plot(ex3)
 ```
 
-Jointly testing for differential abundance and differential variability across Day, controlling for the effect of Amdmt on abundance only:
+Jointly testing for differential abundance and differential variability across `Day`, controlling for the effect of `Amdmt` on abundance only:
 
 ```{r}
 ex4 <- differentialTest(formula = ~ Day + Amdmt,
@@ -384,7 +384,7 @@ ex4 <- differentialTest(formula = ~ Day + Amdmt,
 plot(ex4)
 ```
 
-Jointly testing for differential abundance across Day and differential abundance across Amdmt, controlling for the effect of Day and Amdmt on dispersion:
+Jointly testing for differential abundance across `Day` and differential abundance across `Amdmt`, controlling for the effect of `Day` and `Amdmt` on dispersion:
 
 ```{r}
 ex5 <- differentialTest(formula = ~ Day + Amdmt,
@@ -397,7 +397,7 @@ ex5 <- differentialTest(formula = ~ Day + Amdmt,
 plot(ex5)
 ```
 
-Jointly testing for differential abundance across Day, and differential dispersion across Amdmt, controlling for the effect of Day on Dispersion:
+Jointly testing for differential abundance across `Day`, and differential dispersion across `Amdmt`, controlling for the effect of `Day` on Dispersion:
 
 ```{r}
 ex6 <- differentialTest(formula = ~ Day,
@@ -432,7 +432,7 @@ ex7 <- differentialTest(formula = ~ ibd,
 plot(ex7)
 ```
 
-We can make the plot cleaner using the \texttt{level} parameter. Here we will display both the family and genus information.
+We can make the plot cleaner using the `level` parameter. Here we will display both the family and genus information.
 
 ```{r}
 plot(ex7, level = c("Family", "Genus"))

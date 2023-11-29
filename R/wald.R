@@ -6,13 +6,10 @@
 #'
 #'
 #' @examples
-#' data(soil_phylo)
-#' soil <- soil_phylo %>%
-#' phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-#' phyloseq::tax_glom("Phylum")
+#' data(soil_phylum_small)
 #' mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
-#' data = soil)
+#' data = soil_phylum_small)
 #' waldt(mod1)
 #'
 #' @export

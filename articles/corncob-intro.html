@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to corncob">
 <meta property="og:description" content="corncob">
@@ -79,7 +79,7 @@
                         <h4 data-toc-skip class="author">Bryan D
 Martin</h4>
             
-            <h4 data-toc-skip class="date">2023-11-22</h4>
+            <h4 data-toc-skip class="date">2023-11-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/statdivlab/corncob/blob/HEAD/vignettes/corncob-intro.Rmd" class="external-link"><code>vignettes/corncob-intro.Rmd</code></a></small>
       <div class="d-none name"><code>corncob-intro.Rmd</code></div>
@@ -94,36 +94,41 @@ Martin</h4>
 data set we use for this vignette. You can read more about this data in
 Whitman, Thea, et al. “Dynamics of microbial community composition and
 soil organic carbon mineralization in soil following addition of
-pyrogenic and fresh organic matter.” 10.12 (2016): 2918.</p>
+pyrogenic and fresh organic matter.” <em>The ISME Journal</em> 10.12
+(2016): 2918.</p>
 <p>We also use IBD microbiome data from Papa, Eliseo, et
 al. “Non-Invasive Mapping of the Gastrointestinal Microbiota Identifies
-Children with Inflammatory Bowel Disease.” 7(6), e39242. The data are
-made available by Duvallet, Claire, et al. (2017). “MicrobiomeHD: the
-human gut microbiome in health and disease” [Data set]. Zenodo. We thank
-the authors for making their data open source and easily accessible.</p>
+Children with Inflammatory Bowel Disease.” <em>PLoS One</em> 7(6),
+e39242. The data are made available by Duvallet, Claire, et al. (2017).
+“MicrobiomeHD: the human gut microbiome in health and disease” [Data
+set]. Zenodo. We thank the authors for making their data open source and
+easily accessible.</p>
 </div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 Effectively modeling microbial relative abundance poses a number of
 statistical challenges, including:
-<p>Here, we introduce , an individual taxon regression model that uses
-abundance tables and sample data. is able to model differential
-abundance and differential variability, and addresses each of the
-challenges presented above.</p>
+<p>Here, we introduce <code>corncob</code>, an individual taxon
+regression model that uses abundance tables and sample data.
+<code>corncob</code> is able to model differential abundance and
+differential variability, and addresses each of the challenges presented
+above.</p>
 <p>Note that in order to follow along with this tutorial (but not to use
-!) you will need to have installed.</p>
-<p>Install using:</p>
+<code>corncob</code>!) you will need to have <code>phyloseq</code>
+installed.</p>
+<p>Install <code>corncob</code> using:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"statdivlab/corncob"</span><span class="op">)</span></span></code></pre></div>
-<p>To begin, we load our example data set as a object.</p>
+<p>To begin, we load our example data set as a <code>phyloseq</code>
+object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/statdivlab/corncob" class="external-link">corncob</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://dx.plos.org/10.1371/journal.pone.0061217" class="external-link">phyloseq</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_phylo</span><span class="op">)</span></span></code></pre></div>
-<p>If you are unfamiliar with , we can view a description of the data
-using:</p>
+<p>If you are unfamiliar with <code>phyloseq</code>, we can view a
+description of the data using:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soil_phylo</span></span></code></pre></div>
 <pre><code><span><span class="co">## phyloseq-class experiment-level object</span></span>
@@ -131,8 +136,8 @@ using:</p>
 <span><span class="co">## sample_data() Sample Data:       [ 119 samples by 5 sample variables ]</span></span>
 <span><span class="co">## tax_table()   Taxonomy Table:    [ 7770 taxa by 7 taxonomic ranks ]</span></span></code></pre>
 <p>We now see that we have an OTU abundance table with 7770 OTUs and 119
-samples. We can extract using . Let’s examine a small subset of our data
-in more detail.</p>
+samples. We can extract using <code><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html" class="external-link">otu_table()</a></code>. Let’s examine a
+small subset of our data in more detail.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html" class="external-link">otu_table</a></span><span class="op">(</span><span class="va">soil_phylo</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## OTU Table:          [3 taxa and 3 samples]</span></span>
@@ -142,7 +147,8 @@ in more detail.</p>
 <span><span class="co">## OTU.2   1796 4204 1752</span></span>
 <span><span class="co">## OTU.187  280  709  426</span></span></code></pre>
 <p>We can also see that we have 5 sample variables. We can extract this
-using . Let’s again examine a small subset in more detail.</p>
+using <code><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html" class="external-link">sample_data()</a></code>. Let’s again examine a small subset in
+more detail.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html" class="external-link">sample_data</a></span><span class="op">(</span><span class="va">soil_phylo</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##      Plants DayAmdmt Amdmt ID Day</span></span>
@@ -168,8 +174,9 @@ Our covariates are as follows:
 </h2>
 <p>Now, let’s set up our model.</p>
 <p>First, let’s subset our samples to only include those with the
-covariate equal to 11 or 21 and then collapse the samples to the phylum
-level. The code to generate this data from is commented out.</p>
+<code>DayAmdmt</code> covariate equal to 11 or 21 and then collapse the
+samples to the phylum level. The code to generate this data from
+<code>soil_phylo</code> is commented out.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># soil &lt;- soil_phylo %&gt;% </span></span>
 <span><span class="co">#             phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %&gt;%</span></span>
@@ -199,8 +206,8 @@ we have gone from from 7770 to 40 taxa. Thus we collapse in order to
 increase the speed for the purposes of this tutorial.</p>
 <p>Now we fit our model. We will demonstrate with Proteobacteria, or
 OTU.1.</p>
-<p>For now, we will not include any covariates, so we use as our model
-formula responses.</p>
+<p>For now, we will not include any covariates, so we use
+<code>~ 1</code> as our model formula responses.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">corncob</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bbdml.html">bbdml</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">OTU.1</span> <span class="op">~</span> <span class="fl">1</span>,</span>
 <span>             phi.formula <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
@@ -224,12 +231,13 @@ computational purposes, but recommend a higher setting for more accurate
 intervals, such as the default <code>B = 1000</code>.</p>
 <p>Now let’s look at the same plot, but on the counts scale with 95%
 prediction intervals (since counts is not a parameter). To do this, we
-add the option to our plotting code.</p>
+add the option <code>total = TRUE</code> to our plotting code.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">corncob</span>, total <span class="op">=</span> <span class="cn">TRUE</span>, B <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-13-1.png" width="768"></p>
-<p>Finally, let’s color the plot by the covariate. To do this, we add
-the option to our plotting code.</p>
+<p>Finally, let’s color the plot by the <code>DayAmdmt</code> covariate.
+To do this, we add the option <code>color = "DayAmdmt"</code> to our
+plotting code.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">corncob</span>, total <span class="op">=</span> <span class="cn">TRUE</span>, color <span class="op">=</span> <span class="st">"DayAmdmt"</span>, B <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-14-1.png" width="768"></p>
@@ -240,15 +248,17 @@ the option to our plotting code.</p>
 together so that they are easier to compare.</p>
 <p>We can observe on this plot that it might be of interest to
 distinguish between the two groups with covariates. The average
-empirical relative abundance for the samples with tends to be lower and
-less variable than the samples with .</p>
+empirical relative abundance for the samples with
+<code>DayAmdmt = 21</code> tends to be lower and less variable than the
+samples with <code>DayAmdmt = 11</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="adding-covariates">Adding covariates<a class="anchor" aria-label="anchor" href="#adding-covariates"></a>
 </h2>
 <p>Let’s try modeling the expected relative abundance and the
-variability of the counts with as a covariate. We do this by modifying
-and as:</p>
+variability of the counts with <code>DayAmdmt</code> as a covariate. We
+do this by modifying <code>formula</code> and <code>phi.formula</code>
+as:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">corncob_da</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bbdml.html">bbdml</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">OTU.1</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
 <span>             phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
@@ -313,33 +323,40 @@ To see a summary of the model, type:</p>
 in R in the past. Covariates associated with the expected relative
 abundance are presented separately from covariates associated with the
 variance of the counts are preceded by.</p>
-<p>From this model summary, we can see that the abundance coefficient is
-negative and statistically significant. This suggests that this taxon is
-differentially-abundant across , and that samples with are expected to
-have a lower relative abundance. This matches what we saw from the
-observed abundances.</p>
-<p>We can also see that the dispersion coefficient is negative and
-statistically significant. This suggests that this taxon is
-differentially-variable across , and that samples with are expected to
-have a lower variability. This matches what we saw from the observed
+<p>From this model summary, we can see that the <code>DayAmdmt21</code>
+abundance coefficient is negative and statistically significant. This
+suggests that this taxon is differentially-abundant across
+<code>DayAmdmt</code>, and that samples with <code>DayAmdmt = 21</code>
+are expected to have a lower relative abundance. This matches what we
+saw from the observed abundances.</p>
+<p>We can also see that the <code>DayAmdmt21</code> dispersion
+coefficient is negative and statistically significant. This suggests
+that this taxon is differentially-variable across <code>DayAmdmt</code>,
+and that samples with <code>DayAmdmt = 21</code> are expected to have a
+lower variability. This matches what we saw from the observed
 abundances.</p>
 </div>
 <div class="section level2">
 <h2 id="analysis-for-multiple-taxa">Analysis for Multiple Taxa<a class="anchor" aria-label="anchor" href="#analysis-for-multiple-taxa"></a>
 </h2>
 <p>What if we want to test all the taxa in our data to see if they are
-differentially-abundant or differentially-variable? We use the function.
-It will perform the above tests on all taxa, and it will control the
-false discovery rate to account for multiple comparisons.</p>
-<p>Next, we use the command. We specify the covariates of our model
-using and as before, except we no longer include the response term
-because we are testing multiple taxa. We also specify which covariates
-we want to test for by removing them in the and arguments.</p>
+differentially-abundant or differentially-variable? We use the
+<code>differentialTest</code> function. It will perform the above tests
+on all taxa, and it will control the false discovery rate to account for
+multiple comparisons.</p>
+<p>Next, we use the <code>differentialTest</code> command. We specify
+the covariates of our model using <code>formula</code> and
+<code>phi.formula</code> as before, except we no longer include the
+response term because we are testing multiple taxa. We also specify
+which covariates we want to test for by removing them in the
+<code>formula_null</code> and <code>phi.formula_null</code>
+arguments.</p>
 <p>The difference between the formulas and the null version of the
 formulas are the variables that we test. We will go through several
 examples, starting with a test for differential abundance across the
-coefficient.</p>
-<p>We set to be our controlled false discovery rate.</p>
+<code>DayAmdmt</code> coefficient.</p>
+<p>We set <code>fdr_cutoff</code> to be our controlled false discovery
+rate.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">da_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
@@ -372,7 +389,7 @@ coefficient.</p>
 <span><span class="co">##  [7] "OTU.695"  "OTU.628"  "OTU.703"  "OTU.908"  "OTU.1570" "OTU.417" </span></span>
 <span><span class="co">## [13] "OTU.584"  "OTU.1672"</span></span></code></pre>
 <p>In this case, we identified 14 taxa that are differentially-abundant
-across (out of the 39 taxa tested).</p>
+across <code>DayAmdmt</code> (out of the 39 taxa tested).</p>
 <p>We can see a list of differentially-variable taxa using:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
@@ -385,9 +402,10 @@ across (out of the 39 taxa tested).</p>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="va">dv_analysis</span><span class="op">$</span><span class="va">significant_taxa</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "OTU.19"  "OTU.69"  "OTU.628" "OTU.703" "OTU.417"</span></span></code></pre>
-<p>We can switch the OTU labels to taxonomic labels using . We supply
-our OTU labels as strings for the argument. We supply the object for the
-argument.</p>
+<p>We can switch the OTU labels to taxonomic labels using
+<code>otu_to_taxonomy</code>. We supply our OTU labels as strings for
+the <code>OTU</code> argument. We supply the <code>phyloseq</code>
+object for the <code>data</code> argument.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/otu_to_taxonomy.html">otu_to_taxonomy</a></span><span class="op">(</span>OTU <span class="op">=</span> <span class="va">da_analysis</span><span class="op">$</span><span class="va">significant_taxa</span>, data <span class="op">=</span> <span class="va">soil</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                       OTU.1                      OTU.15 </span></span>
@@ -411,7 +429,7 @@ argument.</p>
 <span><span class="co">##                  OTU.703                  OTU.417 </span></span>
 <span><span class="co">## "Bacteria_Elusimicrobia"           "Bacteria_FBP"</span></span></code></pre>
 <p>In this case, we identified 5 taxa that are differentially-variable
-across (out of the 40 taxa tested).</p>
+across <code>DayAmdmt</code> (out of the 40 taxa tested).</p>
 <p>We can examine a subset of the p-values of our tests using:</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">da_analysis</span><span class="op">$</span><span class="va">p</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
@@ -429,17 +447,17 @@ at 0.05.</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">da_analysis</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-29-1.png" width="768"></p>
-<p>Here, we can see that for Bacteria_Armatimonadetes, the effect of
-DayAmdmt21 is positive compared to the baseline (in this case,
-DayAmdmt11).</p>
+<p>Here, we can see that for <code>Bacteria_Armatimonadetes</code>, the
+effect of <code>DayAmdmt21</code> is positive compared to the baseline
+(in this case, <code>DayAmdmt11</code>).</p>
 <p>Finally, we can see a list of any taxa for which we were not able to
 fit a model using:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">da_analysis</span><span class="op">$</span><span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">names</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "OTU.4206" "OTU.8773" "OTU.8219"</span></span></code></pre>
-<p>In this case, we weren’t able to fit automatically. It’s worthwhile
-to investigate the OTU individually if this is the case. First let’s
-check what phylum this represents.</p>
+<p>In this case, we weren’t able to fit <code>OTU.4206</code>
+automatically. It’s worthwhile to investigate the OTU individually if
+this is the case. First let’s check what phylum this represents.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/otu_to_taxonomy.html">otu_to_taxonomy</a></span><span class="op">(</span>OTU <span class="op">=</span> <span class="st">"OTU.4206"</span>, data <span class="op">=</span> <span class="va">soil</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##        OTU.4206 </span></span>
@@ -460,9 +478,9 @@ initializations.</p>
 <span><span class="co">##          S102 S234 S222 S239</span></span>
 <span><span class="co">## OTU.4206    1    0    0    0</span></span></code></pre>
 <p>We see that the observed counts of OTU is zero in all samples except
-for }, where we observed a single count. Let’s try fitting the model
-individually by letting the model select the initializations
-automatically.</p>
+for <code>S102</code>, where we observed a single count. Let’s try
+fitting the model individually by letting the model select the
+initializations automatically.</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">check_GN04</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bbdml.html">bbdml</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">OTU.4206</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
 <span>                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
@@ -477,15 +495,17 @@ automatically.</p>
 <span><span class="co">## be interpreted with care because there is insufficient data to distinguish between groups.</span></span></code></pre>
 <p>While the model fits, we should be skeptical of <strong>any</strong>
 statistical model fit on a single observed count!</p>
-<p> is stable, but new. If you notice any issues, please <a href="https://github.com/statdivlab/corncob/issues" class="external-link">log them on
-Github</a> to help us help you!</p>
+<p><code>corncob</code> is stable, but new. If you notice any issues,
+please <a href="https://github.com/statdivlab/corncob/issues" class="external-link">log them
+on Github</a> to help us help you!</p>
 </div>
 <div class="section level2">
 <h2 id="examples-of-answering-scientific-questions">Examples of Answering Scientific Questions<a class="anchor" aria-label="anchor" href="#examples-of-answering-scientific-questions"></a>
 </h2>
 <p>We will now walk through several scientific questions of interest and
-show how they can be answered using hypothesis testing with . Note that
-Day and Amdmt are both factor covariates with levels 0, 1, and 2.</p>
+show how they can be answered using hypothesis testing with
+<code>corncob</code>. Note that <code>Day</code> and <code>Amdmt</code>
+are both factor covariates with levels 0, 1, and 2.</p>
 <p>Note that some of these are rather strange tests, and shown for
 demonstration of the flexibility of the model only. Normally, when
 testing for differential variability across a covariate, we recommend
@@ -494,8 +514,8 @@ first demonstrate examples with the soil dataset.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soil_full</span> <span class="op">&lt;-</span> <span class="va">soil_phylo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/tax_glom.html" class="external-link">tax_glom</a></span><span class="op">(</span><span class="st">"Phylum"</span><span class="op">)</span> </span></code></pre></div>
-<p>Testing for differential abundance across Day, without controlling
-for anything else:</p>
+<p>Testing for differential abundance across <code>Day</code>, without
+controlling for anything else:</p>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
@@ -506,8 +526,8 @@ for anything else:</p>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-35-1.png" width="768"></p>
-<p>Testing for differential abundance across Day, controlling for the
-effect of Day on dispersion:</p>
+<p>Testing for differential abundance across <code>Day</code>,
+controlling for the effect of <code>Day</code> on dispersion:</p>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
@@ -519,7 +539,7 @@ effect of Day on dispersion:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-36-1.png" width="768"></p>
 <p>Jointly testing for differential abundance and differential
-variability across Day:</p>
+variability across <code>Day</code>:</p>
 <div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
@@ -531,8 +551,8 @@ variability across Day:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-37-1.png" width="768"></p>
 <p>Jointly testing for differential abundance and differential
-variability across Day, controlling for the effect of Amdmt on abundance
-only:</p>
+variability across <code>Day</code>, controlling for the effect of
+<code>Amdmt</code> on abundance only:</p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span> <span class="op">+</span> <span class="va">Amdmt</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
@@ -543,9 +563,9 @@ only:</p>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-38-1.png" width="768"></p>
-<p>Jointly testing for differential abundance across Day and
-differential abundance across Amdmt, controlling for the effect of Day
-and Amdmt on dispersion:</p>
+<p>Jointly testing for differential abundance across <code>Day</code>
+and differential abundance across <code>Amdmt</code>, controlling for
+the effect of <code>Day</code> and <code>Amdmt</code> on dispersion:</p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span> <span class="op">+</span> <span class="va">Amdmt</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span> <span class="op">+</span> <span class="va">Amdmt</span>,</span>
@@ -556,9 +576,9 @@ and Amdmt on dispersion:</p>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-39-1.png" width="768"></p>
-<p>Jointly testing for differential abundance across Day, and
-differential dispersion across Amdmt, controlling for the effect of Day
-on Dispersion:</p>
+<p>Jointly testing for differential abundance across <code>Day</code>,
+and differential dispersion across <code>Amdmt</code>, controlling for
+the effect of <code>Day</code> on Dispersion:</p>
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex6</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span> <span class="op">+</span> <span class="va">Amdmt</span>,</span>
@@ -588,8 +608,8 @@ controlling for anything else:</p>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex7</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-42-1.png" width="768"></p>
-<p>We can make the plot cleaner using the parameter. Here we will
-display both the family and genus information.</p>
+<p>We can make the plot cleaner using the <code>level</code> parameter.
+Here we will display both the family and genus information.</p>
 <div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex7</span>, level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Family"</span>, <span class="st">"Genus"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-43-1.png" width="768"></p>

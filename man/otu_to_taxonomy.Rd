@@ -27,7 +27,8 @@ da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                 phi.formula_null = ~ DayAmdmt,
                                 test = "Wald", boot = FALSE,
                                 data = soil_phylum_small,
-                                fdr_cutoff = 0.05)
+                                fdr_cutoff = 0.05,
+                                try_only = 1:5)
 otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil_phylum_small,
  level = "Phylum")
 

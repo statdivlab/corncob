@@ -66,24 +66,36 @@ contrastsTest <- function(formula, phi.formula,
   phi.link <- match.arg(phi.link, choices = c("fishZ", "logit"))
 
   # Convert phyloseq objects
-  if ("phyloseq" %in% class(data)) {
-    # Set up response
-    taxanames <- phyloseq::taxa_names(data)
+  if (inherits(data, "phyloseq")) {
+    if (requireNamespace("phyloseq", quietly = TRUE)) {
+      # Set up response
+      taxanames <- phyloseq::taxa_names(data)
+      sample_data <- data.frame(phyloseq::sample_data(data))
+    } else {
+      warn_phyloseq()
+    }
   } else if (is.matrix(data) || is.data.frame(data)) {
 
-    # use phyloseq
-    OTU <- phyloseq::otu_table(data, taxa_are_rows = taxa_are_rows)
+    # # use phyloseq
+    # OTU <- phyloseq::otu_table(data, taxa_are_rows = taxa_are_rows)
+    #
+    # # Make sample data
+    # sampledata <- phyloseq::sample_data(data.frame(
+    #   sample_data,
+    #   row.names = phyloseq::sample_names(OTU)
+    # ))
+    #
+    # # Make phyloseq object
+    # data <- phyloseq::phyloseq(OTU, sampledata)
+    # # Set up response
+    # taxanames <- phyloseq::taxa_names(data)
 
-    # Make sample data
-    sampledata <- phyloseq::sample_data(data.frame(
-      sample_data,
-      row.names = phyloseq::sample_names(OTU)
-    ))
+    if (taxa_are_rows) {
+      data <- t(data)
+    }
+    taxanames <- colnames(data)
+    M <- colSums(data)
 
-    # Make phyloseq object
-    data <- phyloseq::phyloseq(OTU, sampledata)
-    # Set up response
-    taxanames <- phyloseq::taxa_names(data)
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")
   }
@@ -94,8 +106,8 @@ contrastsTest <- function(formula, phi.formula,
   #model_summaries <- rep(list(NA), length(taxanames))
   # check to make sure inits is of the same length
   if (!is.null(inits)) {
-    ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
-    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data))))
+    ncol1 <- ncol(stats::model.matrix(object = formula, data = sample_data))
+    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = sample_data))
     if (length(inits) != ncol1 + ncol2) {
       stop("inits must match number of regression parameters in formula and phi.formula!")
     }
@@ -112,7 +124,12 @@ contrastsTest <- function(formula, phi.formula,
   for (i in try_only) {
 
     # Subset data to only select that taxa
-    data_i <- convert_phylo(data, select = taxanames[i])
+    if (inherits(data, "phyloseq")) {
+      data_i <- convert_phylo(data, select = taxanames[i])
+    } else {
+      response_i <- data.frame(W = data[, taxanames[i]], M = M)
+      data_i <- cbind(response_i, sample_data)
+    }
 
     if (sum(data_i$W) == 0) {
       perfDisc_DA[i] <- TRUE

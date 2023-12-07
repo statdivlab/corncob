@@ -69,24 +69,36 @@ differentialTest <- function(formula, phi.formula,
   phi.link <- match.arg(phi.link, choices = c("fishZ", "logit"))
 
   # Convert phyloseq objects
-  if ("phyloseq" %in% class(data)) {
-    # Set up response
-    taxanames <- phyloseq::taxa_names(data)
+  if (inherits(data, "phyloseq")) {
+    if (requireNamespace("phyloseq", quietly = TRUE)) {
+      # Set up response
+      taxanames <- phyloseq::taxa_names(data)
+      sample_data <- data.frame(phyloseq::sample_data(data))
+    } else {
+      warn_phyloseq()
+    }
   } else if (is.matrix(data) || is.data.frame(data)) {
 
-    # use phyloseq
-    OTU <- phyloseq::otu_table(data, taxa_are_rows = taxa_are_rows)
+    # # use phyloseq
+    # OTU <- phyloseq::otu_table(data, taxa_are_rows = taxa_are_rows)
+    #
+    # # Make sample data
+    # sampledata <- phyloseq::sample_data(data.frame(
+    #   sample_data,
+    #   row.names = phyloseq::sample_names(OTU)
+    # ))
+    #
+    # # Make phyloseq object
+    # data <- phyloseq::phyloseq(OTU, sampledata)
+    # # Set up response
+    # taxanames <- phyloseq::taxa_names(data)
 
-    # Make sample data
-    sampledata <- phyloseq::sample_data(data.frame(
-      sample_data,
-      row.names = phyloseq::sample_names(OTU)
-    ))
+    if (taxa_are_rows) {
+      data <- t(data)
+    }
+    taxanames <- colnames(data)
+    M <- rowSums(data)
 
-    # Make phyloseq object
-    data <- phyloseq::phyloseq(OTU, sampledata)
-    # Set up response
-    taxanames <- phyloseq::taxa_names(data)
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")
   }
@@ -97,16 +109,16 @@ differentialTest <- function(formula, phi.formula,
   full_outputs <- rep(list(NA), length(taxanames))
   # check to make sure inits is of the same length
   if (!is.null(inits)) {
-    ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(phyloseq::sample_data(data))))
-    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = data.frame(phyloseq::sample_data(data))))
+    ncol1 <- ncol(stats::model.matrix(object = formula, data = sample_data))
+    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = sample_data))
     if (length(inits) != ncol1 + ncol2) {
       stop("inits must match number of regression parameters in formula and phi.formula!")
     }
   }
   # inits_null_mu
   if (!is.null(inits_null)) {
-    ncol1 <- ncol(stats::model.matrix(object = formula_null, data = data.frame(phyloseq::sample_data(data))))
-    ncol2 <- ncol(stats::model.matrix(object = phi.formula_null, data = data.frame(phyloseq::sample_data(data))))
+    ncol1 <- ncol(stats::model.matrix(object = formula_null, data = sample_data))
+    ncol2 <- ncol(stats::model.matrix(object = phi.formula_null, data = sample_data))
     if (length(inits_null) != ncol1 + ncol2) {
       stop("init_null must match number of regression parameters in formula_null and phi.formula_null!")
     }
@@ -121,11 +133,18 @@ differentialTest <- function(formula, phi.formula,
   if (is.character(try_only)) {
     try_only <- which(taxanames %in% try_only)
   }
+
   # Loop through OTU/taxa
   for (i in try_only) {
     if (verbose) print(paste0(" ------- Fitting ", taxanames[i],  ", taxa ", i, " of ", length(try_only), " -------"))
     # Subset data to only select that taxa
-    data_i <- convert_phylo(data, select = taxanames[i])
+    if (inherits(data, "phyloseq")) {
+      data_i <- convert_phylo(data, select = taxanames[i])
+    } else {
+      response_i <- data.frame(W = data[, taxanames[i]], M = M)
+      data_i <- cbind(response_i, sample_data)
+    }
+
 
     if (sum(data_i$W) == 0) {
       perfDisc_DA[i] <- TRUE
@@ -236,7 +255,12 @@ We *strongly recommend* running `bbdml` on a single taxon (especially before pos
            If a error message was thrown by `bbdml`, it is reproduced below for a single taxon.
            If no errors were thrown by `bbdml`, and the issue is instead in `differentialTest`, no output is shown. \n")
     i <- (try_only[!(try_only %in% ind_disc)])[1]
-    data_i <- convert_phylo(data, select = taxanames[i])
+    if (inherits(data, "phyloseq")) {
+      data_i <- convert_phylo(data, select = taxanames[i])
+    } else {
+      response_i <- data.frame(W = data[, taxanames[i]], M = M)
+      data_i <- cbind(response_i, sample_data)
+    }
     formula_i <- stats::update(formula, cbind(W, M - W) ~ .)
     formula_null_i <- stats::update(formula_null, cbind(W, M - W) ~ .)
     mod <- bbdml(formula = formula_i, phi.formula = phi.formula,
@@ -253,10 +277,10 @@ We *strongly recommend* running `bbdml` on a single taxon (especially before pos
   signif_vec <- taxanames[which(post_fdr < fdr_cutoff)]
   signif_models <- model_summaries[which(post_fdr < fdr_cutoff)]
 
-  restricts_mu <- setdiff(colnames(stats::model.matrix(object = formula, data = data.frame(phyloseq::sample_data(data)))),
-                          colnames(stats::model.matrix(object = formula_null, data = data.frame(phyloseq::sample_data(data)))))
-  restricts_phi <- setdiff(colnames(stats::model.matrix(object = phi.formula, data = data.frame(phyloseq::sample_data(data)))),
-                           colnames(stats::model.matrix(object = phi.formula_null, data = data.frame(phyloseq::sample_data(data)))))
+  restricts_mu <- setdiff(colnames(stats::model.matrix(object = formula, data = sample_data)),
+                          colnames(stats::model.matrix(object = formula_null, data = sample_data)))
+  restricts_phi <- setdiff(colnames(stats::model.matrix(object = phi.formula, data = sample_data)),
+                           colnames(stats::model.matrix(object = phi.formula_null, data = sample_data)))
 
   attr(restricts_mu, "index") <- restricts$mu
   attr(restricts_phi, "index") <- restricts$phi

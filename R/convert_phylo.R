@@ -10,12 +10,16 @@
 #'
 #' @export
 convert_phylo <- function(data, select) {
-  subsamp <- suppressWarnings(phyloseq::prune_taxa(select, data))
-  W_tmp <- matrix(phyloseq::otu_table(subsamp)@.Data, ncol = 1)
+  if (requireNamespace("phyloseq", quietly = TRUE)) {
+    subsamp <- suppressWarnings(phyloseq::prune_taxa(select, data))
+    W_tmp <- matrix(phyloseq::otu_table(subsamp)@.Data, ncol = 1)
 
 
-  out <- data.frame(W = W_tmp,
-                    M = phyloseq::sample_sums(data),
-                    data.frame(phyloseq::sample_data(subsamp)))
-  return(out)
+    out <- data.frame(W = W_tmp,
+                      M = phyloseq::sample_sums(data),
+                      data.frame(phyloseq::sample_data(subsamp)))
+    return(out)
+  } else {
+    warn_phyloseq()
+  }
 }

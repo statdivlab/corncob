@@ -8,10 +8,3 @@
 #' Duvallet, C., Gibbons, S., Gurry, T., Irizarry, R., & Alm, E. (2017). \emph{MicrobiomeHD: the human gut microbiome in health and disease [Data set]}. Zenodo. <doi.org/10.5281/zenodo.1146764>.
 "ibd_phylo"
 
-
-#' Import phyloseq classes for data
-#'
-#' @name import_phyloseq
-#' @importClassesFrom phyloseq otu_table phyloseq
-#' @return No return value. Created for important phyloseq classes.
-NULL

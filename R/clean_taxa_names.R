@@ -16,11 +16,15 @@
 #' attr(x, "original_names")
 #' @export
 clean_taxa_names <- function(x, name = "OTU") {
-  if ("phyloseq" %in% class(x)) {
-    attr(x, "original_names") <- phyloseq::taxa_names(x)
-    phyloseq::taxa_names(x) <- paste0(name, seq(phyloseq::ntaxa(x)))
-    return(x)
+  if (requireNamespace("phyloseq", quietly = TRUE)) {
+    if ("phyloseq" %in% class(x)) {
+      attr(x, "original_names") <- phyloseq::taxa_names(x)
+      phyloseq::taxa_names(x) <- paste0(name, seq(phyloseq::ntaxa(x)))
+      return(x)
+    } else {
+      stop("clean_taxa_names is intended for phyloseq objects!")
+    }
   } else {
-    stop("clean_taxa_names is intended for phyloseq objects!")
+    warn_phyloseq()
   }
 }

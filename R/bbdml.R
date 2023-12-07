@@ -52,7 +52,7 @@ bbdml <- function(formula, phi.formula, data,
   argList <- list(...)
 
   # Convert phyloseq objects
-  if ("phyloseq" %in% class(data)) {
+  if (inherits(data, "phyloseq")) {
     select <- all.vars(formula)[1]
     data <- convert_phylo(data, select = select)
     # Update formula to match convert_phylo specification

@@ -15,7 +15,7 @@
 #' mod2 <- bbdml(formula = OTU.1 ~ 1,
 #' phi.formula = ~ 1,
 #' data = soil_phylum_small)
-#' pbRao(mod1, mod2, B = 50)
+#' pbRao(mod1, mod2, B = 10)
 #' @export
 pbRao <- function(mod, mod_null, B = 1000) {
 

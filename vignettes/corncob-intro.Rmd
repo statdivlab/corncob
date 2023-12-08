@@ -45,6 +45,9 @@ Note that in order to follow along with this tutorial (but not to use `corncob`!
 phy <- requireNamespace("phyloseq", quietly = TRUE) == TRUE
 ```
 
+```{r, echo = FALSE}
+print(paste0("phyloseq is installed: ", phy))
+```
 
 Install `corncob` using:
 ```{r, eval = FALSE}
@@ -240,7 +243,7 @@ We can see a list of differentially-abundant taxa using:
 da_analysis$significant_taxa
 ```
 
-In this case, we identified `r length(da_analysis$significant_taxa)` taxa that are differentially-abundant across `DayAmdmt` (out of the 39 taxa tested).
+In this case, we identified several taxa that are differentially-abundant across `DayAmdmt` (out of the 39 taxa tested).
 
 
 We can see a list of differentially-variable taxa using:
@@ -267,7 +270,7 @@ otu_to_taxonomy(OTU = da_analysis$significant_taxa, data = soil)
 otu_to_taxonomy(OTU = dv_analysis$significant_taxa, data = soil)
 ```
 
-In this case, we identified `r length(dv_analysis$significant_taxa)` taxa that are differentially-variable across `DayAmdmt` (out of the 40 taxa tested).
+In this case, we identified several taxa that are differentially-variable across `DayAmdmt` (out of the 40 taxa tested).
 
 
 We can examine a subset of the p-values of our tests using:

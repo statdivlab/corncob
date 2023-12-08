@@ -27,7 +27,7 @@ Instead of installing corncob to your local system, you can use corncob via the 
 
 ## Use
 
-The vignette demonstrates example usage of all main functions. Please [file an issue](https://github.com/statdivlab/corncob/issues) if you have a request for a tutorial that is not currently included. You can see the vignette by using the following code:
+The vignettes demonstrate example usage of all main functions (they go over the same analysis, one with `phyloseq` objects and one without `phyloseq` objects). Please [file an issue](https://github.com/statdivlab/corncob/issues) if you have a request for a tutorial that is not currently included. You can see the vignette by using the following code:
 
 
 ``` r
@@ -42,7 +42,7 @@ Note that R does not allow variable names to start with numbers. Sometimes, when
 
 ## Documentation 
 
-We additionally have a `pkgdown` [website](https://statdivlab.github.io/corncob/) that contains pre-built versions of our function [documentation](https://statdivlab.github.io/corncob/reference/index.html) and [vignette](https://statdivlab.github.io/corncob/articles/corncob-intro.html). 
+We additionally have a `pkgdown` [website](https://statdivlab.github.io/corncob/) that contains pre-built versions of our function [documentation](https://statdivlab.github.io/corncob/reference/index.html), [vignette](https://statdivlab.github.io/corncob/articles/corncob-intro.html), and a version of the [vignette](https://statdivlab.github.io/corncob/articles/corncob-intro-no-phyloseq.html) without `phyloseq`. 
 
 ## Citation
 

@@ -69,7 +69,7 @@ differentialTest <- function(formula, phi.formula,
   phi.link <- match.arg(phi.link, choices = c("fishZ", "logit"))
 
   # Convert phyloseq objects
-  if (inherits(data, "phyloseq")) {
+  if ("phyloseq" %in% class(data)) {
     if (requireNamespace("phyloseq", quietly = TRUE)) {
       # Set up response
       taxanames <- phyloseq::taxa_names(data)
@@ -138,7 +138,7 @@ differentialTest <- function(formula, phi.formula,
   for (i in try_only) {
     if (verbose) print(paste0(" ------- Fitting ", taxanames[i],  ", taxa ", i, " of ", length(try_only), " -------"))
     # Subset data to only select that taxa
-    if (inherits(data, "phyloseq")) {
+    if ("phyloseq" %in% class(data)) {
       data_i <- convert_phylo(data, select = taxanames[i])
     } else {
       response_i <- data.frame(W = data[, taxanames[i]], M = M)
@@ -255,7 +255,7 @@ We *strongly recommend* running `bbdml` on a single taxon (especially before pos
            If a error message was thrown by `bbdml`, it is reproduced below for a single taxon.
            If no errors were thrown by `bbdml`, and the issue is instead in `differentialTest`, no output is shown. \n")
     i <- (try_only[!(try_only %in% ind_disc)])[1]
-    if (inherits(data, "phyloseq")) {
+    if ("phyloseq" %in% class(data)) {
       data_i <- convert_phylo(data, select = taxanames[i])
     } else {
       response_i <- data.frame(W = data[, taxanames[i]], M = M)

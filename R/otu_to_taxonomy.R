@@ -24,7 +24,7 @@
 #' @export
 otu_to_taxonomy <- function(OTU, data, level = NULL) {
   if (requireNamespace("phyloseq", quietly = TRUE)) {
-    if (inherits(data, "phyloseq")) {
+    if ("phyloseq" %in% class(data)) {
       if (is.null(level)) {
         return(apply(phyloseq::tax_table(data)[OTU,], 1, function(x) {paste(stats::na.omit(x), collapse = '_')}))
       } else {

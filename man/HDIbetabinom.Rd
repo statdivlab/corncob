@@ -23,7 +23,7 @@ Get highest density interval of beta-binomial
 }
 \examples{
 data(soil_phylum_small)
-mod <- bbdml(formula = OTU.1570 ~ DayAmdmt,
+mod <- bbdml(formula = OTU.3249 ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
 data = soil_phylum_small)
 HDIbetabinom(.95, M = mod$M[1], mu = mod$mu.resp[1], phi = mod$phi.resp[1])

@@ -1,5 +1,4 @@
 library(corncob)
-suppressWarnings(library(phyloseq))
 context("Test bbdml")
 
 set.seed(1)
@@ -128,19 +127,21 @@ test_that("checking for perfectly discriminant", {
                        nstart = 1))
 })
 
-data(soil_phylo)
-soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
-
-out_phylo <- bbdml(formula = OTU.4 ~ 1,
-                   phi.formula = ~ 1,
-                   data = soil)
-
 
 test_that("bbdml works with phyloseq object", {
-  expect_is(out_phylo, "bbdml")
+  data(soil_phylum_small)
+  if (requireNamespace("phyloseq", quietly = TRUE)) {
+    out_phylo <- bbdml(formula = OTU.1 ~ 1,
+                       phi.formula = ~ 1,
+                       data = soil_phylum_small)
+    expect_is(out_phylo, "bbdml")
+  } else {
+    expect_error(bbdml(formula = OTU.1 ~ 1,
+                         phi.formula = ~ 1,
+                         data = soil_phylum_small),
+                   "You are trying to use a `phyloseq` data object or `phyloseq` helper function without having the `phyloseq` package installed. Please either install the package or use a standard data frame.")
+  }
 })
-
-
 
 test_that("bbdml returns different model-based and robust standard errors", {
 

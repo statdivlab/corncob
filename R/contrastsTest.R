@@ -66,7 +66,7 @@ contrastsTest <- function(formula, phi.formula,
   phi.link <- match.arg(phi.link, choices = c("fishZ", "logit"))
 
   # Convert phyloseq objects
-  if (inherits(data, "phyloseq")) {
+  if ("phyloseq" %in% class(data)) {
     if (requireNamespace("phyloseq", quietly = TRUE)) {
       # Set up response
       taxanames <- phyloseq::taxa_names(data)
@@ -124,7 +124,7 @@ contrastsTest <- function(formula, phi.formula,
   for (i in try_only) {
 
     # Subset data to only select that taxa
-    if (inherits(data, "phyloseq")) {
+    if ("phyloseq" %in% class(data)) {
       data_i <- convert_phylo(data, select = taxanames[i])
     } else {
       response_i <- data.frame(W = data[, taxanames[i]], M = M)

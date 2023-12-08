@@ -42,18 +42,6 @@ out_noint <-  bbdml(formula = cbind(W, M - W) ~ X1,
                     phi.link = "logit",
                     nstart = 1)
 
-data(soil_phylo)
-soil <- soil_phylo %>%
-  phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-  phyloseq::tax_glom("Phylum")
-mod1 <-  bbdml(formula = OTU.1 ~ Day*Plants,
-               phi.formula = ~ Plants,
-               data = soil)
-
-mod2 <-  bbdml(formula = OTU.1 ~Day - 1,
-               phi.formula = ~ Plants - 1,
-               data = soil)
-
 test_that("getRestrictionTerms works", {
   tmp <- corncob:::getRestrictionTerms(out,out_nullmu)
   expect_true(tmp$mu == 2)
@@ -73,11 +61,33 @@ test_that("getRestrictionTerms works", {
   expect_true(tmp$phi == 5)
   tmp <- corncob:::getRestrictionTerms(out, restrictions = 1)
   expect_equal(tmp$mu, 1)
-  tmp <- corncob:::getRestrictionTerms(mod1,mod2)
-  expect_equal(tmp$mu, c(1,3,4))
-  expect_true(tmp$phi == 5)
-  tmp <- corncob:::getRestrictionTerms(out, restrictions = "(Intercept)", restrictions.phi = "(Intercept)")
-  expect_equal(tmp$mu, 1)
-  expect_true(tmp$phi == 3)
+})
+
+test_that("getRestrictionTerms works for phyloseq object", {
+  data(soil_phylo)
+  if (requireNamespace("phyloseq", quietly = TRUE)) {
+    soil <- soil_phylo %>%
+      phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+      phyloseq::tax_glom("Phylum")
+    mod1 <-  bbdml(formula = OTU.1 ~ Day*Plants,
+                   phi.formula = ~ Plants,
+                   data = soil)
+
+    mod2 <-  bbdml(formula = OTU.1 ~Day - 1,
+                   phi.formula = ~ Plants - 1,
+                   data = soil)
+
+    tmp <- corncob:::getRestrictionTerms(mod1,mod2)
+    expect_equal(tmp$mu, c(1,3,4))
+    expect_true(tmp$phi == 5)
+    tmp <- corncob:::getRestrictionTerms(out, restrictions = "(Intercept)", restrictions.phi = "(Intercept)")
+    expect_equal(tmp$mu, 1)
+    expect_true(tmp$phi == 3)
+  } else {
+    expect_error(bbdml(formula = OTU.1 ~ Day*Plants,
+                       phi.formula = ~ Plants,
+                       data = soil_phylo),
+                 "You are trying to use a `phyloseq` data object or `phyloseq` helper function without having the `phyloseq` package installed. Please either install the package or use a standard data frame.")
+  }
 })
 

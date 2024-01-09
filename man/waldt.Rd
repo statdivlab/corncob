@@ -20,6 +20,6 @@ data(soil_phylum_small_otu1)
 mod <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
 data = soil_phylum_small_otu1)
-waldt(mod1)
+waldt(mod)
 
 }

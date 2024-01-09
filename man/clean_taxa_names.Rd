@@ -20,9 +20,3 @@ Renames taxa to have short human-readable names
 \details{
 The original taxa names are saved as the \code{original_names} attribute. See the example for an example of how to access the original names.
 }
-\examples{
-data(soil_phylo)
-x <- clean_taxa_names(soil_phylo)
-# Use this line to see the original taxa names
-attr(x, "original_names")
-}

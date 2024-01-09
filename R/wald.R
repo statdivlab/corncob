@@ -6,11 +6,11 @@
 #'
 #'
 #' @examples
-#' data(soil_phylum_small)
-#' mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' data(soil_phylum_small_otu1)
+#' mod <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
-#' data = soil_phylum_small)
-#' waldt(mod1)
+#' data = soil_phylum_small_otu1)
+#' waldt(mod)
 #'
 #' @export
 waldt <- function(mod) {

@@ -17,21 +17,22 @@
 #' @return An object of class \code{bbdml}.
 #'
 #' @examples
-#' # phyloseq example
-#' data(soil_phylum_small)
-#' bbdml(formula = OTU.1 ~ DayAmdmt,
-#' phi.formula = ~ DayAmdmt,
-#' data = soil_phylum_small)
-#'
 #' # data frame example
-#' seq_depth <- rpois(20, lambda = 10000)
-#' my_counts <- rbinom(20, size = seq_depth, prob = 0.001) * 10
-#' my_covariate <- cbind(rep(c(0,1), each = 10))
-#' colnames(my_covariate) <- c("X1")
-#' example_data <- data.frame("W" = my_counts, "M" = seq_depth, my_covariate)
-#' bbdml(formula = cbind(W, M - W) ~ X1,
-#' phi.formula = ~ X1,
-#' data = example_data)
+#' data(soil_phylum_small_otu1)
+#' bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = soil_phylum_small_otu1)
+#'
+#' # phyloseq example (only run this if you have phyloseq installed)
+#' \dontrun{
+#' data(soil_phylum_small_sample)
+#' data(soil_phylum_small_otu)
+#' data_phylo <- phyloseq::phyloseq(phyloseq::sample_data(soil_phylum_small_sample),
+#' phyloseq::otu_table(soil_phylum_small_otu, taxa_are_rows = TRUE))
+#' bbdml(formula = Proteobacteria ~ DayAmdmt,
+#' phi.formula = ~ DayAmdmt,
+#' data = data_phylo)
+#' }
 #'
 #' @export
 bbdml <- function(formula, phi.formula, data,

@@ -21,15 +21,32 @@
 #' @return An object of class \code{contrastsTest}. List with elements \code{p} containing the p-values for each contrast, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa,  \code{contrasts_DA} containing the contrast matrix for parameters associated with the abundance, \code{contrasts_DV} containing the contrast matrix for parameters associated with the dispersion, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, and \code{data} containing the data used to fit the models.
 
 #' @examples
-#' # phyloseq example
-#' data(soil_phylum_small_contrasts)
+#'
+#' # data frame example
+#' data(soil_phylum_contrasts_sample)
+#' data(soil_phylum_contrasts_otu)
 #' da_analysis <- contrastsTest(formula = ~ DayAmdmt,
 #'                              phi.formula = ~ DayAmdmt,
 #'                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
 #'                                                  "DayAmdmt22 - DayAmdmt21"),
-#'                              data = soil_phylum_small_contrasts,
+#'                              data = soil_phylum_contrasts_otu,
+#'                              sample_data = soil_phylum_contrasts_sample,
 #'                              fdr_cutoff = 0.05,
 #'                              try_only = 1:5)
+#'
+#' # phyloseq example (only run if you have phyloseq installed)
+#' \dontrun{
+#' contrasts_phylo <- phyloseq::phyloseq(phyloseq::sample_data(soil_phylum_contrasts_sample),
+#' phyloseq::otu_table(soil_phylum_contrasts_otu, taxa_are_rows = TRUE))
+#' da_analysis <- contrastsTest(formula = ~ DayAmdmt,
+#'                              phi.formula = ~ DayAmdmt,
+#'                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
+#'                                                  "DayAmdmt22 - DayAmdmt21"),
+#'                              data = contrasts_phylo,
+#'                              fdr_cutoff = 0.05,
+#'                              try_only = 1:5)
+#' }
+#'
 #' @export
 contrastsTest <- function(formula, phi.formula,
                           contrasts_DA = NULL,
@@ -94,7 +111,7 @@ contrastsTest <- function(formula, phi.formula,
       data <- t(data)
     }
     taxanames <- colnames(data)
-    M <- colSums(data)
+    M <- rowSums(data)
 
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")

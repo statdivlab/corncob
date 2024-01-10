@@ -24,6 +24,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/corncob-intro-no-phyloseq.html">Introduction to corncob, no phyloseq</a>
     <a class="dropdown-item" href="../articles/corncob-intro.html">Introduction to corncob</a>
   </div>
 </li>
@@ -74,133 +75,6 @@
 <p>A <code>data.frame</code> object, with elements <code>W</code> as the observed counts, <code>M</code> as the sequencing depth, and the sample data with their original names.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_phylo</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">convert_phylo</span><span class="op">(</span><span class="va">soil_phylo</span>, <span class="st">"OTU.43"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         W      M Plants DayAmdmt Amdmt ID Day</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S009  350  89290      1       01     1  D   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S204   74 194356      1       21     1  D   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S112  300  66290      0       11     1  B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S247   70  35635      0       22     2  F   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S026   43  49017      0       00     0  A   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S023  215  36682      1       00     0  C   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S201  105 171706      0       20     0  A   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S133  167 153494      1       10     0  C   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S103  164  73168      1       10     0  C   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S012  117  31182      0       01     1  B   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S134 1136 160612      1       11     1  D   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S108  374  96114      1       10     0  C   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S207  292  92273      0       21     1  B   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S123  480 115443      1       10     0  C   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S202  241 177721      0       21     1  B   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S031  150  52771      0       00     0  A   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S106  164 129553      0       10     0  A   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S233   28  39284      1       20     0  C   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S013  165  27713      1       00     0  C   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S007   72  37877      0       01     1  B   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S139  183 154182      1       11     1  D   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S126   77 133446      0       10     0  A   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S208  299 139063      1       20     0  C   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S122  608 144272      0       11     1  B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S022  181  39898      0       01     1  B   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S223  120  78864      1       20     0  C   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S113  516  74789      1       10     0  C   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S024   83  48814      1       01     1  D   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S032  143  67299      0       01     1  B   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S218   78  74627      1       20     0  C   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S212  289 182268      0       21     1  B   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S138  298  63448      1       10     0  C   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S117   56  42691      0       11     1  B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S228  183 119662      1       20     0  C   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S019  283  77203      1       01     1  D   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S104   12 114784      1       11     1  D   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S116  274  58551      0       10     0  A   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S213  160  66819      1       20     0  C   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S144  300 108677      0       12     2  F   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S221  104  90967      0       20     0  A   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S214  259  80154      1       21     1  D   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S043   99  36098      0       02     2  F   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S136  359  90128      0       10     0  A   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S028  165  39352      1       00     0  C   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S203  156 190471      1       20     0  C   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S001  230  86007      0       00     0  A   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S216   78  53720      0       20     0  A   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S109   55  67615      1       11     1  D   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S226  121 171724      0       20     0  A   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S037   46  26554      0       01     1  B   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S042   70  31996      0       02     2  F   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S206   86  84638      0       20     0  A   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S111  203  84124      0       10     0  A   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S101  402 109686      0       10     0  A   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S217  112  50293      0       21     1  B   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S148   20  34617      0       12     2  F   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S039   24  15038      1       01     1  D   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S118  362 126421      1       10     0  C   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S034  102  37348      1       01     1  D   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S006   22  35309      0       00     0  A   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S238  174  88192      1       20     0  C   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S229   89  79837      1       21     1  D   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S046  229  51708      0       02     2  F   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S033   83  37283      1       00     0  C   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S041   75  46249      0       02     2  F   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S132  246 159371      0       11     1  B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S121   93  47684      0       10     0  A   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S209   25  66337      1       21     1  D   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S245   15  21660      0       22     2  F   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S243   38  28671      0       22     2  F   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S227   60  70308      0       21     1  B   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S107  210  89310      0       11     1  B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S142  200 168244      0       12     2  F   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S237   84  58807      0       21     1  B   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S224   29  71940      1       21     1  D   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S003  131  36728      1       00     0  C   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S231  257  51393      0       20     0  A   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S127   90 102935      0       11     1  B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S137  157  39955      0       11     1  B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S036   99  36097      0       00     0  A   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S241   71  40139      0       22     2  F   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S038   34   8830      1       00     0  C   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S114  256  32298      1       11     1  D   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S147   52  90944      0       12     2  F   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S124  127  81038      1       11     1  D   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S017  153  26555      0       01     1  B   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S143  135 106468      0       12     2  F   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S021   71  25060      0       00     0  A   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S047   51  90848      0       02     2  F   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S011   67  47710      0       00     0  A   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S119  275 107738      1       11     1  D   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S219   99  80119      1       21     1  D   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S027   77  27587      0       01     1  B   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S232   99  58540      0       21     1  B   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S246   31  32120      0       22     2  F   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S131  144  31203      0       10     0  A   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S044   23  32861      0       02     2  F   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S129   14  20512      1       11     1  D   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S002   94  49719      0       01     1  B   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S102  172  53477      0       11     1  B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S004   62  39569      1       01     1  D   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S234  130  61928      1       21     1  D   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S244  104  37578      0       22     2  F   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S248   45  42810      0       22     2  F   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S128   56  45576      1       10     0  C   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S016   17  34523      0       00     0  A   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S236  242  73434      0       20     0  A   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S029  100  23329      1       01     1  D   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S018   35  28479      1       00     0  C   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S141   19  46890      0       12     2  F   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S146   27  41880      0       12     2  F   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S048   29  40087      0       02     2  F   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S222   68  65700      0       21     1  B   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S045   23  40986      0       02     2  F   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S008  149  51542      1       00     0  C   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S239   39  25681      1       21     1  D   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S145   36  31203      0       12     2  F   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S242    9  13813      0       22     2  F   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S014  150  26968      1       01     1  D   0</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

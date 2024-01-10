@@ -4,6 +4,9 @@
     <loc>https://statdivlab.github.io/corncob/404.html</loc>
   </url>
   <url>
+    <loc>https://statdivlab.github.io/corncob/articles/corncob-intro-no-phyloseq.html</loc>
+  </url>
+  <url>
     <loc>https://statdivlab.github.io/corncob/articles/corncob-intro.html</loc>
   </url>
   <url>
@@ -70,10 +73,13 @@
     <loc>https://statdivlab.github.io/corncob/reference/hessian.html</loc>
   </url>
   <url>
-    <loc>https://statdivlab.github.io/corncob/reference/ibd_phylo.html</loc>
+    <loc>https://statdivlab.github.io/corncob/reference/ibd_phylo_otu.html</loc>
   </url>
   <url>
-    <loc>https://statdivlab.github.io/corncob/reference/import_phyloseq.html</loc>
+    <loc>https://statdivlab.github.io/corncob/reference/ibd_phylo_sample.html</loc>
+  </url>
+  <url>
+    <loc>https://statdivlab.github.io/corncob/reference/ibd_phylo_taxa.html</loc>
   </url>
   <url>
     <loc>https://statdivlab.github.io/corncob/reference/index.html</loc>
@@ -142,13 +148,28 @@
     <loc>https://statdivlab.github.io/corncob/reference/simulate.bbdml.html</loc>
   </url>
   <url>
-    <loc>https://statdivlab.github.io/corncob/reference/soil_phylo.html</loc>
+    <loc>https://statdivlab.github.io/corncob/reference/soil_phylo_otu.html</loc>
   </url>
   <url>
-    <loc>https://statdivlab.github.io/corncob/reference/soil_phylum_small.html</loc>
+    <loc>https://statdivlab.github.io/corncob/reference/soil_phylo_sample.html</loc>
   </url>
   <url>
-    <loc>https://statdivlab.github.io/corncob/reference/soil_phylum_small_contrasts.html</loc>
+    <loc>https://statdivlab.github.io/corncob/reference/soil_phylo_taxa.html</loc>
+  </url>
+  <url>
+    <loc>https://statdivlab.github.io/corncob/reference/soil_phylum_contrasts_otu.html</loc>
+  </url>
+  <url>
+    <loc>https://statdivlab.github.io/corncob/reference/soil_phylum_contrasts_sample.html</loc>
+  </url>
+  <url>
+    <loc>https://statdivlab.github.io/corncob/reference/soil_phylum_small_otu.html</loc>
+  </url>
+  <url>
+    <loc>https://statdivlab.github.io/corncob/reference/soil_phylum_small_otu1.html</loc>
+  </url>
+  <url>
+    <loc>https://statdivlab.github.io/corncob/reference/soil_phylum_small_sample.html</loc>
   </url>
   <url>
     <loc>https://statdivlab.github.io/corncob/reference/summary.bbdml.html</loc>
@@ -161,5 +182,8 @@
   </url>
   <url>
     <loc>https://statdivlab.github.io/corncob/reference/waldt.html</loc>
+  </url>
+  <url>
+    <loc>https://statdivlab.github.io/corncob/reference/warn_phyloseq.html</loc>
   </url>
 </urlset>

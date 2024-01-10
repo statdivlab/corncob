@@ -24,6 +24,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/corncob-intro-no-phyloseq.html">Introduction to corncob, no phyloseq</a>
     <a class="dropdown-item" href="../articles/corncob-intro.html">Introduction to corncob</a>
   </div>
 </li>
@@ -76,14 +77,14 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_phylum_small</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="bbdml.html">bbdml</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">OTU.1</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_phylum_small_otu1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="bbdml.html">bbdml</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">W</span>, <span class="va">M</span> <span class="op">-</span> <span class="va">W</span><span class="op">)</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
 <span class="r-in"><span>phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
-<span class="r-in"><span>data <span class="op">=</span> <span class="va">soil_phylum_small</span><span class="op">)</span></span></span>
+<span class="r-in"><span>data <span class="op">=</span> <span class="va">soil_phylum_small_otu1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="bbdml.html">bbdml</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">OTU.1</span> <span class="op">~</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="bbdml.html">bbdml</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">W</span>, <span class="va">M</span> <span class="op">-</span> <span class="va">W</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>phi.formula <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>data <span class="op">=</span> <span class="va">soil_phylum_small</span><span class="op">)</span></span></span>
+<span class="r-in"><span>data <span class="op">=</span> <span class="va">soil_phylum_small_otu1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">lrtest</span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4.550571e-05</span>
 </code></pre></div>

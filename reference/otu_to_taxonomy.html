@@ -24,6 +24,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/corncob-intro-no-phyloseq.html">Introduction to corncob, no phyloseq</a>
     <a class="dropdown-item" href="../articles/corncob-intro.html">Introduction to corncob</a>
   </div>
 </li>
@@ -78,29 +79,6 @@
 <p>String vector. Names of taxonomic labels matching labels of <code>OTU</code>.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_phylum_small</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">da_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
-<span class="r-in"><span>                                phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
-<span class="r-in"><span>                                formula_null <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>                                phi.formula_null <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
-<span class="r-in"><span>                                test <span class="op">=</span> <span class="st">"Wald"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>                                data <span class="op">=</span> <span class="va">soil_phylum_small</span>,</span></span>
-<span class="r-in"><span>                                fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">otu_to_taxonomy</span><span class="op">(</span>OTU <span class="op">=</span> <span class="va">da_analysis</span><span class="op">$</span><span class="va">significant_taxa</span>, data <span class="op">=</span> <span class="va">soil_phylum_small</span>,</span></span>
-<span class="r-in"><span> level <span class="op">=</span> <span class="st">"Phylum"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              OTU.1             OTU.15              OTU.8             OTU.69 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   "Proteobacteria" "Gemmatimonadetes"    "Bacteroidetes"    "Cyanobacteria" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              OTU.6             OTU.59            OTU.695            OTU.628 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       "Firmicutes"   "Planctomycetes"  "Armatimonadetes"     "Spirochaetes" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            OTU.703            OTU.908           OTU.1570            OTU.417 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    "Elusimicrobia"             "BRC1"              "OP3"              "FBP" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            OTU.584           OTU.1672 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         "Chlorobi"              "TM6" </span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

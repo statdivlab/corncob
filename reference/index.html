@@ -24,6 +24,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/corncob-intro-no-phyloseq.html">Introduction to corncob, no phyloseq</a>
     <a class="dropdown-item" href="../articles/corncob-intro.html">Introduction to corncob</a>
   </div>
 </li>
@@ -149,14 +150,19 @@
         <dd>Compute Hessian matrix at the MLE</dd>
       </dl><dl><dt>
           
-          <code><a href="ibd_phylo.html">ibd_phylo</a></code> 
+          <code><a href="ibd_phylo_otu.html">ibd_phylo_otu</a></code> 
         </dt>
-        <dd>IBD data.</dd>
+        <dd>IBD data, OTU count data frame.</dd>
       </dl><dl><dt>
           
-          <code><a href="import_phyloseq.html">import_phyloseq</a></code> 
+          <code><a href="ibd_phylo_sample.html">ibd_phylo_sample</a></code> 
         </dt>
-        <dd>Import phyloseq classes for data</dd>
+        <dd>IBD data, sample data frame.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ibd_phylo_taxa.html">ibd_phylo_taxa</a></code> 
+        </dt>
+        <dd>IBD data, taxonomy data frame.</dd>
       </dl><dl><dt>
           
           <code><a href="invfishZ.html">invfishZ()</a></code> 
@@ -259,19 +265,44 @@
         <dd>Simulate from beta-binomial model</dd>
       </dl><dl><dt>
           
-          <code><a href="soil_phylo.html">soil_phylo</a></code> 
+          <code><a href="soil_phylo_otu.html">soil_phylo_otu</a></code> 
         </dt>
-        <dd>Soil data.</dd>
+        <dd>Soil data, otu table as data frame.</dd>
       </dl><dl><dt>
           
-          <code><a href="soil_phylum_small.html">soil_phylum_small</a></code> 
+          <code><a href="soil_phylo_sample.html">soil_phylo_sample</a></code> 
         </dt>
-        <dd>Small soil phylum data for examples</dd>
+        <dd>Soil data, sample data.</dd>
       </dl><dl><dt>
           
-          <code><a href="soil_phylum_small_contrasts.html">soil_phylum_small_contrasts</a></code> 
+          <code><a href="soil_phylo_taxa.html">soil_phylo_taxa</a></code> 
         </dt>
-        <dd>Small soil phylum data for contrasts examples</dd>
+        <dd>Soil data, taxa table as data frame.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="soil_phylum_contrasts_otu.html">soil_phylum_contrasts_otu</a></code> 
+        </dt>
+        <dd>Small soil phylum data for contrasts examples, otu table as data frame</dd>
+      </dl><dl><dt>
+          
+          <code><a href="soil_phylum_contrasts_sample.html">soil_phylum_contrasts_sample</a></code> 
+        </dt>
+        <dd>Small soil phylum data for contrasts examples, sample data as data frame</dd>
+      </dl><dl><dt>
+          
+          <code><a href="soil_phylum_small_otu.html">soil_phylum_small_otu</a></code> 
+        </dt>
+        <dd>Small soil phylum data for examples, otu table as data frame</dd>
+      </dl><dl><dt>
+          
+          <code><a href="soil_phylum_small_otu1.html">soil_phylum_small_otu1</a></code> 
+        </dt>
+        <dd>Small soil phylum data for examples, sample data as data frame combined with counts for OTU 1 and sequencing depth.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="soil_phylum_small_sample.html">soil_phylum_small_sample</a></code> 
+        </dt>
+        <dd>Small soil phylum data for examples, sample data as data frame</dd>
       </dl><dl><dt>
           
           <code><a href="summary.bbdml.html">summary(<i>&lt;bbdml&gt;</i>)</a></code> 
@@ -292,6 +323,11 @@
           <code><a href="waldt.html">waldt()</a></code> 
         </dt>
         <dd>Wald-type t test (model-based or robust)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="warn_phyloseq.html">warn_phyloseq()</a></code> 
+        </dt>
+        <dd>Function to throw error if the `phyloseq` package is called but it is not installed</dd>
       </dl></div>
   </main></div>
 

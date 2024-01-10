@@ -9,18 +9,17 @@
 #'
 #' @return Object of class \code{phyloseq}, with taxa renamed (defaults to OTU1, OTU2, ...), with the original taxa names saved as an attribute.
 #'
-#' @examples
-#' data(soil_phylo)
-#' x <- clean_taxa_names(soil_phylo)
-#' # Use this line to see the original taxa names
-#' attr(x, "original_names")
 #' @export
 clean_taxa_names <- function(x, name = "OTU") {
-  if ("phyloseq" %in% class(x)) {
-    attr(x, "original_names") <- phyloseq::taxa_names(x)
-    phyloseq::taxa_names(x) <- paste0(name, seq(phyloseq::ntaxa(x)))
-    return(x)
+  if (requireNamespace("phyloseq", quietly = TRUE)) {
+    if ("phyloseq" %in% class(x)) {
+      attr(x, "original_names") <- phyloseq::taxa_names(x)
+      phyloseq::taxa_names(x) <- paste0(name, seq(phyloseq::ntaxa(x)))
+      return(x)
+    } else {
+      stop("clean_taxa_names is intended for phyloseq objects!")
+    }
   } else {
-    stop("clean_taxa_names is intended for phyloseq objects!")
+    warn_phyloseq()
   }
 }

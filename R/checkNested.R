@@ -6,16 +6,17 @@
 #' @return \code{TRUE} if \code{mod_null} is nested within \code{mod}, otherwise it throws an error.
 #'
 #' @examples
-#' data(soil_phylum_small)
-#' mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' data(soil_phylum_small_otu1)
+#' mod1 <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
-#' data = soil_phylum_small)
+#' data = soil_phylum_small_otu1)
 #'
-#' mod2 <- bbdml(formula = OTU.1 ~ 1,
+#' mod2 <- bbdml(formula = cbind(W, M - W) ~ 1,
 #' phi.formula = ~ 1,
-#' data = soil_phylum_small)
+#' data = soil_phylum_small_otu1)
 #'
 #' checkNested(mod1, mod2)
+#'
 #' @export
 checkNested <- function(mod, mod_null) {
 

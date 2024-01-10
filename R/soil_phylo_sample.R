@@ -1,11 +1,9 @@
-#' Soil data.
+#' Soil data, sample data.
 #'
-#' A phyloseq object with an OTU table and sample data from a soil microbiome study.
+#' A data frame made from a soil `phyloseq` object with only sample data.
 #'
-#' @format A phyloseq-class experiment-level object with an OTU table and sample data.
+#' @format A phyloseq-class experiment-level object with sample data.
 #' \describe{
-#' \item{otu_table}{OTU table with 7,770 taxa and 119 samples}
-#' \item{tax_table}{taxonomy table}
 #' \item{sam_data}{sample data with the following covariates:
 #' \itemize{
 #' \item \code{Plants}, values \code{0} and \code{1}. Index for different plants
@@ -16,4 +14,4 @@
 #' }}
 #' }
 #' @references Whitman, T., Pepe-Ranney, C., Enders, A., Koechli, C., Campbell, A.,  Buckley, D. H., Lehmann, J. (2016). \emph{Dynamics of microbial community composi-tion and soil organic carbon mineralization in soil following addition of pyrogenic andfresh organic matter}. The ISME journal, 10(12):2918. <doi: 10.1038/ismej.2016.68>.
-"soil_phylo"
+"soil_phylo_sample"

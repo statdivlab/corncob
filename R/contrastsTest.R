@@ -21,15 +21,32 @@
 #' @return An object of class \code{contrastsTest}. List with elements \code{p} containing the p-values for each contrast, \code{p_fdr} containing the p-values after false discovery rate control,  \code{significant_taxa} containing the taxa names of the statistically significant taxa,  \code{contrasts_DA} containing the contrast matrix for parameters associated with the abundance, \code{contrasts_DV} containing the contrast matrix for parameters associated with the dispersion, \code{discriminant_taxa_DA} containing the taxa for which at least one covariate associated with the abundance was perfectly discriminant, \code{discriminant_taxa_DV} containing the taxa for which at least one covariate associated with the dispersion was perfectly discriminant, and \code{data} containing the data used to fit the models.
 
 #' @examples
-#' # phyloseq example
-#' data(soil_phylum_small_contrasts)
+#'
+#' # data frame example
+#' data(soil_phylum_contrasts_sample)
+#' data(soil_phylum_contrasts_otu)
 #' da_analysis <- contrastsTest(formula = ~ DayAmdmt,
 #'                              phi.formula = ~ DayAmdmt,
 #'                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
 #'                                                  "DayAmdmt22 - DayAmdmt21"),
-#'                              data = soil_phylum_small_contrasts,
+#'                              data = soil_phylum_contrasts_otu,
+#'                              sample_data = soil_phylum_contrasts_sample,
 #'                              fdr_cutoff = 0.05,
 #'                              try_only = 1:5)
+#'
+#' # phyloseq example (only run if you have phyloseq installed)
+#' \dontrun{
+#' contrasts_phylo <- phyloseq::phyloseq(phyloseq::sample_data(soil_phylum_contrasts_sample),
+#' phyloseq::otu_table(soil_phylum_contrasts_otu, taxa_are_rows = TRUE))
+#' da_analysis <- contrastsTest(formula = ~ DayAmdmt,
+#'                              phi.formula = ~ DayAmdmt,
+#'                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
+#'                                                  "DayAmdmt22 - DayAmdmt21"),
+#'                              data = contrasts_phylo,
+#'                              fdr_cutoff = 0.05,
+#'                              try_only = 1:5)
+#' }
+#'
 #' @export
 contrastsTest <- function(formula, phi.formula,
                           contrasts_DA = NULL,
@@ -67,23 +84,35 @@ contrastsTest <- function(formula, phi.formula,
 
   # Convert phyloseq objects
   if ("phyloseq" %in% class(data)) {
-    # Set up response
-    taxanames <- phyloseq::taxa_names(data)
+    if (requireNamespace("phyloseq", quietly = TRUE)) {
+      # Set up response
+      taxanames <- phyloseq::taxa_names(data)
+      sample_data <- data.frame(phyloseq::sample_data(data))
+    } else {
+      warn_phyloseq()
+    }
   } else if (is.matrix(data) || is.data.frame(data)) {
 
-    # use phyloseq
-    OTU <- phyloseq::otu_table(data, taxa_are_rows = taxa_are_rows)
+    # # use phyloseq
+    # OTU <- phyloseq::otu_table(data, taxa_are_rows = taxa_are_rows)
+    #
+    # # Make sample data
+    # sampledata <- phyloseq::sample_data(data.frame(
+    #   sample_data,
+    #   row.names = phyloseq::sample_names(OTU)
+    # ))
+    #
+    # # Make phyloseq object
+    # data <- phyloseq::phyloseq(OTU, sampledata)
+    # # Set up response
+    # taxanames <- phyloseq::taxa_names(data)
 
-    # Make sample data
-    sampledata <- phyloseq::sample_data(data.frame(
-      sample_data,
-      row.names = phyloseq::sample_names(OTU)
-    ))
+    if (taxa_are_rows) {
+      data <- t(data)
+    }
+    taxanames <- colnames(data)
+    M <- rowSums(data)
 
-    # Make phyloseq object
-    data <- phyloseq::phyloseq(OTU, sampledata)
-    # Set up response
-    taxanames <- phyloseq::taxa_names(data)
   } else {
     stop("Input must be either data frame, matrix, or phyloseq object!")
   }
@@ -94,8 +123,8 @@ contrastsTest <- function(formula, phi.formula,
   #model_summaries <- rep(list(NA), length(taxanames))
   # check to make sure inits is of the same length
   if (!is.null(inits)) {
-    ncol1 <- ncol(stats::model.matrix(object = formula, data = data.frame(sample_data(data))))
-    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = data.frame(sample_data(data))))
+    ncol1 <- ncol(stats::model.matrix(object = formula, data = sample_data))
+    ncol2 <- ncol(stats::model.matrix(object = phi.formula, data = sample_data))
     if (length(inits) != ncol1 + ncol2) {
       stop("inits must match number of regression parameters in formula and phi.formula!")
     }
@@ -112,7 +141,12 @@ contrastsTest <- function(formula, phi.formula,
   for (i in try_only) {
 
     # Subset data to only select that taxa
-    data_i <- convert_phylo(data, select = taxanames[i])
+    if ("phyloseq" %in% class(data)) {
+      data_i <- convert_phylo(data, select = taxanames[i])
+    } else {
+      response_i <- data.frame(W = data[, taxanames[i]], M = M)
+      data_i <- cbind(response_i, sample_data)
+    }
 
     if (sum(data_i$W) == 0) {
       perfDisc_DA[i] <- TRUE

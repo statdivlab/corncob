@@ -1,6 +1,6 @@
 #' Small soil phylum data for contrasts examples, otu table as data frame
 #'
-#' A small subset of \code{\link{soil_phylo}} used for examples of testing contrasts. A data frame made from the `phyloseq` object with only otu counts.
+#' A small subset of \code{\link{soil_phylo_otu}} used for examples of testing contrasts. A data frame made from the `phyloseq` object with only otu counts.
 #'
 #' @format A phyloseq-class experiment-level object with an OTU table.
 #' \describe{

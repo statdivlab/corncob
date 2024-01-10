@@ -23,7 +23,7 @@ A phyloseq-class experiment-level object with sample data and OTU 1 counts.
 soil_phylum_small_otu1
 }
 \description{
-A small subset of \code{\link{soil_phylo}} used for examples. A data frame made from the `phyloseq` object with only sample data.
+A small subset of \code{\link{soil_phylo_sample}} used for examples. A data frame made from the `phyloseq` object with only sample data and counts for OTU 1.
 }
 \references{
 Whitman, T., Pepe-Ranney, C., Enders, A., Koechli, C., Campbell, A.,  Buckley, D. H., Lehmann, J. (2016). \emph{Dynamics of microbial community composi-tion and soil organic carbon mineralization in soil following addition of pyrogenic andfresh organic matter}. The ISME journal, 10(12):2918. <doi: 10.1038/ismej.2016.68>.

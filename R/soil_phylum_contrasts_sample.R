@@ -1,6 +1,6 @@
 #' Small soil phylum data for contrasts examples, sample data as data frame
 #'
-#' A small subset of \code{\link{soil_phylo}} used for examples of testing contrasts. A data frame made from the `phyloseq` object with only sample data.
+#' A small subset of \code{\link{soil_phylo_sample}} used for examples of testing contrasts. A data frame made from the `phyloseq` object with only sample data.
 #'
 #' @format A phyloseq-class experiment-level object with sample data.
 #' \describe{

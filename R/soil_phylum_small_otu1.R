@@ -1,6 +1,6 @@
 #' Small soil phylum data for examples, sample data as data frame combined with counts for OTU 1 and sequencing depth.
 #'
-#' A small subset of \code{\link{soil_phylo}} used for examples. A data frame made from the `phyloseq` object with only sample data.
+#' A small subset of \code{\link{soil_phylo_sample}} used for examples. A data frame made from the `phyloseq` object with only sample data and counts for OTU 1.
 #'
 #' @format A phyloseq-class experiment-level object with sample data and OTU 1 counts.
 #' \describe{

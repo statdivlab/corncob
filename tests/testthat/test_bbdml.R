@@ -1,5 +1,4 @@
 library(corncob)
-suppressWarnings(library(phyloseq))
 context("Test bbdml")
 
 set.seed(1)
@@ -127,20 +126,6 @@ test_that("checking for perfectly discriminant", {
                        phi.link = "logit",
                        nstart = 1))
 })
-
-data(soil_phylo)
-soil <- phyloseq::subset_samples(soil_phylo, DayAmdmt %in% c(11,21))
-
-out_phylo <- bbdml(formula = OTU.4 ~ 1,
-                   phi.formula = ~ 1,
-                   data = soil)
-
-
-test_that("bbdml works with phyloseq object", {
-  expect_is(out_phylo, "bbdml")
-})
-
-
 
 test_that("bbdml returns different model-based and robust standard errors", {
 

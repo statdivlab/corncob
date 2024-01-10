@@ -18,10 +18,10 @@ Sandwich variance-covariance matrix
 Compute sandwich standard errors. Legacy function. Use sand_vcov instead.
 }
 \examples{
-data(soil_phylum_small)
-mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+data(soil_phylum_small_otu1)
+mod <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
-data = soil_phylum_small)
+data = soil_phylum_small_otu1)
 sandSE(mod)
 
 }

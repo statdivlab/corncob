@@ -20,10 +20,10 @@ so we return the consistent estimate using sample moments:
 Compute Hessian matrix at the MLE
 }
 \examples{
-data(soil_phylum_small)
-mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+data(soil_phylum_small_otu1)
+mod <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
-data = soil_phylum_small)
+data = soil_phylum_small_otu1)
 hessian(mod)
 
 }

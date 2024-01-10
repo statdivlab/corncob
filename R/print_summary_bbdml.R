@@ -9,10 +9,10 @@
 #' @return \code{NULL}. Displays printed model summary.
 #'
 #' @examples
-#' data(soil_phylum_small)
-#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' data(soil_phylum_small_otu1)
+#' mod <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
-#' data = soil_phylum_small)
+#' data = soil_phylum_small_otu1)
 #' print(summary(mod))
 #' @export
 print.summary.bbdml <- function(x, digits = max(3L, getOption("digits") - 3L),

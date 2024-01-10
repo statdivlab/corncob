@@ -17,8 +17,3 @@ A \code{data.frame} object, with elements \code{W} as the observed counts, \code
 \description{
 Function to subset and convert phyloseq data
 }
-\examples{
-data(soil_phylo)
-convert_phylo(soil_phylo, "OTU.43")
-
-}

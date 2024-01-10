@@ -8,10 +8,10 @@
 #' \eqn{\hat{A}(\hat{\theta}) = \sum_i \frac{\partial^2}{\partial \theta \partial \theta^T} l(\theta, W_i)} evaluated at \eqn{\theta = \hat{\theta}}.
 #'
 #' @examples
-#' data(soil_phylum_small)
-#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' data(soil_phylum_small_otu1)
+#' mod <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
-#' data = soil_phylum_small)
+#' data = soil_phylum_small_otu1)
 #' hessian(mod)
 #'
 #' @export

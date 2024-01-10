@@ -7,10 +7,10 @@
 #' @return Object of class \code{summary.bbdml}. Displays printed model summary.
 #'
 #' @examples
-#' data(soil_phylum_small)
-#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' data(soil_phylum_small_otu1)
+#' mod <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
-#' data = soil_phylum_small)
+#' data = soil_phylum_small_otu1)
 #' summary(mod)
 #' @export
 summary.bbdml <- function(object, ...) {

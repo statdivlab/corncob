@@ -38,14 +38,14 @@ P-value from Wald test.
 Wald-type chi-squared test
 }
 \examples{
-data(soil_phylum_small)
-mod1 <- bbdml(formula = OTU.1 ~ DayAmdmt,
+data(soil_phylum_small_otu1)
+mod1 <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 phi.formula = ~ DayAmdmt,
-data = soil_phylum_small)
+data = soil_phylum_small_otu1)
 
-mod2 <- bbdml(formula = OTU.1 ~ 1,
+mod2 <- bbdml(formula = cbind(W, M - W) ~ 1,
 phi.formula = ~ 1,
-data = soil_phylum_small)
+data = soil_phylum_small_otu1)
 
 # Example using mod_null
 waldchisq(mod = mod1, mod_null = mod2)

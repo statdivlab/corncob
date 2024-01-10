@@ -15,10 +15,10 @@
 #' @return Object of class \code{ggplot}. Plot of \code{bbdml} model fit with 95% prediction intervals.
 #'
 #' @examples
-#' data(soil_phylum_small)
-#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' data(soil_phylum_small_otu1)
+#' mod <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
-#' data = soil_phylum_small)
+#' data = soil_phylum_small_otu1)
 #' # Here we use B = 50 for quick demonstration purposes.
 #' # In practice, we recommend a higher value for B for more accurate intervals
 #' plot(mod, color = "DayAmdmt", B = 50)

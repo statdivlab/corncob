@@ -84,14 +84,32 @@ Identify differentially-abundant and differentially-variable taxa
 See package vignette for details and example usage. Make sure the number of columns in all of the initializations are correct! \code{inits} probably shouldn't match \code{inits_null}. To use a contrast matrix, see \code{\link{contrastsTest}}.
 }
 \examples{
-# phyloseq example
-data(soil_phylum_small)
+
+# data frame example
+data(soil_phylum_small_sample)
+data(soil_phylum_small_otu)
 da_analysis <- differentialTest(formula = ~ DayAmdmt,
                                 phi.formula = ~ DayAmdmt,
                                 formula_null = ~ 1,
                                 phi.formula_null = ~ DayAmdmt,
                                 test = "Wald", boot = FALSE,
-                                data = soil_phylum_small,
+                                data = soil_phylum_small_otu,
+                                sample_data = soil_phylum_small_sample,
                                 fdr_cutoff = 0.05,
                                 try_only = 1:5)
+
+# phyloseq example (only run if you have phyloseq installed)
+\dontrun{
+data_phylo <- phyloseq::phyloseq(phyloseq::sample_data(soil_phylum_small_sample),
+phyloseq::otu_table(soil_phylum_small_otu, taxa_are_rows = TRUE))
+da_analysis <- differentialTest(formula = ~ DayAmdmt,
+                               phi.formula = ~ DayAmdmt,
+                               formula_null = ~ 1,
+                               phi.formula_null = ~ DayAmdmt,
+                               test = "Wald", boot = FALSE,
+                               data = data_phylo,
+                               fdr_cutoff = 0.05,
+                               try_only = 1:5)
+}
+
 }

@@ -7,10 +7,10 @@
 #' @return Score at the MLE. For \eqn{G(\theta, w)} score function, returns \eqn{\sum_i G(\hat{\theta}, W_i)} if get_score_covariance = FALSE.
 #'
 #' @examples
-#' data(soil_phylum_small)
-#' mod <- bbdml(formula = OTU.1 ~ DayAmdmt,
+#' data(soil_phylum_small_otu1)
+#' mod <- bbdml(formula = cbind(W, M - W) ~ DayAmdmt,
 #' phi.formula = ~ DayAmdmt,
-#' data = soil_phylum_small)
+#' data = soil_phylum_small_otu1)
 #' score(mod)
 #'
 #' @export

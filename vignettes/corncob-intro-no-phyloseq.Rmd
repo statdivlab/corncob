@@ -46,20 +46,19 @@ remotes::install_github("statdivlab/corncob")
 ```
 
 
-To begin, we load our example data set. Although the original data includes information about 7770 OTUs and 119 samples, for computational reasons we will look at a smaller dataset that is aggregated to the phylum level and subsetted to include only some of the samples. This dataset includes 39 phyla and 32 samples. 
+To begin, we load our example data set we load our example data set as three different data frames
 
 ```{r, message = FALSE }
 library(corncob)
 library(magrittr)
-data(soil_phylum_small_sample)
-sample_data <- soil_phylum_small_sample
-data(soil_phylum_small_otu)
-data <- soil_phylum_small_otu
+data(soil_phylo_sample)
+data(soil_phylo_otu)
+data(soil_phylo_taxa)
 ```
 
 We can see that we have 5 sample variables. Let's look at the first few observations.
 ```{r }
-head(sample_data)
+head(soil_phylo_sample)
 ```
 Our covariates are as follows:
 \begin{itemize}
@@ -72,12 +71,28 @@ Our covariates are as follows:
 
 Additionally, we have a table that gives us counts of the phyla by sample. Let's take a look at the first 5 phyla and the first 5 samples. 
 ```{r }
-data[1:5, 1:5]
+soil_phylo_otu[1:5, 1:5]
+```
+
+Finally, we have a taxonomy table with 7 taxonomic ranks. 
+```{r }
+soil_phylo_taxa[1:3, ]
 ```
 
 # Fitting a Model
 
-Now, let's set up our model. We will demonstrate with Proteobacteria. We will need to make a data frame that includes our sample data as well as the Proteobacteria counts and sequencing depths for each sample. 
+First, let's subset our samples to only include those with the `DayAmdmt` covariate equal to 11 or 21 and then collapse the samples to the phylum level. We have already done this and saved the resulting sample data frame and otu data frame. 
+
+```{r }
+data(soil_phylum_small_sample)
+sample_data <- soil_phylum_small_sample
+data(soil_phylum_small_otu)
+data <- soil_phylum_small_otu
+```
+
+Note that collapsing the samples is not necessary, and this model can work at any taxonomic rank. However, we will later be fitting a model to every taxa. We can see that by agglomerating taxa to the phylum level, we have gone from from 7770 to 40 taxa. Thus we collapse in order to increase the speed for the purposes of this tutorial.
+
+Now we fit our model. We will demonstrate with Proteobacteria. We will need to make a data frame that includes our sample data as well as the Proteobacteria counts and sequencing depths for each sample. 
 
 ```{r}
 pro_data <- cbind(sample_data, 
@@ -124,7 +139,6 @@ plot(corncob, color = "DayAmdmt", B = 50)
 
 Notice that this plot also reorders our samples so that groups appear together so that they are easier to compare.
 
-
 We can observe on this plot that it might be of interest to distinguish between the two groups with covariates. The average empirical relative abundance for the samples with `DayAmdmt = 21` tends to be lower and less variable than the samples with `DayAmdmt = 11`.
 
 # Adding covariates
@@ -156,6 +170,7 @@ Let's use a likelihood ratio test to select our final model for this taxon. We w
 ```{r }
 lrtest(mod_null = corncob, mod = corncob_da)
 ```
+
 We obtain a p-value much smaller than a cut-off of 0.05. Therefore we conclude that there is a statistically significant difference in the likelihood of the two models. Thus, we probably want to use the model with covariates for this taxon.
 
 # Parameter Interpretation
@@ -165,6 +180,7 @@ Now that we have chosen our model, let's interpret our model output. To see a su
 ```{r }
 summary(corncob_da)
 ```
+
 This output will look familiar if you have done regression analysis in R in the past. Covariates associated with the expected relative abundance are presented separately from covariates associated with the variance of the counts are preceded by.
 
 From this model summary, we can see that the `DayAmdmt21` abundance coefficient is negative and statistically significant. This suggests that this taxon is differentially-abundant across `DayAmdmt`, and that samples with `DayAmdmt = 21` are expected to have a lower relative abundance. This matches what we saw from the observed abundances.
@@ -210,7 +226,6 @@ da_analysis$significant_taxa
 
 In this case, we identified `r length(da_analysis$significant_taxa)` taxa that are differentially-abundant across `DayAmdmt` (out of the 39 taxa tested).
 
-
 We can see a list of differentially-variable taxa using:
 
 ```{r }
@@ -229,13 +244,11 @@ dv_analysis$significant_taxa
 
 In this case, we identified `r length(dv_analysis$significant_taxa)` taxa that are differentially-variable across `DayAmdmt` (out of the 40 taxa tested).
 
-
 We can examine a subset of the p-values of our tests using:
 
 ```{r }
 da_analysis$p[1:5]
 ```
-
 
 We can examine a subset of the p-values after controlling for the false discovery rate using:
 
@@ -283,14 +296,14 @@ Testing for differential abundance across `Day`, without controlling for anythin
 
 ```{r }
 ex1 <- differentialTest(formula = ~ Day,
-                                 phi.formula = ~ 1,
-                                 formula_null = ~ 1,
-                                 phi.formula_null = ~ 1,
-                                 data = data,
-                                 taxa_are_rows = TRUE,
-                                 sample_data = sample_data, 
-                                 test = "Wald", boot = FALSE,
-                                 fdr_cutoff = 0.05)
+                        phi.formula = ~ 1,
+                        formula_null = ~ 1,
+                        phi.formula_null = ~ 1,
+                        data = data,
+                        taxa_are_rows = TRUE,
+                        sample_data = sample_data, 
+                        test = "Wald", boot = FALSE,
+                        fdr_cutoff = 0.05)
 plot(ex1)
 ```
 
@@ -298,14 +311,14 @@ Testing for differential abundance across `Day`, controlling for the effect of `
 
 ```{r }
 ex2 <- differentialTest(formula = ~ Day,
-                                 phi.formula = ~ Day,
-                                 formula_null = ~ 1,
-                                 phi.formula_null = ~ Day,
-                                 data = data,
-                                 taxa_are_rows = TRUE,
-                                 sample_data = sample_data, 
-                                 test = "Wald", boot = FALSE,
-                                 fdr_cutoff = 0.05)
+                        phi.formula = ~ Day,
+                        formula_null = ~ 1,
+                        phi.formula_null = ~ Day,
+                        data = data,
+                        taxa_are_rows = TRUE,
+                        sample_data = sample_data, 
+                        test = "Wald", boot = FALSE,
+                        fdr_cutoff = 0.05)
 plot(ex2)
 ```
 
@@ -313,14 +326,14 @@ Jointly testing for differential abundance and differential variability across `
 
 ```{r }
 ex3 <- differentialTest(formula = ~ Day,
-                                 phi.formula = ~ Day,
-                                 formula_null = ~ 1,
-                                 phi.formula_null = ~ 1,
-                                 data = data,
-                                 taxa_are_rows = TRUE,
-                                 sample_data = sample_data, 
-                                 test = "Wald", boot = FALSE,
-                                 fdr_cutoff = 0.05)
+                        phi.formula = ~ Day,
+                        formula_null = ~ 1,
+                        phi.formula_null = ~ 1,
+                        data = data,
+                        taxa_are_rows = TRUE,
+                        sample_data = sample_data, 
+                        test = "Wald", boot = FALSE,
+                        fdr_cutoff = 0.05)
 plot(ex3)
 ```
 

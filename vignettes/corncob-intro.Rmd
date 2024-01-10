@@ -55,13 +55,18 @@ remotes::install_github("statdivlab/corncob")
 ```
 
 
-To begin, we load our example data set as a `phyloseq` object.
+To begin, we load our example data set as three different data frames and then combine them together into a `phyloseq` object.
 
 ```{r, message = FALSE, eval = phy}
 library(corncob)
 library(phyloseq)
 library(magrittr)
-data(soil_phylo)
+data(soil_phylo_sample)
+data(soil_phylo_otu)
+data(soil_phylo_taxa)
+soil_phylo <- phyloseq::phyloseq(phyloseq::sample_data(soil_phylo_sample),
+                                phyloseq::otu_table(soil_phylo_otu, taxa_are_rows = TRUE),
+                                phyloseq::tax_table(soil_phylo_taxa))
 ```
 
 If you are unfamiliar with `phyloseq`, we can view a description of the data using:
@@ -98,16 +103,11 @@ tax_table(soil_phylo)[1:3, ]
 Now, let's set up our model. 
 
 First, let's subset our samples to only include those with the `DayAmdmt` covariate equal to 11 or 21 and then collapse the samples to the phylum level.
-The code to generate this data from `soil_phylo` is commented out.
-
-
 
 ```{r, eval = phy}
-# soil <- soil_phylo %>% 
-#             phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
-#             tax_glom("Phylum") 
-data(soil_phylum_small)
-soil <- soil_phylum_small
+soil <- soil_phylo %>% 
+            phyloseq::subset_samples(DayAmdmt %in% c(11,21)) %>%
+            phyloseq::tax_glom("Phylum") 
 ```
 
 Let's examine the data and the taxonomy table again.
@@ -420,9 +420,14 @@ plot(ex6)
 We now demonstrate examples with the IBD data set. We again begin by agglomerating for purposes of demonstration. We agglomerate to the genus level.
 
 ```{r, eval = phy}
-data(ibd_phylo)
+data(ibd_phylo_sample)
+data(ibd_phylo_otu)
+data(ibd_phylo_taxa)
+ibd_phylo <-  phyloseq::phyloseq(phyloseq::sample_data(ibd_phylo_sample), 
+                                 phyloseq::otu_table(ibd_phylo_otu, taxa_are_rows = TRUE),
+                                 phyloseq::tax_table(ibd_phylo_taxa))
 ibd <- ibd_phylo %>% 
-            tax_glom("Genus") 
+            phyloseq::tax_glom("Genus") 
 ```
 
 

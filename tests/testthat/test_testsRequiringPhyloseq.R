@@ -1,6 +1,14 @@
 library(corncob)
 context("Tests that use phyloseq")
 
+data("soil_phylo_sample")
+data("soil_phylo_otu")
+data("soil_phylo_taxa")
+data("soil_phylum_small_sample")
+data("soil_phylum_small_otu")
+data("soil_phylum_contrasts_sample")
+data("soil_phylum_contrasts_otu")
+
 if (requireNamespace("phyloseq", quietly = TRUE)) {
   # make phyloseq objects from data
   soil_phylo <- phyloseq::phyloseq(phyloseq::sample_data(soil_phylo_sample),

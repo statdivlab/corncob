@@ -312,8 +312,8 @@ df <- plot(da_analysis, data_only = TRUE)
 
 # we can easily remove special characters used in our formatting steps
 df <- df %>%
-  mutate(variable = gsub("\nDifferential Abundance", "",
-                         variable, fixed = TRUE))
+  dplyr::mutate(variable = gsub("\nDifferential Abundance", "",
+                                variable, fixed = TRUE))
 
 head(df)
 ```

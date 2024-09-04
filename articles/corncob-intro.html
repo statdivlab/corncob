@@ -65,7 +65,7 @@
                         <h4 data-toc-skip class="author">Bryan D
 Martin</h4>
             
-            <h4 data-toc-skip class="date">2024-08-20</h4>
+            <h4 data-toc-skip class="date">2024-09-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/statdivlab/corncob/blob/main/vignettes/corncob-intro.Rmd" class="external-link"><code>vignettes/corncob-intro.Rmd</code></a></small>
       <div class="d-none name"><code>corncob-intro.Rmd</code></div>
@@ -217,6 +217,8 @@ abundance scale. To do this, we simply type:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">corncob</span>, B <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-14-1.png" width="768"></p>
+<p>You can access the documentation for this plotting function by typing
+<code><a href="../reference/plot.bbdml.html">?plot.bbdml</a></code> into the console.</p>
 <p>The points represent the relative abundances. The bars represent the
 95% prediction intervals for the observed relative abundance by sample.
 The parameter <code>B</code> determines the number of bootstrap
@@ -246,6 +248,20 @@ distinguish between the two groups with covariates. The average
 empirical relative abundance for the samples with
 <code>DayAmdmt = 21</code> tends to be lower and less variable than the
 samples with <code>DayAmdmt = 11</code>.</p>
+<p>If you wish to instead make your own custom plots with these same
+coefficients, you can easily extract the data used to generate the plots
+above from the <code>plot</code> function by setting
+<code>data_only = TRUE</code>:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">corncob</span>, color <span class="op">=</span> <span class="st">"DayAmdmt"</span>, B <span class="op">=</span> <span class="fl">50</span>, data_only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##             RA samples      ymin      ymax</span></span>
+<span><span class="co">## S204 0.3619402    S204 0.3141906 0.4346589</span></span>
+<span><span class="co">## S112 0.3751641    S112 0.3134597 0.4295930</span></span>
+<span><span class="co">## S134 0.3416663    S134 0.2808809 0.4330165</span></span>
+<span><span class="co">## S207 0.3283367    S207 0.3168087 0.4314966</span></span>
+<span><span class="co">## S202 0.3543272    S202 0.3020624 0.4102672</span></span>
+<span><span class="co">## S139 0.3712145    S139 0.3203708 0.4624249</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="adding-covariates">Adding covariates<a class="anchor" aria-label="anchor" href="#adding-covariates"></a>
@@ -254,18 +270,18 @@ samples with <code>DayAmdmt = 11</code>.</p>
 variability of the counts with <code>DayAmdmt</code> as a covariate. We
 do this by modifying <code>formula</code> and <code>phi.formula</code>
 as:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">corncob_da</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bbdml.html">bbdml</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">OTU.1</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
 <span>             phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
 <span>             data <span class="op">=</span> <span class="va">soil</span><span class="op">)</span></span></code></pre></div>
 <p>Let’s also plot this data on both the total count and relative
 abundance scales.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">corncob_da</span>, color <span class="op">=</span> <span class="st">"DayAmdmt"</span>, total <span class="op">=</span> <span class="cn">TRUE</span>, B <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-19-1.png" width="768"></p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">corncob_da</span>, color <span class="op">=</span> <span class="st">"DayAmdmt"</span>, B <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
 <p><img src="corncob-intro_files/figure-html/unnamed-chunk-20-1.png" width="768"></p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">corncob_da</span>, color <span class="op">=</span> <span class="st">"DayAmdmt"</span>, B <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-21-1.png" width="768"></p>
 <p>Visually, the model with covariates seems to provide a much better
 fit to the data, but how can we compare the two models
 statistically?</p>
@@ -277,7 +293,7 @@ statistically?</p>
 taxon. We want to test the null hypothesis that the likelihood of the
 model with covariates is equal to the likelihood of the model without
 covariates. To do this test, we use:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/lrtest.html">lrtest</a></span><span class="op">(</span>mod_null <span class="op">=</span> <span class="va">corncob</span>, mod <span class="op">=</span> <span class="va">corncob_da</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 4.550571e-05</span></span></code></pre>
 <p>We obtain a p-value much smaller than a cut-off of 0.05. Therefore we
@@ -290,7 +306,7 @@ with covariates for this taxon.</p>
 </h2>
 <p>Now that we have chosen our model, let’s interpret our model output.
 To see a summary of the model, type:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">corncob_da</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Call:</span></span>
@@ -352,7 +368,7 @@ examples, starting with a test for differential abundance across the
 <code>DayAmdmt</code> coefficient.</p>
 <p>We set <code>fdr_cutoff</code> to be our controlled false discovery
 rate.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">da_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
@@ -362,7 +378,7 @@ rate.</p>
 <span>                                 data <span class="op">=</span> <span class="va">soil</span>,</span>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
 <p>We can see the output of the function by calling it:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">da_analysis</span></span></code></pre></div>
 <pre><code><span><span class="co">## Object of class differentialTest </span></span>
 <span><span class="co">## </span></span>
@@ -378,7 +394,7 @@ rate.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## plot( ) to see a plot of tested coefficients from significant taxa</span></span></code></pre>
 <p>We can see a list of differentially-abundant taxa using:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">da_analysis</span><span class="op">$</span><span class="va">significant_taxa</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "OTU.1"    "OTU.15"   "OTU.8"    "OTU.69"   "OTU.6"    "OTU.59"  </span></span>
 <span><span class="co">##  [7] "OTU.695"  "OTU.628"  "OTU.703"  "OTU.908"  "OTU.1570" "OTU.417" </span></span>
@@ -387,7 +403,7 @@ rate.</p>
 differentially-abundant across <code>DayAmdmt</code> (out of the 39 taxa
 tested).</p>
 <p>We can see a list of differentially-variable taxa using:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">dv_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
@@ -402,7 +418,7 @@ tested).</p>
 <code>otu_to_taxonomy</code>. We supply our OTU labels as strings for
 the <code>OTU</code> argument. We supply the <code>phyloseq</code>
 object for the <code>data</code> argument.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/otu_to_taxonomy.html">otu_to_taxonomy</a></span><span class="op">(</span>OTU <span class="op">=</span> <span class="va">da_analysis</span><span class="op">$</span><span class="va">significant_taxa</span>, data <span class="op">=</span> <span class="va">soil</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                       OTU.1                      OTU.15 </span></span>
 <span><span class="co">##   "Bacteria_Proteobacteria" "Bacteria_Gemmatimonadetes" </span></span>
@@ -418,7 +434,7 @@ object for the <code>data</code> argument.</p>
 <span><span class="co">##              "Bacteria_OP3"              "Bacteria_FBP" </span></span>
 <span><span class="co">##                     OTU.584                    OTU.1672 </span></span>
 <span><span class="co">##         "Bacteria_Chlorobi"              "Bacteria_TM6"</span></span></code></pre>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/otu_to_taxonomy.html">otu_to_taxonomy</a></span><span class="op">(</span>OTU <span class="op">=</span> <span class="va">dv_analysis</span><span class="op">$</span><span class="va">significant_taxa</span>, data <span class="op">=</span> <span class="va">soil</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                   OTU.19                   OTU.69                  OTU.628 </span></span>
 <span><span class="co">## "Bacteria_Acidobacteria" "Bacteria_Cyanobacteria"  "Bacteria_Spirochaetes" </span></span>
@@ -428,34 +444,58 @@ object for the <code>data</code> argument.</p>
 differentially-variable across <code>DayAmdmt</code> (out of the 40 taxa
 tested).</p>
 <p>We can examine a subset of the p-values of our tests using:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">da_analysis</span><span class="op">$</span><span class="va">p</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##       OTU.19        OTU.1       OTU.15        OTU.3      OTU.133 </span></span>
 <span><span class="co">## 6.509417e-01 3.642734e-05 3.270448e-13 3.703096e-01 1.031419e-01</span></span></code></pre>
 <p>We can examine a subset of the p-values after controlling for the
 false discovery rate using:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">da_analysis</span><span class="op">$</span><span class="va">p_fdr</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##       OTU.19        OTU.1       OTU.15        OTU.3      OTU.133 </span></span>
 <span><span class="co">## 7.811301e-01 1.457094e-04 3.924537e-12 5.172748e-01 2.062838e-01</span></span></code></pre>
 <p>where the values are now adjusted to control the false discovery rate
 at 0.05.</p>
-<p>We can also plot the model coefficients of our results:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<p>Now we can use the built-in plotting function in corncob to view the
+the model coefficients used in testing differential abundance across
+<code>DayAmdmt</code> via the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function. You can
+access the documentation for this plotting function by typing
+<code><a href="../reference/plot.differentialTest.html">?plot.differentialTest</a></code> into the console.</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">da_analysis</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-31-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-32-1.png" width="768"></p>
 <p>Here, we can see that for <code>Bacteria_Armatimonadetes</code>, the
 effect of <code>DayAmdmt21</code> is positive compared to the baseline
 (in this case, <code>DayAmdmt11</code>).</p>
+<p>If you wish to instead make your own custom plots with these same
+coefficients, you can easily extract the data used to generate the plots
+above from the <code>plot</code> function by setting
+<code>data_only = TRUE</code>:</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">da_analysis</span>, data_only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># we can easily remove special characters used in our formatting steps</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"\nDifferential Abundance"</span>, <span class="st">""</span>,</span>
+<span>                                <span class="va">variable</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##            x        xmin        xmax                      taxa   variable</span></span>
+<span><span class="co">## 1 -0.1679129 -0.24761731 -0.08820844   Bacteria_Proteobacteria DayAmdmt21</span></span>
+<span><span class="co">## 2  0.3119623  0.22800588  0.39591870 Bacteria_Gemmatimonadetes DayAmdmt21</span></span>
+<span><span class="co">## 3  0.2306765  0.09148981  0.36986312    Bacteria_Bacteroidetes DayAmdmt21</span></span>
+<span><span class="co">## 4  1.7090454  1.33732670  2.08076404    Bacteria_Cyanobacteria DayAmdmt21</span></span>
+<span><span class="co">## 5 -0.3087530 -0.49665466 -0.12085125       Bacteria_Firmicutes DayAmdmt21</span></span>
+<span><span class="co">## 6  0.2013158  0.11895313  0.28367838   Bacteria_Planctomycetes DayAmdmt21</span></span></code></pre>
 <p>Finally, we can see a list of any taxa for which we were not able to
 fit a model using:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">da_analysis</span><span class="op">$</span><span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">names</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "OTU.4206" "OTU.8773" "OTU.8219"</span></span></code></pre>
 <p>In this case, we weren’t able to fit <code>OTU.4206</code>
 automatically. It’s worthwhile to investigate the OTU individually if
 this is the case. First let’s check what phylum this represents.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/otu_to_taxonomy.html">otu_to_taxonomy</a></span><span class="op">(</span>OTU <span class="op">=</span> <span class="st">"OTU.4206"</span>, data <span class="op">=</span> <span class="va">soil</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##        OTU.4206 </span></span>
 <span><span class="co">## "Bacteria_GN04"</span></span></code></pre>
@@ -464,7 +504,7 @@ enough observations, or it may just be that the initializations were
 invalid for that taxa and it needs to be re-evaluated with new
 initializations.</p>
 <p>Let’s first try examining the data.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html" class="external-link">otu_table</a></span><span class="op">(</span><span class="va">soil</span><span class="op">)</span><span class="op">[</span><span class="st">"OTU.4206"</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## OTU Table:          [1 taxa and 32 samples]</span></span>
 <span><span class="co">##                      taxa are rows</span></span>
@@ -478,7 +518,7 @@ initializations.</p>
 for <code>S102</code>, where we observed a single count. Let’s try
 fitting the model individually by letting the model select the
 initializations automatically.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">check_GN04</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bbdml.html">bbdml</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">OTU.4206</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
 <span>                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span>
 <span>                 data <span class="op">=</span> <span class="va">soil</span><span class="op">)</span></span></code></pre></div>
@@ -508,12 +548,12 @@ demonstration of the flexibility of the model only. Normally, when
 testing for differential variability across a covariate, we recommend
 always controlling for the effect of that covariate on the abundance. We
 first demonstrate examples with the soil dataset.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soil_full</span> <span class="op">&lt;-</span> <span class="va">soil_phylo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/tax_glom.html" class="external-link">tax_glom</a></span><span class="op">(</span><span class="st">"Phylum"</span><span class="op">)</span> </span></code></pre></div>
 <p>Testing for differential abundance across <code>Day</code>, without
 controlling for anything else:</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
 <span>                                 formula_null <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
@@ -522,10 +562,10 @@ controlling for anything else:</p>
 <span>                                 test <span class="op">=</span> <span class="st">"Wald"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-37-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-39-1.png" width="768"></p>
 <p>Testing for differential abundance across <code>Day</code>,
 controlling for the effect of <code>Day</code> on dispersion:</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 formula_null <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
@@ -534,10 +574,10 @@ controlling for the effect of <code>Day</code> on dispersion:</p>
 <span>                                 test <span class="op">=</span> <span class="st">"Wald"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-38-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-40-1.png" width="768"></p>
 <p>Jointly testing for differential abundance and differential
 variability across <code>Day</code>:</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 formula_null <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
@@ -546,11 +586,11 @@ variability across <code>Day</code>:</p>
 <span>                                 test <span class="op">=</span> <span class="st">"Wald"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-39-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-41-1.png" width="768"></p>
 <p>Jointly testing for differential abundance and differential
 variability across <code>Day</code>, controlling for the effect of
 <code>Amdmt</code> on abundance only:</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span> <span class="op">+</span> <span class="va">Amdmt</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 formula_null <span class="op">=</span> <span class="op">~</span> <span class="va">Amdmt</span>,</span>
@@ -559,11 +599,11 @@ variability across <code>Day</code>, controlling for the effect of
 <span>                                 test <span class="op">=</span> <span class="st">"Wald"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-40-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-42-1.png" width="768"></p>
 <p>Jointly testing for differential abundance across <code>Day</code>
 and differential abundance across <code>Amdmt</code>, controlling for
 the effect of <code>Day</code> and <code>Amdmt</code> on dispersion:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span> <span class="op">+</span> <span class="va">Amdmt</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span> <span class="op">+</span> <span class="va">Amdmt</span>,</span>
 <span>                                 formula_null <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
@@ -572,11 +612,11 @@ the effect of <code>Day</code> and <code>Amdmt</code> on dispersion:</p>
 <span>                                 test <span class="op">=</span> <span class="st">"Wald"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-41-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-43-1.png" width="768"></p>
 <p>Jointly testing for differential abundance across <code>Day</code>,
 and differential dispersion across <code>Amdmt</code>, controlling for
 the effect of <code>Day</code> on Dispersion:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex6</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">Day</span> <span class="op">+</span> <span class="va">Amdmt</span>,</span>
 <span>                                 formula_null <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
@@ -585,11 +625,11 @@ the effect of <code>Day</code> on Dispersion:</p>
 <span>                                 test <span class="op">=</span> <span class="st">"Wald"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex6</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-42-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-44-1.png" width="768"></p>
 <p>We now demonstrate examples with the IBD data set. We again begin by
 agglomerating for purposes of demonstration. We agglomerate to the genus
 level.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ibd_phylo_sample</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ibd_phylo_otu</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ibd_phylo_taxa</span><span class="op">)</span></span>
@@ -600,7 +640,7 @@ level.</p>
 <span>            <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/tax_glom.html" class="external-link">tax_glom</a></span><span class="op">(</span><span class="st">"Genus"</span><span class="op">)</span> </span></code></pre></div>
 <p>Testing for differential abundance across IBD status, without
 controlling for anything else:</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex7</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">ibd</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
 <span>                                 formula_null <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
@@ -609,16 +649,16 @@ controlling for anything else:</p>
 <span>                                 test <span class="op">=</span> <span class="st">"Wald"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex7</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-44-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-46-1.png" width="768"></p>
 <p>We can make the plot cleaner using the <code>level</code> parameter.
 Here we will display both the family and genus information.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex7</span>, level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Family"</span>, <span class="st">"Genus"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-45-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-47-1.png" width="768"></p>
 <p>Jointly testing for differential abundance and differential
 variability across IBD status, without controlling for anything
 else:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ex8</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/differentialTest.html">differentialTest</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">ibd</span>,</span>
 <span>                                 phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">ibd</span>,</span>
 <span>                                 formula_null <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span>,</span>
@@ -627,7 +667,7 @@ else:</p>
 <span>                                 test <span class="op">=</span> <span class="st">"Wald"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                 fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex8</span>, level <span class="op">=</span> <span class="st">"Genus"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="corncob-intro_files/figure-html/unnamed-chunk-46-1.png" width="768"></p>
+<p><img src="corncob-intro_files/figure-html/unnamed-chunk-48-1.png" width="768"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

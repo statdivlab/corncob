@@ -118,6 +118,8 @@ First, let's plot the data with our model fit on the relative abundance scale. T
 plot(corncob, B = 50)
 ```
 
+You can access the documentation for this plotting function by typing `?plot.bbdml` into the console.
+
 The points represent the relative abundances. The bars represent the 95\% prediction intervals for the observed relative abundance by sample. 
 The parameter `B` determines the number of bootstrap simulations used to approximate the prediction intervals. For purposes of this tutorial, we use a small value `B = 50` for computational purposes, but recommend a higher setting for more accurate intervals, such as the default `B = 1000`.
 
@@ -258,13 +260,26 @@ da_analysis$p_fdr[1:5]
 
 where the values are now adjusted to control the false discovery rate at 0.05.
 
-We can also plot the model coefficients of our results:
+Now we can use the built-in plotting function in corncob to view the the model coefficients used in testing differential abundance across `DayAmdmt` via the `plot()` function. You can access the documentation for this plotting function by typing `?plot.differentialTest` into the console.
 
 ```{r }
 plot(da_analysis)
 ```
 
 Here, we can see that for `Bacteria_Armatimonadetes`, the effect of `DayAmdmt21` is positive compared to the baseline (in this case, `DayAmdmt11`).
+
+If you wish to instead make your own custom plots with these same coefficients, you can easily extract the data used to generate the plots above from the `plot` function by setting `data_only = TRUE`:
+
+```{r}
+df <- plot(da_analysis, data_only = TRUE)
+
+# we can easily remove special characters used in our formatting steps
+df <- df %>%
+  dplyr::mutate(variable = gsub("\nDifferential Abundance", "",
+                                variable, fixed = TRUE))
+
+head(df)
+```
 
 Finally, we can see a list of any taxa for which we were not able to fit a model using:
 

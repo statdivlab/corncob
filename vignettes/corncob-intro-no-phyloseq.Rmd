@@ -118,7 +118,8 @@ First, let's plot the data with our model fit on the relative abundance scale. T
 plot(corncob, B = 50)
 ```
 
-You can access the documentation for this plotting function by typing `?plot.bbdml` into the console. The points represent the relative abundances.
+You can access the documentation for this plotting function by typing `?plot.bbdml` into the console.
+
 The points represent the relative abundances. The bars represent the 95\% prediction intervals for the observed relative abundance by sample. 
 The parameter `B` determines the number of bootstrap simulations used to approximate the prediction intervals. For purposes of this tutorial, we use a small value `B = 50` for computational purposes, but recommend a higher setting for more accurate intervals, such as the default `B = 1000`.
 

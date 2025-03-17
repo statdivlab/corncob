@@ -12,7 +12,7 @@
 #' @param inits Optional initializations as rows of a matrix. Defaults to \code{NULL}.
 #' @param allow_noninteger Boolean. Defaults to \code{FALSE}. Should noninteger W's and M's be allowed? This behavior was not permitted prior to v4.1, needs to be explicitly allowed.
 #' @param robust Should robust standard errors be returned? If not, model-based standard arras are used. Logical, defaults to \code{FALSE}.
-#' @param ... Optional additional arguments for \code{\link[optimx]{optimr}} or \code{\link{trust}}
+#' @param ... Optional additional arguments for \code{\link[optimx]{optimr}} or \code{\link[trust]{trust}}
 #'
 #' @return An object of class \code{bbdml}.
 #'

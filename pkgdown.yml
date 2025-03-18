@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   corncob-intro-no-phyloseq: corncob-intro-no-phyloseq.html
   corncob-intro: corncob-intro.html
-last_built: 2025-03-17T19:54Z
+last_built: 2025-03-18T20:49Z
 urls:
   reference: https://statdivlab.github.io/corncob/reference
   article: https://statdivlab.github.io/corncob/articles

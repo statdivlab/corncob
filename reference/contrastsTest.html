@@ -138,16 +138,20 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># data frame example</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_phylum_contrasts_sample</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_phylum_contrasts_otu</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">da_analysis</span> <span class="op">&lt;-</span> <span class="fu">contrastsTest</span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
-<span class="r-in"><span>                             phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
-<span class="r-in"><span>                             contrasts_DA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"DayAmdmt21 - DayAmdmt11"</span>,</span></span>
-<span class="r-in"><span>                                                 <span class="st">"DayAmdmt22 - DayAmdmt21"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                             data <span class="op">=</span> <span class="va">soil_phylum_contrasts_otu</span>,</span></span>
-<span class="r-in"><span>                             sample_data <span class="op">=</span> <span class="va">soil_phylum_contrasts_sample</span>,</span></span>
-<span class="r-in"><span>                             fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
-<span class="r-in"><span>                             try_only <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># note that this function will only run if the `limma` package is installed</span></span></span>
+<span class="r-in"><span><span class="va">limma_install</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/find.package.html" class="external-link">find.package</a></span><span class="op">(</span><span class="st">"limma"</span><span class="op">)</span>, silent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">limma_install</span>, <span class="st">"try-error"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_phylum_contrasts_sample</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_phylum_contrasts_otu</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">da_analysis</span> <span class="op">&lt;-</span> <span class="fu">contrastsTest</span><span class="op">(</span>formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
+<span class="r-in"><span>                              phi.formula <span class="op">=</span> <span class="op">~</span> <span class="va">DayAmdmt</span>,</span></span>
+<span class="r-in"><span>                              contrasts_DA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"DayAmdmt21 - DayAmdmt11"</span>,</span></span>
+<span class="r-in"><span>                                                   <span class="st">"DayAmdmt22 - DayAmdmt21"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                              data <span class="op">=</span> <span class="va">soil_phylum_contrasts_otu</span>,</span></span>
+<span class="r-in"><span>                               sample_data <span class="op">=</span> <span class="va">soil_phylum_contrasts_sample</span>,</span></span>
+<span class="r-in"><span>                               fdr_cutoff <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>                              try_only <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># phyloseq example (only run if you have phyloseq installed)</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>

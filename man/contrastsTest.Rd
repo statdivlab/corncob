@@ -65,16 +65,20 @@ This function uses contrast matrices to test for differential abundance and diff
 \examples{
 
 # data frame example
-data(soil_phylum_contrasts_sample)
-data(soil_phylum_contrasts_otu)
-da_analysis <- contrastsTest(formula = ~ DayAmdmt,
-                             phi.formula = ~ DayAmdmt,
-                             contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
-                                                 "DayAmdmt22 - DayAmdmt21"),
-                             data = soil_phylum_contrasts_otu,
-                             sample_data = soil_phylum_contrasts_sample,
-                             fdr_cutoff = 0.05,
-                             try_only = 1:5)
+# note that this function will only run if the `limma` package is installed
+limma_install <- try(find.package("limma"), silent = TRUE)
+if (!(inherits(limma_install, "try-error"))) {
+  data(soil_phylum_contrasts_sample)
+  data(soil_phylum_contrasts_otu)
+  da_analysis <- contrastsTest(formula = ~ DayAmdmt,
+                              phi.formula = ~ DayAmdmt,
+                              contrasts_DA = list("DayAmdmt21 - DayAmdmt11",
+                                                   "DayAmdmt22 - DayAmdmt21"),
+                              data = soil_phylum_contrasts_otu,
+                               sample_data = soil_phylum_contrasts_sample,
+                               fdr_cutoff = 0.05,
+                              try_only = 1:5)
+}
 
 # phyloseq example (only run if you have phyloseq installed)
 \dontrun{

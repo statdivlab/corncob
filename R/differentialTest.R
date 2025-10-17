@@ -95,6 +95,15 @@ differentialTest <- function(formula, phi.formula,
     } else {
       warn_phyloseq()
     }
+  } else if (inherits(data, "SummarizedExperiment")) {
+    if (requireNamespace("SummarizedExperiment", quietly = TRUE)) {
+      # Set up response
+      taxanames <- row.names(SummarizedExperiment::rowData(data))
+      sample_data <- data.frame(SummarizedExperiment::colData(data))
+    } else {
+      warn_sumexp()
+    }
+
   } else if (is.matrix(data) || is.data.frame(data)) {
 
     # # use phyloseq
@@ -118,7 +127,7 @@ differentialTest <- function(formula, phi.formula,
     M <- rowSums(data)
 
   } else {
-    stop("Input must be either data frame, matrix, or phyloseq object!")
+    stop("Input must be either data frame, matrix, phyloseq object or SummarizedExperiment!")
   }
 
   # Set up output
@@ -158,6 +167,8 @@ differentialTest <- function(formula, phi.formula,
     # Subset data to only select that taxa
     if ("phyloseq" %in% class(data)) {
       data_i <- convert_phylo(data, select = taxanames[i])
+    } else if (inherits(data, "SummarizedExperiment")) {
+      data_i <- convert_sumexp(data, select = taxanames[i])
     } else {
       response_i <- data.frame(W = data[, taxanames[i]], M = M)
       data_i <- cbind(response_i, sample_data)
@@ -275,6 +286,8 @@ We *strongly recommend* running `bbdml` on a single taxon (especially before pos
     i <- (try_only[!(try_only %in% ind_disc)])[1]
     if ("phyloseq" %in% class(data)) {
       data_i <- convert_phylo(data, select = taxanames[i])
+    } else if (inherits(data, "SummarizedExperiment")) {
+      data_i <- convert_sumexp(data, select = taxanames[i])
     } else {
       response_i <- data.frame(W = data[, taxanames[i]], M = M)
       data_i <- cbind(response_i, sample_data)

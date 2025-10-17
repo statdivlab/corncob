@@ -26,5 +26,6 @@ Suggests: knitr,
     slam,
     R.rsp,
     optimx,
-    phyloseq
+    phyloseq,
+    SummarizedExperiment
 VignetteBuilder: knitr

@@ -95,6 +95,14 @@ contrastsTest <- function(formula, phi.formula,
     } else {
       warn_phyloseq()
     }
+  } else if (inherits(data, "SummarizedExperiment")) {
+    if (requireNamespace("SummarizedExperiment", quietly = TRUE)) {
+      # Set up response
+      taxanames <- row.names(SummarizedExperiment::rowData(data))
+      sample_data <- SummarizedExperiment::colData(data)
+    } else {
+      warn_sumexp()
+    }
   } else if (is.matrix(data) || is.data.frame(data)) {
 
     # # use phyloseq
@@ -147,6 +155,8 @@ contrastsTest <- function(formula, phi.formula,
     # Subset data to only select that taxa
     if ("phyloseq" %in% class(data)) {
       data_i <- convert_phylo(data, select = taxanames[i])
+    } else if (inherits(data, "SummarizedExperiment")) {
+      data_i <- convert_sumexp(data, select = taxanames[i])
     } else {
       response_i <- data.frame(W = data[, taxanames[i]], M = M)
       data_i <- cbind(response_i, sample_data)

@@ -60,6 +60,14 @@ bbdml <- function(formula, phi.formula, data,
     formula <- stats::update(formula, cbind(W, M - W) ~ .)
   }
 
+  # Convert SummarizedExperiment objects
+  if (inherits(data, "SummarizedExperiment")) {
+    selection <- all.vars(formula)[1]
+    data <- convert_sumexp(data, select = selection)
+    # Update formula to match convert_phylo specification
+    formula <- stats::update(formula, cbind(W, M - W) ~ .)
+  }
+
   # Record call
   call <- match.call(expand.dots = FALSE)
   # Record mu link

@@ -35,6 +35,22 @@ plot.differentialTest <- function(x, level = NULL, data_only = FALSE, ...) {
       }
     }
   }
+
+  if (inherits(x$data, "SummarizedExperiment")) {
+    if (!(nrow(SummarizedExperiment::rowData(x$data)) == 0)) {
+      if (is.null(level)) {
+        signif_taxa = apply(SummarizedExperiment::rowData(x$data)[signif_taxa,], 1, function(x) {paste(stats::na.omit(x), collapse = '_')})
+      } else {
+        signif_taxa = sapply(SummarizedExperiment::rowData(x$data)[signif_taxa, level], function(x) {paste(stats::na.omit(x), collapse = '_')})
+      }
+
+      if (length(unique(signif_taxa)) != length(unique(x$significant_taxa))) {
+        # Make sure if repeated taxa add unique otu identifiers
+        signif_taxa <- paste0(signif_taxa, " (", x$significant_taxa, ")")
+      }
+    }
+  }
+
   if (length(x$significant_models) != 0) {
     var_per_mod <- length(x$restrictions_DA) + length(x$restrictions_DV)
     total_var_count <- length(signif_taxa) * var_per_mod

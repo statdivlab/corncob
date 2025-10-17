@@ -73,7 +73,7 @@ plot.differentialTest <- function(x, level = NULL, data_only = FALSE, ...) {
       ggplot2::geom_vline(xintercept = 0, color = "gray50", lty = "dashed",
                           alpha = 0.75, lwd = 1) +
       ggplot2::geom_point() +
-      ggplot2::geom_errorbarh(ggplot2::aes(xmin = xmin, xmax = xmax, colour = xmin<=0 & xmax <= 0| xmin>=0 & xmax >= 0), height = .3) +
+      ggplot2::geom_errorbar(ggplot2::aes(xmin = xmin, xmax = xmax, colour = xmin<=0 & xmax <= 0| xmin>=0 & xmax >= 0), height = .3, orientation = "x") +
       ggplot2::theme_bw() +
       ggplot2::facet_wrap(~variable, scales = "free_x", nrow = 1) +
       ggplot2::labs(title = "", x = "", y = "Taxa") +

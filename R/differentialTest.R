@@ -98,8 +98,8 @@ differentialTest <- function(formula, phi.formula,
   } else if (inherits(data, "SummarizedExperiment")) {
     if (requireNamespace("SummarizedExperiment", quietly = TRUE)) {
       # Set up response
-      taxanames <- row.names(SummarizedExperiment::rowData(data))
-      sample_data <- data.frame(SummarizedExperiment::colData(data))
+      taxanames <- row.names(data)
+      sample_data <- SummarizedExperiment::colData(data)
     } else {
       warn_sumexp()
     }

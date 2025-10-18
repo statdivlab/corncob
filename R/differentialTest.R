@@ -4,7 +4,7 @@
 #' @param phi.formula an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the dispersion
 #' @param formula_null Formula for mean under null, without response
 #' @param phi.formula_null Formula for overdispersion under null, without response
-#' @param data a data frame containing the OTU table, or \code{phyloseq} object containing the variables in the models
+#' @param data a data frame containing the OTU table, \code{phyloseq}, or \code{SummarizedExperiment} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
 #' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"}, \code{"LRT"} (likelihood ratio test), or \code{"Rao"}.
@@ -95,6 +95,15 @@ differentialTest <- function(formula, phi.formula,
     } else {
       warn_phyloseq()
     }
+  } else if (inherits(data, "SummarizedExperiment")) {
+    if (requireNamespace("SummarizedExperiment", quietly = TRUE)) {
+      # Set up response
+      taxanames <- row.names(data)
+      sample_data <- SummarizedExperiment::colData(data)
+    } else {
+      warn_sumexp()
+    }
+
   } else if (is.matrix(data) || is.data.frame(data)) {
 
     # # use phyloseq
@@ -118,7 +127,7 @@ differentialTest <- function(formula, phi.formula,
     M <- rowSums(data)
 
   } else {
-    stop("Input must be either data frame, matrix, or phyloseq object!")
+    stop("Input must be either data frame, matrix, phyloseq object or SummarizedExperiment!")
   }
 
   # Set up output
@@ -158,6 +167,8 @@ differentialTest <- function(formula, phi.formula,
     # Subset data to only select that taxa
     if ("phyloseq" %in% class(data)) {
       data_i <- convert_phylo(data, select = taxanames[i])
+    } else if (inherits(data, "SummarizedExperiment")) {
+      data_i <- convert_sumexp(data, select = taxanames[i])
     } else {
       response_i <- data.frame(W = data[, taxanames[i]], M = M)
       data_i <- cbind(response_i, sample_data)
@@ -275,6 +286,8 @@ We *strongly recommend* running `bbdml` on a single taxon (especially before pos
     i <- (try_only[!(try_only %in% ind_disc)])[1]
     if ("phyloseq" %in% class(data)) {
       data_i <- convert_phylo(data, select = taxanames[i])
+    } else if (inherits(data, "SummarizedExperiment")) {
+      data_i <- convert_sumexp(data, select = taxanames[i])
     } else {
       response_i <- data.frame(W = data[, taxanames[i]], M = M)
       data_i <- cbind(response_i, sample_data)

@@ -33,7 +33,7 @@ genInits <- function(W, M,
                      nstart = 1, use = TRUE) {
 
 
-  init.glm <- eval(parse(text = paste("quasibinomial(link =", link,")")))
+  init.glm <- eval(parse(text = paste("quasibinomial(link =", link, ")")))
   tmp <- stats::glm.fit(x = X, y = cbind(W, M - W), family = init.glm)
   b_init <- stats::coef(tmp)
   # Just use 0.5 for phi_init

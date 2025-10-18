@@ -2,7 +2,7 @@
 #'
 #' @param formula an object of class \code{formula}: a symbolic description of the model to be fitted to the abundance
 #' @param phi.formula an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the dispersion
-#' @param data a data frame or \code{phyloseq} object containing the variables in the models
+#' @param data a data frame, \code{phyloseq}, or \code{SummarizedExperiment} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
 #' @param method optimization method, defaults to \code{"trust"}, or see \code{\link[optimx]{optimr}} for other options
@@ -56,6 +56,14 @@ bbdml <- function(formula, phi.formula, data,
   if ("phyloseq" %in% class(data)) {
     selection <- all.vars(formula)[1]
     data <- convert_phylo(data, select = selection)
+    # Update formula to match convert_phylo specification
+    formula <- stats::update(formula, cbind(W, M - W) ~ .)
+  }
+
+  # Convert SummarizedExperiment objects
+  if (inherits(data, "SummarizedExperiment")) {
+    selection <- all.vars(formula)[1]
+    data <- convert_sumexp(data, select = selection)
     # Update formula to match convert_phylo specification
     formula <- stats::update(formula, cbind(W, M - W) ~ .)
   }

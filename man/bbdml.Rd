@@ -25,7 +25,7 @@ bbdml(
 
 \item{phi.formula}{an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the dispersion}
 
-\item{data}{a data frame or \code{phyloseq} object containing the variables in the models}
+\item{data}{a data frame, \code{phyloseq}, or \code{SummarizedExperiment} object containing the variables in the models}
 
 \item{link}{link function for abundance covariates, defaults to \code{"logit"}}
 

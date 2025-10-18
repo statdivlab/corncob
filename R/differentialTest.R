@@ -4,7 +4,7 @@
 #' @param phi.formula an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the dispersion
 #' @param formula_null Formula for mean under null, without response
 #' @param phi.formula_null Formula for overdispersion under null, without response
-#' @param data a data frame containing the OTU table, or \code{phyloseq} object containing the variables in the models
+#' @param data a data frame containing the OTU table, \code{phyloseq}, or \code{SummarizedExperiment} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
 #' @param test Character. Hypothesis testing procedure to use. One of \code{"Wald"}, \code{"LRT"} (likelihood ratio test), or \code{"Rao"}.

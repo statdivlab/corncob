@@ -2,7 +2,7 @@
 #'
 #' @param formula an object of class \code{formula}: a symbolic description of the model to be fitted to the abundance
 #' @param phi.formula an object of class \code{formula} without the response: a symbolic description of the model to be fitted to the dispersion
-#' @param data a data frame or \code{phyloseq} object containing the variables in the models
+#' @param data a data frame, \code{phyloseq}, or \code{SummarizedExperiment} object containing the variables in the models
 #' @param link link function for abundance covariates, defaults to \code{"logit"}
 #' @param phi.link link function for dispersion covariates, defaults to \code{"logit"}
 #' @param method optimization method, defaults to \code{"trust"}, or see \code{\link[optimx]{optimr}} for other options

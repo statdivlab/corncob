@@ -39,6 +39,27 @@ if (requireNamespace("SummarizedExperiment", quietly = TRUE)) {
     expect_is(out_phylo, "bbdml")
   })
 
+  test_that("clean_taxa_names works", {
+    soil <- soil_phylo_ps %>%
+      phyloseq::subset_samples(DayAmdmt %in% c(11,21))
+
+    soil <- SummarizedExperiment::SummarizedExperiment(
+      colData = data.frame(phyloseq::sample_data(soil)),
+      assays = list(counts = data.frame(phyloseq::otu_table(soil, taxa_are_rows = TRUE))),
+      rowData = data.frame(phyloseq::tax_table(soil))
+    )
+
+    tmp1 <- clean_taxa_names_se(soil)
+    tmp2 <- clean_taxa_names_se(soil, name = "Seq")
+
+    expect_equal(length(tmp1), 7770)
+    expect_equal(row.names(tmp1[1, ]), "OTU1")
+    expect_equal(row.names(tmp1[1234, ]), "OTU1234")
+    expect_equal(row.names(tmp2[2543, ]), "Seq2543")
+    expect_error(clean_taxa_names_se(c(1,2,3)))
+  })
+
+
   # tests for contrastsTest()
   set.seed(1)
   limma_install <- try(find.package("limma"), silent = TRUE)

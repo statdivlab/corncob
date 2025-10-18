@@ -126,7 +126,7 @@ contrastsTest <- function(formula, phi.formula,
     M <- rowSums(data)
 
   } else {
-    stop("Input must be either data frame, matrix, or phyloseq object!")
+    stop("Input must be either data frame, matrix, phyloseq object, or SummarizedExperiment object!")
   }
 
   # Set up output

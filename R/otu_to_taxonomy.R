@@ -42,15 +42,13 @@ otu_to_taxonomy_se <- function(OTU, data, level = NULL) {
     stop("This function currently only works for SummarizedExperiment objects.")
   }
 
-  if (requireNamespace("SummarizedExperiment", quietly = TRUE)) {
-    if (!(nrow(SummarizedExperiment::rowData(data)) == 0)) {
-      if (is.null(level)) {
-        return(apply(SummarizedExperiment::rowData(data)[OTU,], 1, function(x) {paste(stats::na.omit(x), collapse = "_")}))
-      } else {
-        return(sapply(SummarizedExperiment::rowData(data)[OTU, level], function(x) {paste(stats::na.omit(x), collapse = "_")}))
-      }
-    }
-  } else {
+  if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
     warn_sumexp()
+  }
+
+  if (is.null(level)) {
+    apply(SummarizedExperiment::rowData(data)[OTU,], 1, function(x) {paste(stats::na.omit(x), collapse = "_")})
+  } else {
+    sapply(SummarizedExperiment::rowData(data)[OTU, level], function(x) {paste(stats::na.omit(x), collapse = "_")})
   }
 }

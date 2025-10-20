@@ -37,10 +37,12 @@ plot.differentialTest <- function(x, level = NULL, data_only = FALSE, ...) {
   }
 
   if (inherits(x$data, "SummarizedExperiment")) {
-    signif_taxa <- otu_to_taxonomy_se(signif_taxa, x$data, level = level)
-    if (length(unique(signif_taxa)) != length(unique(x$significant_taxa))) {
-      # Make sure if repeated taxa add unique otu identifiers
-      signif_taxa <- paste0(signif_taxa, " (", x$significant_taxa, ")")
+    if (!(nrow(SummarizedExperiment::rowData(x$data)) == 0) && "kingdom" %in% tolower(colnames(SummarizedExperiment::rowData(x$data)))) {
+      signif_taxa <- otu_to_taxonomy_se(signif_taxa, x$data, level = level)
+      if (length(unique(signif_taxa)) != length(unique(x$significant_taxa))) {
+        # Make sure if repeated taxa add unique otu identifiers
+        signif_taxa <- paste0(signif_taxa, " (", x$significant_taxa, ")")
+      }
     }
   }
 

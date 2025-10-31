@@ -41,6 +41,9 @@ knitr::opts_chunk$set(fig.width=8, fig.height=4)
 Here, we introduce `corncob`, an individual taxon regression model that uses abundance tables and sample data. `corncob` is able to model differential abundance and differential variability, and addresses each of the challenges presented above.
 
 Note that in order to follow along with this tutorial (but not to use `corncob`!) you will need to have `phyloseq` installed. We will check if you have `phyloseq` installed, and if you do not then you can read the following code but it will not be run. See the vignette `corncob-intro-no-phyloseq.Rmd` for a version of this vignette without a dependence on `phyloseq`. 
+
+If your data is in a `TreeSummarizedExperiment` object, or any object that inherits from `SummarizedExperiment` `corncob` will still work. `corncob` will assume that the first assay in the assay list of your `SummarizedExperiment` object is the abundance table of interest, and that the `colData` slot contains information about the samples.
+
 ```{r, results = 'hide'}
 phy <- requireNamespace("phyloseq", quietly = TRUE) == TRUE
 ```

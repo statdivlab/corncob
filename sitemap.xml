@@ -9,8 +9,10 @@
 <url><loc>https://statdivlab.github.io/corncob/reference/bbdml.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/checkNested.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/clean_taxa_names.html</loc></url>
+<url><loc>https://statdivlab.github.io/corncob/reference/clean_taxa_names_se.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/contrastsTest.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/convert_phylo.html</loc></url>
+<url><loc>https://statdivlab.github.io/corncob/reference/convert_sumexp.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/corncob-package.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/coth.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/dbetabin.html</loc></url>
@@ -33,6 +35,7 @@
 <url><loc>https://statdivlab.github.io/corncob/reference/lrtest.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/objfun.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/otu_to_taxonomy.html</loc></url>
+<url><loc>https://statdivlab.github.io/corncob/reference/otu_to_taxonomy_se.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/pbLRT.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/pbRao.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/pbWald.html</loc></url>
@@ -61,5 +64,6 @@
 <url><loc>https://statdivlab.github.io/corncob/reference/waldchisq_test.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/waldt.html</loc></url>
 <url><loc>https://statdivlab.github.io/corncob/reference/warn_phyloseq.html</loc></url>
+<url><loc>https://statdivlab.github.io/corncob/reference/warn_sumexp.html</loc></url>
 </urlset>
 

@@ -38,7 +38,7 @@ differentialTest(
 
 \item{phi.formula_null}{Formula for overdispersion under null, without response}
 
-\item{data}{a data frame containing the OTU table, or \code{phyloseq} object containing the variables in the models}
+\item{data}{a data frame containing the OTU table, \code{phyloseq}, or \code{SummarizedExperiment} object containing the variables in the models}
 
 \item{link}{link function for abundance covariates, defaults to \code{"logit"}}
 

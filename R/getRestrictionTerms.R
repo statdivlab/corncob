@@ -18,9 +18,9 @@ getRestrictionTerms <- function(mod, mod_null = NULL, restrictions = NULL, restr
   assigns.mu <- attr(mod$X.mu, "assign")
   assigns.phi <- attr(mod$X.phi, "assign")
 
-  sortInteraction <- function(x){
+  sortInteraction <- function(x) {
     # Sorts interaction effects so they always match
-    sapply(lapply(strsplit(x,":"), sort), paste, collapse = ":")
+    sapply(lapply(strsplit(x, ":"), sort), paste, collapse = ":")
   }
 
   if (!is.null(mod_null)) {
